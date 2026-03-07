@@ -18,64 +18,104 @@
     }
 
     .glass {
-      background: rgba(255,255,255,0.82);
-      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.86);
+      backdrop-filter: blur(14px);
     }
 
-    .hero-slider {
-      position: relative;
-      height: 240px;
-      overflow: hidden;
-      border-radius: 24px;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #f7f7f2 0%, #ececdf 100%);
-      border: 1px solid #ececec;
-    }
-
-    .hero-slide {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity .7s ease;
-      display: flex;
+    .smart-search-badge {
+      position: fixed;
+      right: 18px;
+      top: 92px;
+      z-index: 45;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: 24px;
+      gap: 8px;
+      background: #111827;
+      color: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      animation: smartBlink 1.8s infinite;
     }
 
-    .hero-slide.active { opacity: 1; }
+    @keyframes smartBlink {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.55), 0 10px 24px rgba(0,0,0,0.18); transform: scale(1); }
+      50% { box-shadow: 0 0 0 10px rgba(16,185,129,0.0), 0 10px 24px rgba(0,0,0,0.18); transform: scale(1.03); }
+    }
 
-    .hero-content {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
+    .hero-wrapper {
+      border: 1px solid #e5e7eb;
+      border-radius: 28px;
+      overflow: hidden;
+      background: white;
+      margin-bottom: 22px;
+    }
+
+    .hero-cover {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      overflow: hidden;
+      background: #e5e7eb;
+    }
+
+    .hero-cover img {
       width: 100%;
       height: 100%;
-      align-items: center;
+      object-fit: cover;
+      display: block;
     }
 
-    .hero-dots {
+    .hero-overlay {
       position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.42), rgba(0,0,0,.05));
+    }
+
+    .hero-caption {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 22px;
+      color: white;
       z-index: 2;
     }
 
-    .hero-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.16);
-      cursor: pointer;
-      transition: .25s ease;
+    .recommended-strip {
+      padding: 18px;
+      background: #fff;
+      border-top: 1px solid #f1f5f9;
     }
 
-    .hero-dot.active {
-      width: 30px;
-      background: #059669;
+    .recommended-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .recommended-card {
+      min-width: 220px;
+      max-width: 220px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: .2s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    }
+
+    .recommended-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+    }
+
+    .recommended-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
     }
 
     .sidebar-item {
@@ -125,6 +165,7 @@
     .product-card {
       border-bottom: 1px dashed #e5e7eb;
       padding: 22px 0;
+      scroll-margin-top: 110px;
     }
 
     .product-card:last-child { border-bottom: none; }
@@ -134,8 +175,8 @@
     }
 
     .product-card.salad-product .image-gallery {
-      width: 150px;
-      height: 210px;
+      width: 154px;
+      height: 214px;
     }
 
     .product-card.salad-product .gallery-image {
@@ -144,7 +185,7 @@
     }
 
     .product-card.salad-product .product-title {
-      font-size: 1.4rem;
+      font-size: 1.42rem;
       line-height: 1.15;
       font-weight: 800;
     }
@@ -155,13 +196,13 @@
     }
 
     .product-card.salad-product .price-tag {
-      font-size: 1.28rem;
+      font-size: 1.3rem;
     }
 
     .image-gallery {
       position: relative;
-      width: 112px;
-      height: 150px;
+      width: 116px;
+      height: 154px;
       flex-shrink: 0;
       cursor: pointer;
       border-radius: 18px;
@@ -281,36 +322,57 @@
       .mobile-bottom-bar { display: none; }
     }
 
-    .image-modal {
+    .product-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.94);
+      background: rgba(0,0,0,.6);
       z-index: 100;
       display: none;
       align-items: center;
       justify-content: center;
+      padding: 18px;
     }
 
-    .image-modal.active { display: flex; }
+    .product-modal.active { display: flex; }
 
-    .modal-gallery {
-      position: relative;
-      width: 92%;
-      max-width: 760px;
-      height: 72vh;
-    }
-
-    .modal-image {
-      position: absolute;
-      inset: 0;
+    .product-modal-card {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      opacity: 0;
-      transition: opacity .35s ease;
+      max-width: 640px;
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+      animation: modalPop .22s ease;
+      position: relative;
     }
 
-    .modal-image.active { opacity: 1; }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(.96) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .product-modal-cover {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      display: block;
+      background: #f3f4f6;
+    }
+
+    .product-modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(194, 163, 69, 0.95);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 2;
+    }
 
     .fade-up {
       animation: fadeUp .4s ease forwards;
@@ -336,26 +398,35 @@
     }
 
     @media (max-width: 768px) {
-      .hero-slider {
-        height: 220px;
-        border-radius: 20px;
-      }
-
-      .hero-content {
-        grid-template-columns: 1fr;
-        text-align: center;
+      .hero-cover {
+        height: 250px;
       }
 
       .product-card.salad-product .image-gallery {
         width: 126px;
         height: 180px;
       }
+
+      .smart-search-badge {
+        right: 12px;
+        top: 82px;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .product-modal-cover {
+        height: 280px;
+      }
     }
   </style>
 </head>
 <body class="pb-20 lg:pb-0">
 
-  <!-- HEADER -->
+  <div id="smart-search-badge" class="smart-search-badge hidden">
+    <i class="fas fa-wand-magic-sparkles text-emerald-400"></i>
+    <span id="smart-search-text">Smart Search</span>
+  </div>
+
   <header class="sticky top-0 z-40 glass border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="h-16 flex items-center justify-between">
@@ -382,11 +453,9 @@
     </div>
   </header>
 
-  <!-- MAIN -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- LEFT -->
       <aside class="hidden lg:block lg:col-span-3">
         <div class="sticky top-24 space-y-4">
           <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
@@ -413,21 +482,13 @@
 
           <p class="text-xs text-gray-400 uppercase tracking-wider font-bold px-3 mt-5 mb-1" data-az="Kateqoriyalar" data-en="Categories">Categories</p>
 
-          <nav id="categories-list" class="space-y-1 custom-scroll max-h-[60vh] overflow-y-auto">
-            <div class="animate-pulse space-y-2">
-              <div class="h-10 bg-gray-100 rounded-xl"></div>
-              <div class="h-10 bg-gray-100 rounded-xl"></div>
-              <div class="h-10 bg-gray-100 rounded-xl"></div>
-            </div>
-          </nav>
+          <nav id="categories-list" class="space-y-1 custom-scroll max-h-[60vh] overflow-y-auto"></nav>
         </div>
       </aside>
 
-      <!-- CENTER -->
       <main class="lg:col-span-6">
-        <div id="hero-slider" class="hero-slider"></div>
+        <div id="hero-and-recommended"></div>
 
-        <!-- mobile categories -->
         <div id="mobile-category-pills" class="lg:hidden mb-4 overflow-x-auto custom-scroll">
           <div id="mobile-category-pills-inner" class="flex gap-2 min-w-max"></div>
         </div>
@@ -442,7 +503,6 @@
         </div>
       </main>
 
-      <!-- RIGHT -->
       <aside class="hidden lg:block lg:col-span-3">
         <div class="sticky top-24 space-y-4">
           <div class="search-box border border-gray-200 rounded-2xl px-4 py-3 bg-white flex items-center gap-3 transition-all">
@@ -498,7 +558,6 @@
     </div>
   </div>
 
-  <!-- MOBILE BAR -->
   <div class="mobile-bottom-bar lg:hidden">
     <button onclick="showMobileCategories()" class="flex flex-col items-center gap-1 text-gray-600">
       <i class="fas fa-list text-lg"></i>
@@ -514,7 +573,6 @@
     </button>
   </div>
 
-  <!-- MOBILE CATEGORIES MODAL -->
   <div id="mobile-categories-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-categories-modal')">
     <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto fade-up" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center mb-6">
@@ -527,7 +585,6 @@
     </div>
   </div>
 
-  <!-- MOBILE SEARCH MODAL -->
   <div id="mobile-search-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-search-modal')">
     <div class="absolute top-20 left-4 right-4 bg-white rounded-2xl p-4 fade-up" onclick="event.stopPropagation()">
       <div class="flex items-center gap-3 border border-gray-200 rounded-xl p-3">
@@ -543,37 +600,16 @@
     </div>
   </div>
 
-  <!-- IMAGE MODAL -->
-  <div id="image-modal" class="image-modal" onclick="closeImageModal(event)">
-    <button class="absolute top-4 right-4 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white text-xl hover:bg-white/20 z-10" onclick="closeImageModal()">
-      <i class="fas fa-times"></i>
-    </button>
-
-    <button class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white text-xl hover:bg-white/20 z-10" onclick="changeModalImage(-1)">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-
-    <button class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white text-xl hover:bg-white/20 z-10" onclick="changeModalImage(1)">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-
-    <div class="modal-gallery" id="modal-gallery" onclick="event.stopPropagation()"></div>
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2" id="modal-dots"></div>
+  <div id="product-modal" class="product-modal" onclick="closeProductModal(event)">
+    <div class="product-modal-card" id="product-modal-card" onclick="event.stopPropagation()"></div>
   </div>
 
   <script>
-    // ============================================
-    // CONFIG
-    // ============================================
     const CONFIG = {
       GAS_URL: 'https://script.google.com/macros/s/AKfycbxJWy0E1FVY4_3lOPav_by9vt9cIC2Xzj2qvCfr6bspkGYZgA4KU4oCPIC3DkDsT3Lk_Q/exec',
-      HERO_INTERVAL: 4200,
       GALLERY_INTERVAL: 3500
     };
 
-    // ============================================
-    // STATE
-    // ============================================
     let currentLang = 'en';
     let categories = [];
     let products = [];
@@ -581,20 +617,11 @@
     let favorites = JSON.parse(localStorage.getItem('menu_favorites') || '[]');
 
     let currentCategory = null;
-    let currentFilterMode = 'category'; // category | popular | favorites | search
+    let currentFilterMode = 'category';
     let searchQuery = '';
-
-    let heroSliderInterval = null;
-    let currentHeroSlide = 0;
-
-    let modalImages = [];
-    let currentModalImage = 0;
 
     const galleryIntervals = new Map();
 
-    // ============================================
-    // UTIL
-    // ============================================
     function safeText(v) {
       return v == null ? '' : String(v);
     }
@@ -615,14 +642,8 @@
 
     function normalizeText(str) {
       const map = {
-        'ə':'e','Ə':'e',
-        'ı':'i','I':'i','İ':'i',
-        'ö':'o','Ö':'o',
-        'ğ':'g','Ğ':'g',
-        'ü':'u','Ü':'u',
-        'ş':'s','Ş':'s',
-        'ç':'c','Ç':'c',
-        'й':'i'
+        'ə':'e','Ə':'e','ı':'i','I':'i','İ':'i','ö':'o','Ö':'o',
+        'ğ':'g','Ğ':'g','ü':'u','Ü':'u','ş':'s','Ş':'s','ç':'c','Ç':'c'
       };
 
       return safeText(str)
@@ -636,16 +657,13 @@
     }
 
     function tokenize(str) {
-      return normalizeText(str)
-        .split(' ')
-        .filter(Boolean);
+      return normalizeText(str).split(' ').filter(Boolean);
     }
 
     function levenshtein(a, b) {
       const m = a.length, n = b.length;
       if (!m) return n;
       if (!n) return m;
-
       const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
       for (let i = 0; i <= m; i++) dp[i][0] = i;
       for (let j = 0; j <= n; j++) dp[0][j] = j;
@@ -667,7 +685,6 @@
       if (!a || !b) return 0;
       if (a === b) return 1;
       if (a.includes(b) || b.includes(a)) return 0.9;
-
       const dist = levenshtein(a, b);
       const maxLen = Math.max(a.length, b.length);
       return Math.max(0, 1 - dist / maxLen);
@@ -696,9 +713,6 @@
         : (product.descEn || product.descAz || '');
     }
 
-    // ============================================
-    // AI-LIKE SMART SEARCH
-    // ============================================
     function buildSearchIndex(product) {
       const category = getCategoryById(product.categoryId);
       const corpus = [
@@ -736,7 +750,6 @@
 
       let score = 0;
 
-      // Exact whole-field bonuses
       Object.values(fields).forEach(val => {
         if (!val) return;
         if (val === q) score += 140;
@@ -744,11 +757,9 @@
         if (val.includes(q)) score += 55;
       });
 
-      // Token-based scoring
       qTokens.forEach(qt => {
         index.tokens.forEach(token => {
           const sim = fuzzyWordSimilarity(qt, token);
-
           if (sim >= 0.98) score += 30;
           else if (sim >= 0.9) score += 18;
           else if (sim >= 0.8) score += 10;
@@ -756,7 +767,6 @@
         });
       });
 
-      // Product name weight
       qTokens.forEach(qt => {
         [fields.nameAz, fields.nameEn].forEach(nameField => {
           tokenize(nameField).forEach(tok => {
@@ -768,7 +778,6 @@
         });
       });
 
-      // Description weight
       qTokens.forEach(qt => {
         [fields.descAz, fields.descEn].forEach(descField => {
           tokenize(descField).forEach(tok => {
@@ -780,7 +789,6 @@
         });
       });
 
-      // Category weight
       qTokens.forEach(qt => {
         [fields.categoryAz, fields.categoryEn].forEach(catField => {
           tokenize(catField).forEach(tok => {
@@ -792,9 +800,7 @@
         });
       });
 
-      // Popular bonus
       if (product.popular) score += 4;
-
       return score;
     }
 
@@ -811,7 +817,6 @@
     function highlightMatch(text, query) {
       if (!query || !text) return escapeHtml(text);
       const escaped = escapeHtml(text);
-
       const q = safeText(query).trim();
       if (!q) return escaped;
 
@@ -823,9 +828,6 @@
       }
     }
 
-    // ============================================
-    // DATA LOAD
-    // ============================================
     async function loadData() {
       try {
         const res = await fetch(CONFIG.GAS_URL + '?action=getMenu');
@@ -835,7 +837,7 @@
         products = Array.isArray(data.products) ? data.products : [];
         settings = data.settings || {};
       } catch (error) {
-        console.error('Menu load failed:', error);
+        console.error(error);
         categories = [];
         products = [];
         settings = {};
@@ -846,72 +848,61 @@
       }
 
       applyInitialContext();
+      renderSmartSearchBadge();
+      renderHeroAndRecommended();
       renderCategories();
-      renderHeroSlider();
       renderProducts();
       updateSettings();
-      startHeroSlider();
+      observeProductCards();
     }
 
     function loadDemoData() {
       categories = [
-        { id: 1, nameAz: 'Salatlar', nameEn: 'Salads', icon: '🥗', active: true },
-        { id: 2, nameAz: 'Əsas yeməklər', nameEn: 'Main courses', icon: '🍽️', active: true },
-        { id: 3, nameAz: 'İçkilər', nameEn: 'Drinks', icon: '🥤', active: true }
+        { id: 1, nameAz: 'Şorbalar', nameEn: 'Soups', icon: '🥣', active: true },
+        { id: 2, nameAz: 'Salatlar', nameEn: 'Salads', icon: '🥗', active: true },
+        { id: 3, nameAz: 'Əsas yeməklər', nameEn: 'Main course', icon: '🍽️', active: true }
       ];
 
       products = [
         {
           id: 1,
           categoryId: 1,
-          nameAz: 'Sezar salatı',
-          nameEn: 'Caesar salad',
-          descAz: 'Toyuq, kahı, sous və parmezan ilə hazırlanır',
-          descEn: 'Prepared with chicken, lettuce, sauce and parmesan',
-          price: 18,
+          nameAz: 'Dovğa',
+          nameEn: 'Dovga',
+          descAz: 'Qatıq, göyərti və düyü ilə',
+          descEn: 'Plain yogurt, mix herbs and rice',
+          price: 7,
           available: true,
           popular: true,
-          images: ['https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=900&auto=format&fit=crop'],
-          specs: { volume: '350g', time: '7min' }
+          recommended: true,
+          images: ['https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=1200&auto=format&fit=crop']
         },
         {
           id: 2,
-          categoryId: 1,
-          nameAz: 'Çoban salatı',
-          nameEn: 'Shepherd salad',
-          descAz: 'Təzə pomidor, xiyar və göyərti',
-          descEn: 'Fresh tomato, cucumber and herbs',
-          price: 11,
-          available: true,
-          popular: false,
-          images: ['https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=900&auto=format&fit=crop'],
-          specs: { volume: '300g', time: '5min' }
-        },
-        {
-          id: 3,
           categoryId: 2,
-          nameAz: 'Lülə kabab',
-          nameEn: 'Lyulya kebab',
-          descAz: 'Köz üzərində hazırlanmış ənənəvi kabab',
-          descEn: 'Traditional charcoal-grilled kebab',
-          price: 19,
+          nameAz: 'Sezar salatı',
+          nameEn: 'Caesar salad',
+          descAz: 'Toyuq, kahı, sous və parmezan',
+          descEn: 'Chicken, lettuce, sauce and parmesan',
+          price: 18,
           available: true,
-          popular: true,
-          images: ['https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=900&auto=format&fit=crop'],
-          specs: { volume: '420g', time: '15min' }
+          recommended: true,
+          images: ['https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=1200&auto=format&fit=crop']
         }
       ];
 
       settings = {
         nameAz: 'Qafqaz Riverside Hotel',
-        nameEn: 'Qafqaz Riverside Hotel',
+        nameEn: 'Gabala restaurant',
         addressAz: 'Qəbələ, Azərbaycan',
         addressEn: 'Gabala, Azerbaijan',
         phone: '+994 50 290 60 82',
         workWeekday: '07:00 - 24:00',
-        instagram: '',
-        facebook: '',
-        whatsapp: ''
+        heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1600&auto=format&fit=crop',
+        heroTitleAz: 'Xoş gəlmisiniz',
+        heroTitleEn: 'Welcome',
+        smartSearchBadge: 'true',
+        recommendedIds: JSON.stringify([1,2])
       };
     }
 
@@ -923,18 +914,83 @@
       currentFilterMode = 'category';
 
       const table = getUrlParam('table');
-      const tableIndicator = document.getElementById('table-indicator-text');
-
-      if (table) {
-        tableIndicator.textContent = `Table ${table}`;
-      } else {
-        tableIndicator.textContent = 'QR Menu';
-      }
+      document.getElementById('table-indicator-text').textContent = table ? `Table ${table}` : 'QR Menu';
     }
 
-    // ============================================
-    // SETTINGS
-    // ============================================
+    function getRecommendedProducts() {
+      let recommendedIds = [];
+      try {
+        recommendedIds = JSON.parse(settings.recommendedIds || '[]');
+      } catch {
+        recommendedIds = [];
+      }
+
+      let items = products.filter(p => recommendedIds.includes(p.id) || recommendedIds.includes(String(p.id)));
+
+      if (!items.length) {
+        items = products.filter(p => p.recommended || p.popular).slice(0, 8);
+      }
+
+      return items.filter(p => p.available !== false);
+    }
+
+    function renderSmartSearchBadge() {
+      const badge = document.getElementById('smart-search-badge');
+      const enabled = String(settings.smartSearchBadge || 'true') === 'true';
+      badge.classList.toggle('hidden', !enabled);
+      document.getElementById('smart-search-text').textContent =
+        currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
+    }
+
+    function renderHeroAndRecommended() {
+      const wrap = document.getElementById('hero-and-recommended');
+      const heroImage = settings.heroImage || '';
+      const recommended = getRecommendedProducts();
+
+      const heroTitle = currentLang === 'az'
+        ? (settings.heroTitleAz || settings.nameAz || 'Xoş gəlmisiniz')
+        : (settings.heroTitleEn || settings.nameEn || 'Welcome');
+
+      const heroSubtitle = currentLang === 'az'
+        ? (settings.nameAz || '')
+        : (settings.nameEn || settings.nameAz || '');
+
+      const recommendedHtml = recommended.map(product => `
+        <div class="recommended-card" onclick="openProductModal(${Number(product.id)})">
+          <img src="${product.images?.[0] || 'https://via.placeholder.com/600x400?text=Image'}" alt="">
+          <div class="p-3">
+            <div class="font-bold text-gray-900 line-clamp-2">${escapeHtml(getLocalizedProductName(product))}</div>
+            <div class="text-amber-700 font-extrabold mt-1">${product.price} AZN</div>
+          </div>
+        </div>
+      `).join('');
+
+      wrap.innerHTML = `
+        <div class="hero-wrapper">
+          <div class="hero-cover">
+            ${heroImage
+              ? `<img src="${heroImage}" alt="Hero image">`
+              : `<div class="w-full h-full bg-gray-200"></div>`
+            }
+            <div class="hero-overlay"></div>
+            <div class="hero-caption">
+              <div class="text-3xl md:text-4xl font-extrabold">${escapeHtml(heroTitle)}</div>
+              <div class="text-sm md:text-base text-white/90 mt-1">${escapeHtml(heroSubtitle)}</div>
+            </div>
+          </div>
+
+          <div class="recommended-strip">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-extrabold text-gray-900">${currentLang === 'az' ? 'Tövsiyə olunan yeməklər' : 'Recommended dishes'}</h3>
+            </div>
+            <div class="recommended-row custom-scroll">
+              ${recommendedHtml || `<div class="text-sm text-gray-500">${currentLang === 'az' ? 'Hələ tövsiyə yoxdur' : 'No recommendations yet'}</div>`}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function updateSettings() {
       const name = currentLang === 'az'
         ? (settings.nameAz || settings.nameEn || 'Restaurant')
@@ -972,9 +1028,6 @@
       socialContainer.innerHTML = socialHtml;
     }
 
-    // ============================================
-    // CATEGORIES
-    // ============================================
     function renderCategories() {
       const desktop = document.getElementById('categories-list');
       const mobile = document.getElementById('mobile-categories-list');
@@ -984,30 +1037,26 @@
         .filter(c => c.active !== false)
         .sort((a, b) => (Number(a.sortOrder || 0) - Number(b.sortOrder || 0)));
 
-      const desktopHtml = activeCategories.map(cat => `
+      desktop.innerHTML = activeCategories.map(cat => `
         <div class="sidebar-item ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
           <span class="text-xl">${cat.icon || '🍽️'}</span>
           <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
         </div>
       `).join('');
 
-      const mobileHtml = activeCategories.map(cat => `
+      mobile.innerHTML = activeCategories.map(cat => `
         <div class="sidebar-item ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)}); closeMobileModal(null, 'mobile-categories-modal');">
           <span class="text-xl">${cat.icon || '🍽️'}</span>
           <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
         </div>
       `).join('');
 
-      const pillsHtml = activeCategories.map(cat => `
+      pills.innerHTML = activeCategories.map(cat => `
         <button class="category-pill ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
           <span class="mr-1">${cat.icon || '🍽️'}</span>
           ${escapeHtml(getLocalizedCategoryName(cat))}
         </button>
       `).join('');
-
-      desktop.innerHTML = desktopHtml;
-      mobile.innerHTML = mobileHtml;
-      pills.innerHTML = pillsHtml;
 
       updateCurrentHeaders();
     }
@@ -1048,6 +1097,11 @@
       clearSearchInputs();
       renderCategories();
       renderProducts();
+
+      const firstCard = document.querySelector(`.product-card[data-category-id="${Number(categoryId)}"]`);
+      if (firstCard && window.innerWidth < 1024) {
+        firstCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     function filterPopular() {
@@ -1073,91 +1127,6 @@
       if (mobile) mobile.value = '';
     }
 
-    // ============================================
-    // HERO
-    // ============================================
-    function renderHeroSlider() {
-      const slider = document.getElementById('hero-slider');
-
-      const sliderProducts = products
-        .filter(p => p.available !== false && Array.isArray(p.images) && p.images.length > 0)
-        .slice(0, 5);
-
-      if (!sliderProducts.length) {
-        slider.style.display = 'none';
-        return;
-      }
-
-      slider.style.display = 'block';
-
-      const slidesHtml = sliderProducts.map((product, index) => {
-        const name = getLocalizedProductName(product);
-        const desc = getLocalizedProductDesc(product);
-
-        return `
-          <div class="hero-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
-            <div class="hero-content">
-              <div class="min-w-0">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-bold mb-3">
-                  <i class="fas fa-star"></i>
-                  <span>${currentLang === 'az' ? 'Tövsiyə olunur' : 'Recommended'}</span>
-                </div>
-                <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 leading-tight">${escapeHtml(name)}</h3>
-                <p class="text-sm text-gray-500 mb-4 line-clamp-3">${escapeHtml(desc)}</p>
-                <div class="text-xl font-extrabold text-amber-700">${product.price} AZN</div>
-              </div>
-              <div class="flex items-center justify-center">
-                <img src="${product.images[0]}" class="max-h-[170px] object-contain drop-shadow-xl rounded-2xl">
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const dotsHtml = sliderProducts.map((_, index) => `
-        <div class="hero-dot ${index === 0 ? 'active' : ''}" onclick="goToHeroSlide(${index})"></div>
-      `).join('');
-
-      slider.innerHTML = slidesHtml + `<div class="hero-dots">${dotsHtml}</div>`;
-      currentHeroSlide = 0;
-    }
-
-    function startHeroSlider() {
-      clearInterval(heroSliderInterval);
-      heroSliderInterval = setInterval(() => {
-        const slides = document.querySelectorAll('.hero-slide');
-        const dots = document.querySelectorAll('.hero-dot');
-        if (!slides.length) return;
-
-        slides[currentHeroSlide].classList.remove('active');
-        dots[currentHeroSlide].classList.remove('active');
-
-        currentHeroSlide = (currentHeroSlide + 1) % slides.length;
-
-        slides[currentHeroSlide].classList.add('active');
-        dots[currentHeroSlide].classList.add('active');
-      }, CONFIG.HERO_INTERVAL);
-    }
-
-    function goToHeroSlide(index) {
-      const slides = document.querySelectorAll('.hero-slide');
-      const dots = document.querySelectorAll('.hero-dot');
-      if (!slides.length) return;
-
-      slides[currentHeroSlide].classList.remove('active');
-      dots[currentHeroSlide].classList.remove('active');
-
-      currentHeroSlide = index;
-
-      slides[currentHeroSlide].classList.add('active');
-      dots[currentHeroSlide].classList.add('active');
-
-      startHeroSlider();
-    }
-
-    // ============================================
-    // SEARCH
-    // ============================================
     function smartSearch(query) {
       searchQuery = safeText(query).trim();
 
@@ -1179,9 +1148,6 @@
       renderProducts();
     }
 
-    // ============================================
-    // PRODUCTS
-    // ============================================
     function renderProducts() {
       const container = document.getElementById('products-list');
       clearGalleryIntervals();
@@ -1194,7 +1160,7 @@
         filtered = filtered.filter(p => favorites.includes(p.id));
       } else if (currentFilterMode === 'search') {
         filtered = getSearchResults(searchQuery);
-      } else if (currentFilterMode === 'category') {
+      } else {
         filtered = filtered.filter(p => Number(p.categoryId) === Number(currentCategory));
       }
 
@@ -1220,7 +1186,6 @@
 
         const name = getLocalizedProductName(product);
         const desc = getLocalizedProductDesc(product);
-
         const displayName = currentFilterMode === 'search'
           ? highlightMatch(name, searchQuery)
           : escapeHtml(name);
@@ -1228,12 +1193,14 @@
         const hasMultipleImages = Array.isArray(product.images) && product.images.length > 1;
         const image1 = product.images?.[0] || 'https://via.placeholder.com/300x400?text=No+Image';
         const image2 = product.images?.[1] || image1;
-
         const isFavorite = favorites.includes(product.id);
 
         return `
-          <div class="product-card ${isSaladCategory ? 'salad-product' : ''} flex gap-4 sm:gap-5 fade-up" style="animation-delay:${index * 0.04}s">
-            <div class="image-gallery" onclick="openImageModal(${Number(product.id)})">
+          <div class="product-card ${isSaladCategory ? 'salad-product' : ''} flex gap-4 sm:gap-5 fade-up"
+               id="product-${Number(product.id)}"
+               data-category-id="${Number(product.categoryId)}"
+               style="animation-delay:${index * 0.04}s">
+            <div class="image-gallery" onclick="openProductModal(${Number(product.id)})">
               <img src="${image1}" class="gallery-image active" id="gallery-img-1-${Number(product.id)}">
               <img src="${image2}" class="gallery-image inactive" id="gallery-img-2-${Number(product.id)}">
 
@@ -1245,50 +1212,25 @@
               ` : ''}
             </div>
 
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-0 cursor-pointer" onclick="openProductModal(${Number(product.id)})">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <h3 class="product-title font-bold text-gray-900 text-xl leading-tight mb-2">${displayName}</h3>
-
-                  ${desc ? `
-                    <p class="product-desc text-sm text-gray-500 line-clamp-3">${escapeHtml(desc)}</p>
-                  ` : ''}
+                  ${desc ? `<p class="product-desc text-sm text-gray-500 line-clamp-3">${escapeHtml(desc)}</p>` : ''}
                 </div>
               </div>
 
               <div class="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-400">
-                ${product.specs?.volume ? `
-                  <span class="flex items-center gap-1">
-                    <i class="fas fa-glass-whiskey"></i>
-                    ${escapeHtml(product.specs.volume)}
-                  </span>
-                ` : ''}
-
-                ${product.specs?.time ? `
-                  <span class="flex items-center gap-1">
-                    <i class="far fa-clock"></i>
-                    ${escapeHtml(product.specs.time)}
-                  </span>
-                ` : ''}
-
-                ${category ? `
-                  <span class="flex items-center gap-1">
-                    <i class="fas fa-folder-open"></i>
-                    ${escapeHtml(getLocalizedCategoryName(category))}
-                  </span>
-                ` : ''}
+                ${product.specs?.volume ? `<span class="flex items-center gap-1"><i class="fas fa-glass-whiskey"></i>${escapeHtml(product.specs.volume)}</span>` : ''}
+                ${product.specs?.time ? `<span class="flex items-center gap-1"><i class="far fa-clock"></i>${escapeHtml(product.specs.time)}</span>` : ''}
+                ${category ? `<span class="flex items-center gap-1"><i class="fas fa-folder-open"></i>${escapeHtml(getLocalizedCategoryName(category))}</span>` : ''}
               </div>
 
               <div class="flex items-center justify-between mt-4">
                 <span class="price-tag">${product.price} AZN</span>
 
                 <div class="flex items-center gap-2">
-                  ${product.popular ? `
-                    <span class="text-xs bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-semibold">
-                      <i class="fas fa-star mr-1"></i>${currentLang === 'az' ? 'Populyar' : 'Popular'}
-                    </span>
-                  ` : ''}
-
+                  ${product.popular ? `<span class="text-xs bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-semibold"><i class="fas fa-star mr-1"></i>${currentLang === 'az' ? 'Populyar' : 'Popular'}</span>` : ''}
                   <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
                     <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
                   </button>
@@ -1344,9 +1286,6 @@
       });
     }
 
-    // ============================================
-    // FAVORITES
-    // ============================================
     function toggleFavorite(productId, btn) {
       const idx = favorites.indexOf(productId);
 
@@ -1367,61 +1306,73 @@
       }
     }
 
-    // ============================================
-    // IMAGE MODAL
-    // ============================================
-    function openImageModal(productId) {
+    function openProductModal(productId) {
       const product = products.find(p => Number(p.id) === Number(productId));
-      if (!product || !Array.isArray(product.images) || !product.images.length) return;
+      if (!product) return;
 
-      modalImages = product.images;
-      currentModalImage = 0;
+      const isFavorite = favorites.includes(product.id);
+      const modal = document.getElementById('product-modal-card');
 
-      const gallery = document.getElementById('modal-gallery');
-      const dots = document.getElementById('modal-dots');
+      modal.innerHTML = `
+        <button class="product-modal-close" onclick="closeProductModal()"><i class="fas fa-times"></i></button>
+        <img src="${product.images?.[0] || 'https://via.placeholder.com/1000x700?text=Image'}" class="product-modal-cover" alt="">
+        <div class="p-5 md:p-6">
+          <h3 class="text-3xl font-extrabold text-gray-900 mb-2">${escapeHtml(getLocalizedProductName(product))}</h3>
+          <div class="flex items-center gap-3 flex-wrap mb-3">
+            <span class="text-amber-700 text-2xl font-extrabold">${product.price} AZN</span>
+            ${product.vat ? `<span class="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-xl">${escapeHtml(product.vat)}</span>` : ''}
+          </div>
+          <p class="text-gray-700 text-lg leading-relaxed mb-5">${escapeHtml(getLocalizedProductDesc(product))}</p>
 
-      gallery.innerHTML = modalImages.map((img, idx) => `
-        <img src="${img}" class="modal-image ${idx === 0 ? 'active' : ''}" data-index="${idx}">
-      `).join('');
+          <div class="flex items-center gap-3">
+            <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite(${Number(product.id)}, this)">
+              <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+            </button>
+            ${product.popular ? `<span class="text-sm bg-amber-100 text-amber-700 px-3 py-2 rounded-full font-bold"><i class="fas fa-star mr-1"></i>${currentLang === 'az' ? 'Populyar' : 'Popular'}</span>` : ''}
+          </div>
+        </div>
+      `;
 
-      dots.innerHTML = modalImages.map((_, idx) => `
-        <div class="w-2.5 h-2.5 rounded-full ${idx === 0 ? 'bg-white' : 'bg-white/40'} cursor-pointer" onclick="goToModalImage(${idx})"></div>
-      `).join('');
-
-      document.getElementById('image-modal').classList.add('active');
+      document.getElementById('product-modal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
-    function closeImageModal(event) {
-      if (event && event.target !== event.currentTarget && !event.target.closest('button')) return;
-      document.getElementById('image-modal').classList.remove('active');
+    function closeProductModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('product-modal').classList.remove('active');
       document.body.style.overflow = '';
     }
 
-    function changeModalImage(direction) {
-      const newIndex = (currentModalImage + direction + modalImages.length) % modalImages.length;
-      goToModalImage(newIndex);
+    function observeProductCards() {
+      const observer = new IntersectionObserver((entries) => {
+        if (currentFilterMode !== 'category') return;
+
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (!visible.length) return;
+
+        const categoryId = Number(visible[0].target.dataset.categoryId);
+        if (categoryId && categoryId !== currentCategory) {
+          currentCategory = categoryId;
+          renderCategories();
+        }
+      }, {
+        threshold: [0.35, 0.6, 0.8]
+      });
+
+      const reObserve = () => {
+        document.querySelectorAll('.product-card').forEach(card => observer.observe(card));
+      };
+
+      const oldRenderProducts = renderProducts;
+      renderProducts = function() {
+        oldRenderProducts();
+        reObserve();
+      };
     }
 
-    function goToModalImage(index) {
-      const images = document.querySelectorAll('.modal-image');
-      const dots = document.getElementById('modal-dots').children;
-      if (!images.length || !dots.length) return;
-
-      images[currentModalImage].classList.remove('active');
-      dots[currentModalImage].classList.remove('bg-white');
-      dots[currentModalImage].classList.add('bg-white/40');
-
-      currentModalImage = index;
-
-      images[currentModalImage].classList.add('active');
-      dots[currentModalImage].classList.remove('bg-white/40');
-      dots[currentModalImage].classList.add('bg-white');
-    }
-
-    // ============================================
-    // LANGUAGE
-    // ============================================
     function toggleLanguage() {
       currentLang = currentLang === 'en' ? 'az' : 'en';
       document.getElementById('current-lang').textContent = currentLang.toUpperCase();
@@ -1433,16 +1384,13 @@
       document.getElementById('search-input').placeholder = currentLang === 'az' ? 'Axtar...' : 'Search...';
       document.getElementById('mobile-search-input').placeholder = currentLang === 'az' ? 'Axtar...' : 'Search...';
 
+      renderSmartSearchBadge();
+      renderHeroAndRecommended();
       updateSettings();
       renderCategories();
-      renderHeroSlider();
       renderProducts();
-      startHeroSlider();
     }
 
-    // ============================================
-    // MOBILE
-    // ============================================
     function showMobileCategories() {
       document.getElementById('mobile-categories-modal').classList.remove('hidden');
     }
@@ -1457,31 +1405,19 @@
       document.getElementById(modalId).classList.add('hidden');
     }
 
-    // ============================================
-    // KEYBOARD
-    // ============================================
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        closeImageModal();
+        closeProductModal();
         closeMobileModal(null, 'mobile-categories-modal');
         closeMobileModal(null, 'mobile-search-modal');
       }
-
-      if (document.getElementById('image-modal').classList.contains('active')) {
-        if (e.key === 'ArrowLeft') changeModalImage(-1);
-        if (e.key === 'ArrowRight') changeModalImage(1);
-      }
     });
 
-    // ============================================
-    // INIT
-    // ============================================
     document.addEventListener('DOMContentLoaded', () => {
       const table = getUrlParam('table');
       if (table) {
         document.title = `QR Menu - Table ${table}`;
       }
-
       loadData();
     });
   </script>
