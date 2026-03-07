@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Menyu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; }
+        .sidebar-item { transition: all 0.2s; cursor: pointer; }
+        .sidebar-item:hover { color: #059669; }
+        .sidebar-item.active { color: #059669; font-weight: 600; }
+        .sidebar-item.active::before { content: '›'; margin-right: 8px; }
+        .product-card { transition: all 0.2s; border-bottom: 1px dashed #e5e7eb; }
+        .product-card:last-child { border-bottom: none; }
+        .category-badge { 
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .price-tag { color: #b45309; font-weight: 600; }
+        .favorite-btn { 
+            transition: all 0.2s;
+            border: 1px solid #e5e7eb;
+        }
+        .favorite-btn:hover { border-color: #ef4444; color: #ef4444; }
+        .favorite-btn.active { background: #ef4444; color: white; border-color: #ef4444; }
+        .info-icon { 
+            width: 40px; 
+            height: 40px; 
+            background: #f3f4f6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #374151;
+        }
+        .lang-btn { 
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover { background: #f3f4f6; }
+        .search-box { 
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .search-box:focus-within { border-color: #059669; }
+        .venue-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            background: white;
+        }
+        .menu-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            background: white;
+        }
+        .product-image {
+            width: 80px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .subcategory {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+        .specs {
+            display: flex;
+            gap: 16px;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        .spec-item { display: flex; align-items: center; gap: 4px; }
+        .gradient-text { 
+            background: linear-gradient(135deg, #059669 0%, #0d9488 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .mobile-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 50;
+        }
+        @media (min-width: 1024px) {
+            .mobile-bottom-bar { display: none; }
+        }
+        .scroll-hidden::-webkit-scrollbar { display: none; }
+        .scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Loading animation */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <div id="header-logo" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                    <i class="fas fa-utensils text-gray-400"></i>
+                </div>
+                <div>
+                    <h1 id="restaurant-name" class="font-bold text-lg text-gray-900">Yüklənir...</h1>
+                    <p id="restaurant-subtitle" class="text-xs text-gray-500">QR Menyu</p>
+                </div>
+            </div>
+            
+            <!-- Right side -->
+            <div class="flex items-center gap-3">
+                <!-- Language Switcher -->
+                <div class="relative">
+                    <button onclick="toggleLanguage()" class="lang-btn flex items-center gap-2">
+                        <span id="current-lang">EN</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                </div>
+                
+                <!-- User -->
+                <button class="w-10 h-10 border border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-50">
+                    <i class="far fa-user"></i>
+                </button>
+                
+                <!-- Menu -->
+                <button class="w-10 h-10 border border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-50 lg:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Sidebar (Categories) -->
+        <aside class="hidden lg:block lg:col-span-3">
+            <div class="sticky top-24">
+                <!-- Here Card -->
+                <div class="venue-card mb-4 border-amber-200 bg-amber-50/30">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm" data-az="Burada" data-en="Here">Here</p>
+                            <p class="text-xs text-gray-500" data-az="07:00 - 00:00" data-en="From 07:00 to 00:00">From 07:00 to 00:00</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Popular -->
+                <div class="mb-4">
+                    <div class="sidebar-item flex items-center gap-2 py-2 text-gray-700" onclick="filterPopular()">
+                        <i class="fas fa-star text-amber-500"></i>
+                        <span class="font-medium" data-az="Populyar" data-en="Popular">Popular</span>
+                    </div>
+                </div>
+                
+                <!-- Menu Title -->
+                <div class="mb-3">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider" data-az="Menyu:" data-en="Menu:">Menu:</p>
+                </div>
+                
+                <!-- Categories List -->
+                <nav id="categories-list" class="space-y-1">
+                    <!-- Dynamic content -->
+                    <div class="skeleton h-8 rounded mb-2"></div>
+                    <div class="skeleton h-8 rounded mb-2"></div>
+                    <div class="skeleton h-8 rounded mb-2"></div>
+                </nav>
+            </div>
+        </aside>
+        
+        <!-- Center (Products) -->
+        <main class="lg:col-span-6">
+            <div class="menu-container">
+                <!-- Category Header -->
+                <div class="mb-6">
+                    <h2 id="current-category" class="text-2xl font-bold text-gray-900 mb-2" data-az="İçkilər menyusu" data-en="Beverage menu">Beverage menu</h2>
+                    <p id="current-subcategory" class="subcategory" data-az="Qazlı içkilər" data-en="Soft Drinks">Soft Drinks</p>
+                </div>
+                
+                <!-- Products List -->
+                <div id="products-list" class="space-y-6">
+                    <!-- Dynamic content -->
+                    <div class="skeleton h-32 rounded"></div>
+                    <div class="skeleton h-32 rounded"></div>
+                    <div class="skeleton h-32 rounded"></div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Right Sidebar (Info) -->
+        <aside class="hidden lg:block lg:col-span-3">
+            <div class="sticky top-24 space-y-4">
+                <!-- Search -->
+                <div class="search-box">
+                    <i class="fas fa-search text-gray-400"></i>
+                    <input type="text" id="search-input" placeholder="Search" class="flex-1 outline-none text-sm" onkeyup="searchProducts()">
+                </div>
+                
+                <!-- Venue Info -->
+                <div class="venue-card">
+                    <h3 class="font-semibold text-gray-900 mb-4" data-az="Məkan məlumatı" data-en="Venue information">Venue information</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Working Hours -->
+                        <div class="flex items-start gap-3">
+                            <div class="info-icon">
+                                <i class="far fa-clock"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500" data-az="İş saatları:" data-en="Working hours:">Working hours:</p>
+                                <p id="working-hours" class="font-medium text-sm">07:00 - 24:00</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div class="flex items-start gap-3">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500" data-az="Ünvan:" data-en="Address:">Address:</p>
+                                <p id="venue-address" class="font-medium text-sm text-gray-700">Loading...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div class="flex items-start gap-3">
+                            <div class="info-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500" data-az="Telefon:" data-en="Phone:">Phone:</p>
+                                <p id="venue-phone" class="font-medium text-sm text-gray-700">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Social Links -->
+                <div id="social-links" class="flex gap-2">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- Mobile Bottom Bar -->
+<div class="mobile-bottom-bar lg:hidden">
+    <button onclick="showMobileCategories()" class="flex flex-col items-center gap-1 text-gray-600">
+        <i class="fas fa-list"></i>
+        <span class="text-xs" data-az="Menyu" data-en="Menu">Menu</span>
+    </button>
+    <button onclick="showMobileSearch()" class="flex flex-col items-center gap-1 text-gray-600">
+        <i class="fas fa-search"></i>
+        <span class="text-xs" data-az="Axtar" data-en="Search">Search</span>
+    </button>
+    <button onclick="showMobileInfo()" class="flex flex-col items-center gap-1 text-gray-600">
+        <i class="fas fa-info-circle"></i>
+        <span class="text-xs" data-az="Məlumat" data-en="Info">Info</span>
+    </button>
+</div>
+
+<!-- Mobile Categories Modal -->
+<div id="mobile-categories-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileCategories(event)">
+    <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-lg" data-az="Kateqoriyalar" data-en="Categories">Categories</h3>
+            <button onclick="closeMobileCategories()" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="mobile-categories-list" class="space-y-2">
+            <!-- Dynamic -->
+        </div>
+    </div>
+</div>
+
+<!-- Product Detail Modal -->
+<div id="product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4" onclick="closeProductModal(event)">
+    <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="relative">
+            <img id="modal-image" src="" class="w-full h-64 object-contain bg-gray-50">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <span id="modal-category" class="category-badge mb-2 inline-block">CATEGORY</span>
+                    <h3 id="modal-title" class="text-xl font-bold text-gray-900">Product Name</h3>
+                    <p id="modal-price" class="text-lg price-tag mt-1">0 AZN</p>
+                </div>
+            </div>
+            <p id="modal-description" class="text-gray-600 text-sm mb-4">Description</p>
+            <div class="flex gap-3">
+                <button class="flex-1 bg-gray-900 text-white py-3 rounded-xl font-medium" data-az="Sifariş et" data-en="Order">Order</button>
+                <button id="modal-favorite" class="w-12 h-12 border border-gray-200 rounded-xl flex items-center justify-center" onclick="toggleModalFavorite()">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================
+// CONFIGURATION
+// ============================================
+const CONFIG = {
+    // Google Apps Script URL (admin paneldəki ilə eyni)
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbzvLFtVxLHAetj7_RSzZWA2aNXfmm_LYIJ8c4uvX7W9t3vljY8U9Hjbo6L2arc4HMcxXQ/exec',
+    // Fallback data (əgər API işləməsə)
+    USE_LOCAL_STORAGE: true
+};
+
+// ============================================
+// STATE
+// ============================================
+let currentLang = 'en';
+let categories = [];
+let products = [];
+let settings = {};
+let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+let currentCategory = null;
+
+// ============================================
+// TRANSLATIONS
+// ============================================
+const translations = {
+    az: {
+        menu: 'Menyu',
+        popular: 'Populyar',
+        search: 'Axtar...',
+        here: 'Burada',
+        workingHours: '07:00 - 00:00',
+        workingHoursLabel: 'İş saatları:',
+        addressLabel: 'Ünvan:',
+        phoneLabel: 'Telefon:',
+        venueInfo: 'Məkan məlumatı',
+        order: 'Sifariş et',
+        categories: 'Kateqoriyalar',
+        info: 'Məlumat',
+        noProducts: 'Məhsul tapılmadı',
+        loading: 'Yüklənir...'
+    },
+    en: {
+        menu: 'Menu',
+        popular: 'Popular',
+        search: 'Search...',
+        here: 'Here',
+        workingHours: 'From 07:00 to 00:00',
+        workingHoursLabel: 'Working hours:',
+        addressLabel: 'Address:',
+        phoneLabel: 'Phone:',
+        venueInfo: 'Venue information',
+        order: 'Order',
+        categories: 'Categories',
+        info: 'Info',
+        noProducts: 'No products found',
+        loading: 'Loading...'
+    }
+};
+
+// ============================================
+// INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    loadData();
+    updateLanguage();
+});
+
+// ============================================
+// DATA LOADING
+// ============================================
+async function loadData() {
+    // Try to load from API first
+    if (CONFIG.GAS_URL && !CONFIG.GAS_URL.includes('YOUR_SCRIPT_ID')) {
+        try {
+            const response = await fetch(CONFIG.GAS_URL + '?action=getMenu');
+            const data = await response.json();
+            categories = data.categories || [];
+            products = data.products || [];
+            settings = data.settings || {};
+        } catch (error) {
+            console.log('API error, loading from localStorage');
+            loadFromLocalStorage();
+        }
+    } else {
+        loadFromLocalStorage();
+    }
+    
+    // If no data, use demo data
+    if (categories.length === 0) {
+        loadDemoData();
+    }
+    
+    renderCategories();
+    renderProducts();
+    updateSettings();
+}
+
+function loadFromLocalStorage() {
+    if (CONFIG.USE_LOCAL_STORAGE) {
+        categories = JSON.parse(localStorage.getItem('categories') || '[]');
+        products = JSON.parse(localStorage.getItem('products') || '[]');
+        settings = JSON.parse(localStorage.getItem('settings') || '{}');
+    }
+}
+
+function loadDemoData() {
+    // Demo data for testing
+    categories = [
+        { id: 1, nameAz: 'İçkilər menyusu', nameEn: 'Beverage menu', icon: '🍹', active: true },
+        { id: 2, nameAz: 'Əsas yeməklər', nameEn: 'Main courses', icon: '🍽️', active: true },
+        { id: 3, nameAz: 'Şirniyyatlar', nameEn: 'Desserts', icon: '🍰', active: true }
+    ];
+    
+    products = [
+        {
+            id: 1,
+            categoryId: 1,
+            nameAz: 'Evian still water',
+            nameEn: 'Evian still water',
+            descAz: 'Təbii mineral su',
+            descEn: 'Natural mineral water',
+            price: 22,
+            popular: true,
+            images: ['https://www.evian.com/us/en/imgs/product/evian-natural-spring-water-750ml.png'],
+            specs: { volume: '0.75ml', time: '3min' }
+        },
+        {
+            id: 2,
+            categoryId: 1,
+            nameAz: 'Perrier sparkling water',
+            nameEn: 'Perrier sparkling water',
+            descAz: 'Qazlı mineral su',
+            descEn: 'Sparkling mineral water',
+            price: 22,
+            popular: false,
+            images: ['https://www.perrier.com/us/en/imgs/product/perrier-original-750ml.png'],
+            specs: { volume: '0.75ml', time: '3min' }
+        },
+        {
+            id: 3,
+            categoryId: 1,
+            nameAz: 'Borjomi',
+            nameEn: 'Borjomi',
+            descAz: 'Sparkling water',
+            descEn: 'Sparkling water',
+            price: 6,
+            popular: true,
+            images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Borjomi_bottle.png/440px-Borjomi_bottle.png'],
+            specs: { volume: '500ml', time: '3min' },
+            vat: '18% VAT'
+        }
+    ];
+    
+    settings = {
+        nameAz: 'Qafqaz Riverside Hotel',
+        nameEn: 'Qafqaz Riverside Hotel',
+        addressAz: 'Qafqaz Riverside Hotel, Qəbələ, Azərbaycan',
+        addressEn: 'Qafqaz Riverside Hotel, Gabala, Azerbaijan',
+        phone: '+994 50 290 60 82',
+        workWeekday: '07:00 - 24:00',
+        workWeekend: '07:00 - 24:00'
+    };
+}
+
+// ============================================
+// RENDER FUNCTIONS
+// ============================================
+function renderCategories() {
+    const container = document.getElementById('categories-list');
+    const mobileContainer = document.getElementById('mobile-categories-list');
+    
+    const activeCategories = categories.filter(c => c.active !== false);
+    
+    const html = activeCategories.map(cat => `
+        <div class="sidebar-item py-2 px-3 rounded-lg hover:bg-gray-50 ${currentCategory === cat.id ? 'active bg-gray-50' : ''}" 
+             onclick="selectCategory(${cat.id})">
+            <span class="text-lg mr-2">${cat.icon || '🍽️'}</span>
+            <span>${currentLang === 'az' ? cat.nameAz : cat.nameEn}</span>
+        </div>
+    `).join('');
+    
+    container.innerHTML = html;
+    mobileContainer.innerHTML = html;
+    
+    // Select first category by default
+    if (!currentCategory && activeCategories.length > 0) {
+        selectCategory(activeCategories[0].id);
+    }
+}
+
+function renderProducts(filter = null) {
+    const container = document.getElementById('products-list');
+    
+    let filteredProducts = products.filter(p => p.available !== false);
+    
+    if (filter === 'popular') {
+        filteredProducts = filteredProducts.filter(p => p.popular);
+    } else if (currentCategory) {
+        filteredProducts = filteredProducts.filter(p => p.categoryId === currentCategory);
+    }
+    
+    if (filteredProducts.length === 0) {
+        container.innerHTML = `<p class="text-center text-gray-500 py-8">${translations[currentLang].noProducts}</p>`;
+        return;
+    }
+    
+    // Group by subcategory if exists
+    const grouped = groupBy(filteredProducts, 'subcategory');
+    
+    let html = '';
+    
+    filteredProducts.forEach(product => {
+        const isFavorite = favorites.includes(product.id);
+        const name = currentLang === 'az' ? product.nameAz : product.nameEn;
+        const desc = currentLang === 'az' ? product.descAz : product.descEn;
+        const image = product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/80x120?text=No+Image';
+        
+        html += `
+            <div class="product-card py-4 flex gap-4">
+                <div class="flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-semibold text-gray-900 text-lg">${name}</h3>
+                    </div>
+                    <p class="price-tag text-lg mb-2">${product.price} AZN ${product.vat ? `<span class="text-xs text-gray-400 ml-2">${product.vat}</span>` : ''}</p>
+                    ${desc ? `<p class="text-sm text-gray-500 mb-2">${desc}</p>` : ''}
+                    <div class="specs">
+                        ${product.specs?.volume ? `
+                            <span class="spec-item">
+                                <i class="fas fa-glass-whiskey text-xs"></i>
+                                ${product.specs.volume}
+                            </span>
+                        ` : ''}
+                        ${product.specs?.time ? `
+                            <span class="spec-item">
+                                <i class="far fa-clock text-xs"></i>
+                                ${product.specs.time}
+                            </span>
+                        ` : ''}
+                    </div>
+                    <div class="flex items-center gap-3 mt-3">
+                        <button class="favorite-btn w-10 h-10 rounded-lg flex items-center justify-center ${isFavorite ? 'active' : ''}" 
+                                onclick="toggleFavorite(${product.id}, this)">
+                            <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                        ${isFavorite ? '<span class="text-xs text-gray-500">1</span>' : ''}
+                    </div>
+                </div>
+                <div class="flex-shrink-0 cursor-pointer" onclick="openProductModal(${product.id})">
+                    <img src="${image}" alt="${name}" class="product-image hover:scale-105 transition-transform">
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function updateSettings() {
+    // Restaurant name
+    const name = currentLang === 'az' ? (settings.nameAz || settings.nameEn) : (settings.nameEn || settings.nameAz);
+    document.getElementById('restaurant-name').textContent = name || 'Restaurant';
+    document.getElementById('restaurant-subtitle').textContent = settings.nameAz || '';
+    
+    // Logo
+    if (settings.logo) {
+        document.getElementById('header-logo').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-contain">`;
+    }
+    
+    // Address
+    const address = currentLang === 'az' ? (settings.addressAz || settings.addressEn) : (settings.addressEn || settings.addressAz);
+    document.getElementById('venue-address').textContent = address || 'Address not set';
+    
+    // Phone
+    document.getElementById('venue-phone').textContent = settings.phone || 'Phone not set';
+    
+    // Working hours
+    const hours = currentLang === 'az' ? (settings.workWeekday || '07:00 - 24:00') : (settings.workWeekday || '07:00 - 24:00');
+    document.getElementById('working-hours').textContent = hours;
+    
+    // Social links
+    const socialContainer = document.getElementById('social-links');
+    let socialHtml = '';
+    if (settings.instagram) {
+        socialHtml += `<a href="${settings.instagram}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-pink-100 hover:text-pink-600 transition-colors"><i class="fab fa-instagram"></i></a>`;
+    }
+    if (settings.facebook) {
+        socialHtml += `<a href="${settings.facebook}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition-colors"><i class="fab fa-facebook-f"></i></a>`;
+    }
+    if (settings.whatsapp) {
+        socialHtml += `<a href="https://wa.me/${settings.whatsapp}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-green-100 hover:text-green-600 transition-colors"><i class="fab fa-whatsapp"></i></a>`;
+    }
+    socialContainer.innerHTML = socialHtml;
+}
+
+// ============================================
+// INTERACTION FUNCTIONS
+// ============================================
+function selectCategory(categoryId) {
+    currentCategory = categoryId;
+    const category = categories.find(c => c.id === categoryId);
+    
+    if (category) {
+        document.getElementById('current-category').textContent = currentLang === 'az' ? category.nameAz : category.nameEn;
+        document.getElementById('current-subcategory').textContent = currentLang === 'az' ? 'Bütün məhsullar' : 'All products';
+    }
+    
+    renderCategories();
+    renderProducts();
+    closeMobileCategories();
+}
+
+function filterPopular() {
+    currentCategory = null;
+    document.getElementById('current-category').textContent = currentLang === 'az' ? 'Populyar məhsullar' : 'Popular products';
+    document.getElementById('current-subcategory').textContent = '';
+    renderProducts('popular');
+}
+
+function searchProducts() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    if (!query) {
+        renderProducts();
+        return;
+    }
+    
+    const filtered = products.filter(p => {
+        const name = (currentLang === 'az' ? p.nameAz : p.nameEn).toLowerCase();
+        return name.includes(query);
+    });
+    
+    const container = document.getElementById('products-list');
+    document.getElementById('current-category').textContent = currentLang === 'az' ? 'Axtarış nəticələri' : 'Search results';
+    document.getElementById('current-subcategory').textContent = `"${query}"`;
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `<p class="text-center text-gray-500 py-8">${translations[currentLang].noProducts}</p>`;
+        return;
+    }
+    
+    // Temporarily replace products for rendering
+    const originalProducts = products;
+    products = filtered;
+    renderProducts();
+    products = originalProducts;
+}
+
+function toggleFavorite(productId, btn) {
+    const index = favorites.indexOf(productId);
+    if (index > -1) {
+        favorites.splice(index, 1);
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="far fa-heart"></i>';
+    } else {
+        favorites.push(productId);
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fas fa-heart"></i>';
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'az' : 'en';
+    document.getElementById('current-lang').textContent = currentLang.toUpperCase();
+    updateLanguage();
+    renderCategories();
+    renderProducts();
+    updateSettings();
+}
+
+function updateLanguage() {
+    // Update all elements with data-az and data-en attributes
+    document.querySelectorAll('[data-az][data-en]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${currentLang}`);
+    });
+    
+    // Update search placeholder
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.placeholder = translations[currentLang].search;
+    }
+}
+
+// ============================================
+// MODAL FUNCTIONS
+// ============================================
+function openProductModal(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const name = currentLang === 'az' ? product.nameAz : product.nameEn;
+    const desc = currentLang === 'az' ? product.descAz : product.descEn;
+    const image = product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
+    const category = categories.find(c => c.id === product.categoryId);
+    
+    document.getElementById('modal-image').src = image;
+    document.getElementById('modal-title').textContent = name;
+    document.getElementById('modal-description').textContent = desc || '';
+    document.getElementById('modal-price').textContent = `${product.price} AZN`;
+    document.getElementById('modal-category').textContent = category ? (currentLang === 'az' ? category.nameAz : category.nameEn) : '';
+    
+    const favBtn = document.getElementById('modal-favorite');
+    const isFavorite = favorites.includes(productId);
+    favBtn.innerHTML = `<i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>`;
+    favBtn.classList.toggle('active', isFavorite);
+    favBtn.onclick = () => {
+        toggleFavorite(productId, { classList: { toggle: () => {} } });
+        openProductModal(productId); // Refresh modal
+    };
+    
+    document.getElementById('product-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('product-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// ============================================
+// MOBILE FUNCTIONS
+// ============================================
+function showMobileCategories() {
+    document.getElementById('mobile-categories-modal').classList.remove('hidden');
+}
+
+function closeMobileCategories(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('mobile-categories-modal').classList.add('hidden');
+}
+
+function showMobileSearch() {
+    document.getElementById('search-input').focus();
+}
+
+function showMobileInfo() {
+    // Scroll to info or show info modal
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// UTILITIES
+// ============================================
+function groupBy(array, key) {
+    return array.reduce((result, item) => {
+        const group = item[key] || 'General';
+        result[group] = result[group] || [];
+        result[group].push(item);
+        return result;
+    }, {});
+}
+
+// Close modals on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeProductModal();
+        closeMobileCategories();
+    }
+});
+</script>
+
+</body>
+</html>
