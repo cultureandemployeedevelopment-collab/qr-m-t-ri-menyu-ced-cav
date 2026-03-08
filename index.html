@@ -26,6 +26,7 @@
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       background: var(--bg);
@@ -54,14 +55,16 @@
       border: 1px solid var(--line);
       background: white;
       border-radius: 999px;
-      padding: 10px 14px;
+      padding: 9px 13px;
       white-space: nowrap;
       transition: .22s ease;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
     }
+
     .category-pill:hover { border-color: #99f6e4; }
+
     .category-pill.active {
       background: linear-gradient(135deg, #0f766e, #14b8a6);
       color: white;
@@ -74,13 +77,15 @@
       align-items: center;
       gap: 12px;
       border-radius: 18px;
-      padding: 13px 15px;
+      padding: 12px 14px;
       transition: .2s ease;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
     }
+
     .sidebar-link:hover { background: #f0f7f6; }
+
     .sidebar-link.active {
       background: #dff2ec;
       color: #0f766e;
@@ -89,43 +94,48 @@
 
     .hero {
       position: relative;
-      min-height: calc(100vh - 128px);
+      min-height: 480px;
       border-radius: 28px;
       overflow: hidden;
       background: #d4d7dd;
       border: 1px solid var(--line);
     }
+
     .hero img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
+
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.52), rgba(0,0,0,.08));
+      background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 28%, rgba(0,0,0,.03) 55%, rgba(0,0,0,0) 100%);
     }
+
     .hero-copy {
       position: absolute;
       left: 24px;
       right: 24px;
-      bottom: 22px;
+      bottom: 18px;
       color: white;
+      z-index: 2;
     }
 
     .ai-search-wrap {
       position: relative;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       border: 1px solid var(--line);
       border-radius: 18px;
       background: white;
-      min-height: 54px;
-      padding: 0 14px;
+      min-height: 52px;
+      padding: 0 10px 0 14px;
       box-shadow: var(--shadow);
       overflow: hidden;
+      width: 100%;
     }
 
     .ai-search-wrap::before {
@@ -151,8 +161,8 @@
       flex-shrink: 0;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 8px 12px;
+      gap: 6px;
+      padding: 7px 10px;
       border-radius: 999px;
       background: linear-gradient(135deg, #081a32, #112a4b);
       color: white;
@@ -160,9 +170,11 @@
       animation: floatBadge 1.9s ease-in-out infinite;
       cursor: pointer;
       user-select: none;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
       border: none;
+      max-width: 120px;
+      white-space: nowrap;
     }
 
     @keyframes floatBadge {
@@ -178,9 +190,10 @@
       scroll-snap-type: x mandatory;
       padding-bottom: 4px;
     }
+
     .recommended-card {
-      min-width: 220px;
-      max-width: 220px;
+      min-width: 200px;
+      max-width: 200px;
       border-radius: 22px;
       overflow: hidden;
       background: white;
@@ -190,14 +203,17 @@
       cursor: pointer;
       transition: .22s ease;
     }
+
     .recommended-card:hover { transform: translateY(-3px); }
+
     .recommended-card img {
       width: 100%;
-      height: 145px;
+      height: 125px;
       object-fit: cover;
       transition: transform .4s ease;
       display: block;
     }
+
     .recommended-card:hover img { transform: scale(1.05); }
 
     .food-card {
@@ -211,20 +227,24 @@
       transform: translateY(14px);
       opacity: 0;
     }
+
     .food-card.in-view {
       transform: translateY(0);
       opacity: 1;
       transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease;
     }
+
     .food-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 16px 34px rgba(17, 24, 39, 0.11);
     }
+
     .food-card-image {
       overflow: hidden;
-      height: 185px;
+      height: 165px;
       background: #eef2f6;
     }
+
     .food-card-image img {
       width: 100%;
       height: 100%;
@@ -232,6 +252,7 @@
       transition: transform .5s ease;
       display: block;
     }
+
     .food-card:hover .food-card-image img { transform: scale(1.06); }
 
     .detail-modal {
@@ -245,7 +266,9 @@
       justify-content: center;
       padding: 18px;
     }
+
     .detail-modal.active { display: flex; }
+
     .detail-card {
       width: 100%;
       max-width: 690px;
@@ -256,10 +279,12 @@
       animation: modalRise .22s ease;
       position: relative;
     }
+
     @keyframes modalRise {
       from { opacity: 0; transform: scale(.97) translateY(14px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
+
     .detail-cover {
       width: 100%;
       height: 310px;
@@ -267,6 +292,7 @@
       display: block;
       background: #eef2f6;
     }
+
     .detail-close {
       position: absolute;
       top: 18px;
@@ -294,11 +320,13 @@
       justify-content: space-around;
       z-index: 70;
     }
+
     @media (min-width: 1024px) {
       .mobile-bottom-bar { display: none; }
     }
 
     .hide-desktop { display: block; }
+
     @media (min-width: 1024px) {
       .hide-desktop { display: none; }
     }
@@ -311,14 +339,55 @@
     }
 
     @media (max-width: 1023px) {
-      .hero { min-height: 42vh; }
+      .hero { min-height: 360px; }
     }
 
     @media (max-width: 767px) {
-      .hero { min-height: 55vh; }
-      .detail-cover { height: 240px; }
-      .recommended-card { min-width: 205px; max-width: 205px; }
-      .food-card-image { height: 170px; }
+      .hero {
+        min-height: 265px;
+        border-radius: 22px;
+      }
+
+      .hero-copy {
+        left: 16px;
+        right: 16px;
+        bottom: 12px;
+      }
+
+      .detail-cover { height: 220px; }
+
+      .recommended-card {
+        min-width: 165px;
+        max-width: 165px;
+      }
+
+      .recommended-card img {
+        height: 105px;
+      }
+
+      .food-card-image { height: 145px; }
+
+      .ai-search-wrap {
+        min-height: 48px;
+        padding: 0 8px 0 12px;
+        gap: 6px;
+      }
+
+      .ai-badge {
+        padding: 6px 8px;
+        font-size: 10px;
+        max-width: 86px;
+      }
+
+      .ai-badge span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .category-pill {
+        font-size: 11px;
+        padding: 8px 11px;
+      }
     }
   </style>
 </head>
@@ -330,21 +399,21 @@
           <i class="fas fa-utensils text-gray-400"></i>
         </div>
         <div class="min-w-0">
-          <h1 id="restaurant-name" class="font-extrabold text-lg text-gray-900 truncate">Yüklənir...</h1>
-          <p id="restaurant-subtitle" class="text-xs text-gray-500 truncate">QR Menyu</p>
+          <h1 id="restaurant-name" class="font-extrabold text-base sm:text-lg text-gray-900 truncate">Yüklənir...</h1>
+          <p id="restaurant-subtitle" class="text-[11px] sm:text-xs text-gray-500 truncate">QR Menyu</p>
         </div>
       </div>
-      <button onclick="toggleLanguage()" class="h-11 px-4 border border-gray-200 rounded-2xl bg-white shadow-premium flex items-center gap-2 font-bold text-sm">
+      <button onclick="toggleLanguage()" class="h-10 sm:h-11 px-3 sm:px-4 border border-gray-200 rounded-2xl bg-white shadow-premium flex items-center gap-2 font-bold text-xs sm:text-sm">
         <span id="current-lang">AZ</span>
-        <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+        <i class="fas fa-chevron-down text-[10px] sm:text-xs text-gray-400"></i>
       </button>
     </div>
   </header>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <section id="hero-section" class="mb-6"></section>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+    <section id="hero-section" class="mb-5 sm:mb-6"></section>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
       <aside class="hidden lg:block lg:col-span-3">
         <div class="sticky top-24 space-y-4">
           <div class="bg-[#f8f2dc] border border-[#edd68b] rounded-[26px] p-5 shadow-premium">
@@ -353,43 +422,43 @@
                 <i class="fas fa-location-dot"></i>
               </div>
               <div>
-                <p class="font-bold text-[17px] leading-tight" data-az="Buradasınız" data-en="You are here">Buradasınız</p>
+                <p class="font-bold text-[16px] leading-tight" data-az="Buradasınız" data-en="You are here">Buradasınız</p>
                 <p class="text-sm text-gray-500" id="table-indicator-text">QR Menu</p>
               </div>
             </div>
           </div>
 
           <div class="sidebar-link" onclick="filterPopular()">
-            <i class="fas fa-star text-amber-500 text-lg"></i>
+            <i class="fas fa-star text-amber-500 text-base"></i>
             <span data-az="Populyar" data-en="Popular">Populyar</span>
           </div>
 
           <div class="sidebar-link" onclick="showFavoritesOnly()">
-            <i class="fas fa-heart text-red-500 text-lg"></i>
+            <i class="fas fa-heart text-red-500 text-base"></i>
             <span data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
           </div>
 
-          <p class="text-xs text-gray-400 uppercase tracking-wider font-extrabold px-4 pt-2" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</p>
+          <p class="text-[11px] text-gray-400 uppercase tracking-wider font-extrabold px-4 pt-2" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</p>
           <nav id="categories-list" class="space-y-2 custom-scroll max-h-[60vh] overflow-y-auto"></nav>
         </div>
       </aside>
 
-      <main class="lg:col-span-6 space-y-6">
+      <main class="lg:col-span-6 space-y-5 sm:space-y-6">
         <div class="hide-desktop overflow-x-auto custom-scroll">
           <div id="mobile-category-slider" class="flex gap-2 min-w-max"></div>
         </div>
 
-        <section id="recommended-section" class="bg-white rounded-[28px] border border-gray-200 p-5 shadow-premium"></section>
+        <section id="recommended-section" class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-5 shadow-premium"></section>
 
-        <section class="bg-white rounded-[28px] border border-gray-200 p-5 sm:p-6 shadow-premium">
-          <div class="mb-5">
-            <h2 id="current-category" class="text-[32px] md:text-[36px] font-extrabold text-gray-900">Menu</h2>
-            <p id="current-subcategory" class="text-sm text-gray-400 mt-1">All products</p>
+        <section class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-6 shadow-premium">
+          <div class="mb-4 sm:mb-5">
+            <h2 id="current-category" class="text-[24px] sm:text-[28px] md:text-[32px] font-extrabold text-gray-900 leading-tight">Menu</h2>
+            <p id="current-subcategory" class="text-xs sm:text-sm text-gray-400 mt-1">All products</p>
           </div>
-          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
+          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"></div>
         </section>
 
-        <footer class="text-center text-sm text-gray-500 pb-6 pt-1">
+        <footer class="text-center text-xs sm:text-sm text-gray-500 pb-6 pt-1 px-2">
           Korperativ Mədəniyyət və İşçilərin inkişafı komdası tərəfindən hazırlanıb.
         </footer>
       </main>
@@ -397,36 +466,38 @@
       <aside class="hidden lg:block lg:col-span-3">
         <div class="sticky top-24 space-y-4">
           <div class="ai-search-wrap">
-            <i class="fas fa-magnifying-glass text-gray-400 text-lg"></i>
-            <input id="search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 outline-none bg-transparent text-sm" />
+            <i class="fas fa-magnifying-glass text-gray-400 text-base"></i>
+            <input id="search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 min-w-0 outline-none bg-transparent text-sm" />
             <button type="button" class="ai-badge" onclick="focusSearch()" aria-label="Ağıllı axtarış">
-              <i class="fas fa-wand-magic-sparkles text-emerald-400"></i>
+              <i class="fas fa-wand-magic-sparkles text-emerald-400 text-[10px]"></i>
               <span id="smart-search-label">Ağıllı Axtarış</span>
             </button>
           </div>
 
-          <div class="bg-white rounded-[28px] border border-gray-200 p-6 shadow-premium">
-            <h3 class="font-extrabold text-[19px] mb-5" data-az="Məkan məlumatı" data-en="Venue information">Məkan məlumatı</h3>
-            <div class="space-y-6">
+          <div class="bg-white rounded-[28px] border border-gray-200 p-5 sm:p-6 shadow-premium">
+            <h3 class="font-extrabold text-[17px] sm:text-[18px] mb-5" data-az="Məkan məlumatı" data-en="Venue information">Məkan məlumatı</h3>
+            <div class="space-y-5">
               <div class="flex items-start gap-4">
-                <div class="w-14 h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-lg text-gray-600"><i class="far fa-clock"></i></div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600"><i class="far fa-clock"></i></div>
                 <div>
-                  <p class="text-gray-400 text-sm" data-az="İş saatları" data-en="Working hours">İş saatları</p>
-                  <p id="working-hours" class="font-semibold text-[18px]">07:00 - 24:00</p>
+                  <p class="text-gray-400 text-xs sm:text-sm" data-az="İş saatları" data-en="Working hours">İş saatları</p>
+                  <p id="working-hours" class="font-semibold text-[15px] sm:text-[17px]">07:00 - 24:00</p>
                 </div>
               </div>
+
               <div class="flex items-start gap-4">
-                <div class="w-14 h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-lg text-gray-600"><i class="fas fa-location-dot"></i></div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600"><i class="fas fa-location-dot"></i></div>
                 <div>
-                  <p class="text-gray-400 text-sm" data-az="Ünvan" data-en="Address">Ünvan</p>
-                  <p id="venue-address" class="font-semibold text-[16px] leading-snug">Address not set</p>
+                  <p class="text-gray-400 text-xs sm:text-sm" data-az="Ünvan" data-en="Address">Ünvan</p>
+                  <p id="venue-address" class="font-semibold text-[14px] sm:text-[15px] leading-snug">Address not set</p>
                 </div>
               </div>
+
               <div class="flex items-start gap-4">
-                <div class="w-14 h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-lg text-gray-600"><i class="fas fa-phone"></i></div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600"><i class="fas fa-phone"></i></div>
                 <div>
-                  <p class="text-gray-400 text-sm" data-az="Telefon" data-en="Phone">Telefon</p>
-                  <p id="venue-phone" class="font-semibold text-[16px] leading-snug">-</p>
+                  <p class="text-gray-400 text-xs sm:text-sm" data-az="Telefon" data-en="Phone">Telefon</p>
+                  <p id="venue-phone" class="font-semibold text-[14px] sm:text-[15px] leading-snug">-</p>
                 </div>
               </div>
             </div>
@@ -441,22 +512,22 @@
   <div class="mobile-bottom-bar">
     <button onclick="showMobileCategories()" class="flex flex-col items-center gap-1 text-gray-600">
       <i class="fas fa-list text-lg"></i>
-      <span class="text-xs font-semibold" data-az="Kateqoriya" data-en="Categories">Kateqoriya</span>
+      <span class="text-[11px] font-semibold" data-az="Kateqoriya" data-en="Categories">Kateqoriya</span>
     </button>
     <button onclick="showMobileSearch()" class="flex flex-col items-center gap-1 text-gray-600">
       <i class="fas fa-wand-magic-sparkles text-lg"></i>
-      <span class="text-xs font-semibold" data-az="Axtarış" data-en="Search">Axtarış</span>
+      <span class="text-[11px] font-semibold" data-az="Axtarış" data-en="Search">Axtarış</span>
     </button>
     <button onclick="showFavoritesOnly()" class="flex flex-col items-center gap-1 text-gray-600">
       <i class="fas fa-heart text-lg"></i>
-      <span class="text-xs font-semibold" data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
+      <span class="text-[11px] font-semibold" data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
     </button>
   </div>
 
   <div id="mobile-categories-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-categories-modal')">
     <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[28px] p-6 max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between mb-5">
-        <h3 class="font-extrabold text-xl" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</h3>
+        <h3 class="font-extrabold text-lg sm:text-xl" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</h3>
         <button onclick="closeMobileModal(null, 'mobile-categories-modal')" class="w-10 h-10 rounded-full bg-gray-100"><i class="fas fa-times"></i></button>
       </div>
       <div id="mobile-categories-list" class="space-y-2"></div>
@@ -466,10 +537,10 @@
   <div id="mobile-search-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-search-modal')">
     <div class="absolute top-20 left-4 right-4 bg-white rounded-[24px] p-4 shadow-premium" onclick="event.stopPropagation()">
       <div class="ai-search-wrap">
-        <i class="fas fa-magnifying-glass text-gray-400 text-lg"></i>
-        <input id="mobile-search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 outline-none bg-transparent text-sm" />
+        <i class="fas fa-magnifying-glass text-gray-400 text-base"></i>
+        <input id="mobile-search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 min-w-0 outline-none bg-transparent text-sm" />
         <button type="button" class="ai-badge" onclick="focusMobileSearch()">
-          <i class="fas fa-wand-magic-sparkles text-emerald-400"></i>
+          <i class="fas fa-wand-magic-sparkles text-emerald-400 text-[10px]"></i>
           <span>Ağıllı</span>
         </button>
       </div>
@@ -634,6 +705,7 @@
           else if (sim >= .88) score += 12;
           else if (sim >= .78) score += 6;
         });
+
         [nameAz, nameEn].forEach(field => {
           tokenize(field).forEach(tok => {
             const sim = fuzzySimilarity(qt, tok);
@@ -722,8 +794,8 @@
           <img src="${img}" alt="Banner image">
           <div class="hero-overlay"></div>
           <div class="hero-copy">
-            <div class="text-4xl md:text-6xl font-extrabold leading-tight">${escapeHtml(title)}</div>
-            <div class="text-lg md:text-xl text-white/90 mt-2">${escapeHtml(sub)}</div>
+            <div class="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold leading-tight">${escapeHtml(title)}</div>
+            <div class="text-sm sm:text-base md:text-lg text-white/90 mt-1.5">${escapeHtml(sub)}</div>
           </div>
         </div>
       `;
@@ -742,20 +814,20 @@
       const rec = getRecommendedProducts();
       wrap.innerHTML = `
         <div class="flex items-center justify-between mb-4 gap-3">
-          <h3 class="text-[26px] md:text-[30px] font-extrabold" data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">Tövsiyə olunan yeməklər</h3>
+          <h3 class="text-[20px] sm:text-[24px] md:text-[26px] font-extrabold leading-tight" data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">Tövsiyə olunan yeməklər</h3>
           <div class="flex items-center gap-2">
-            <button onclick="slideRecommended(-1)" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-left"></i></button>
-            <button onclick="slideRecommended(1)" class="w-10 h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-right"></i></button>
+            <button onclick="slideRecommended(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-left text-xs sm:text-sm"></i></button>
+            <button onclick="slideRecommended(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-right text-xs sm:text-sm"></i></button>
           </div>
         </div>
         <div id="recommended-track" class="recommended-track custom-scroll">
           ${rec.map(product => `
             <article class="recommended-card" onclick="openDetail(${Number(product.id)})">
               <img src="${product.images?.[0] || 'https://via.placeholder.com/700x500?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}">
-              <div class="p-4">
-                <h4 class="font-extrabold text-[20px] line-clamp-2">${escapeHtml(getLocalizedProductName(product))}</h4>
-                <p class="mt-1 text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
-                <div class="mt-3 text-[22px] font-extrabold text-amber-700">${product.price} AZN</div>
+              <div class="p-3 sm:p-4">
+                <h4 class="font-extrabold text-[15px] sm:text-[17px] line-clamp-2 leading-snug">${escapeHtml(getLocalizedProductName(product))}</h4>
+                <p class="mt-1 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
+                <div class="mt-2.5 text-[17px] sm:text-[19px] font-extrabold text-amber-700">${product.price} AZN</div>
               </div>
             </article>
           `).join('')}
@@ -799,14 +871,14 @@
 
       desktop.innerHTML = active.map(cat => `
         <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
-          <span class="text-lg">${cat.icon || '🍽️'}</span>
+          <span class="text-base">${cat.icon || '🍽️'}</span>
           <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
         </div>
       `).join('');
 
       mobileModal.innerHTML = active.map(cat => `
         <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)}); closeMobileModal(null,'mobile-categories-modal')">
-          <span class="text-lg">${cat.icon || '🍽️'}</span>
+          <span class="text-base">${cat.icon || '🍽️'}</span>
           <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
         </div>
       `).join('');
@@ -823,21 +895,25 @@
     function updateSectionHeader() {
       const title = document.getElementById('current-category');
       const sub = document.getElementById('current-subcategory');
+
       if (currentFilterMode === 'popular') {
         title.textContent = currentLang === 'az' ? 'Populyar yeməklər' : 'Popular dishes';
         sub.textContent = currentLang === 'az' ? 'Ən çox seçilənlər' : 'Most selected';
         return;
       }
+
       if (currentFilterMode === 'favorites') {
         title.textContent = currentLang === 'az' ? 'Seçilənlər' : 'Favorites';
         sub.textContent = currentLang === 'az' ? 'Bəyəndiyiniz yeməklər' : 'Saved dishes';
         return;
       }
+
       if (currentFilterMode === 'search') {
         title.textContent = currentLang === 'az' ? 'Ağıllı axtarış nəticələri' : 'Smart search results';
         sub.textContent = searchQuery ? `“${searchQuery}”` : '';
         return;
       }
+
       const cat = getCategoryById(currentCategory);
       title.textContent = getLocalizedCategoryName(cat) || 'Menu';
       sub.textContent = currentLang === 'az' ? 'Bütün yeməklər' : 'All dishes';
@@ -860,7 +936,7 @@
       updateSectionHeader();
 
       if (!filtered.length) {
-        container.innerHTML = `<div class="sm:col-span-2 text-center py-14 text-gray-500">${currentLang === 'az' ? 'Məhsul tapılmadı' : 'No dishes found'}</div>`;
+        container.innerHTML = `<div class="sm:col-span-2 text-center py-12 sm:py-14 text-sm sm:text-base text-gray-500">${currentLang === 'az' ? 'Məhsul tapılmadı' : 'No dishes found'}</div>`;
         return;
       }
 
@@ -869,15 +945,15 @@
           <div class="food-card-image">
             <img src="${product.images?.[0] || 'https://via.placeholder.com/900x700?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}">
           </div>
-          <div class="p-5">
+          <div class="p-4 sm:p-5">
             <div class="flex items-start justify-between gap-3">
-              <h3 class="text-[24px] font-extrabold leading-tight">${currentFilterMode === 'search' ? highlightMatch(getLocalizedProductName(product), searchQuery) : escapeHtml(getLocalizedProductName(product))}</h3>
-              <button class="w-10 h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
-                <i class="${favorites.includes(product.id) ? 'fas' : 'far'} fa-heart"></i>
+              <h3 class="text-[18px] sm:text-[20px] font-extrabold leading-tight">${currentFilterMode === 'search' ? highlightMatch(getLocalizedProductName(product), searchQuery) : escapeHtml(getLocalizedProductName(product))}</h3>
+              <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
+                <i class="${favorites.includes(product.id) ? 'fas' : 'far'} fa-heart text-sm"></i>
               </button>
             </div>
-            <p class="mt-2 text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
-            <div class="mt-4 text-[22px] font-extrabold text-amber-700">${product.price} AZN</div>
+            <p class="mt-2 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
+            <div class="mt-3 sm:mt-4 text-[18px] sm:text-[20px] font-extrabold text-amber-700">${product.price} AZN</div>
           </div>
         </article>
       `).join('');
@@ -888,19 +964,23 @@
 
     function initCardObserver() {
       if (cardObserver) cardObserver.disconnect();
+
       cardObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) entry.target.classList.add('in-view');
         });
       }, { threshold: .12 });
+
       document.querySelectorAll('.food-card').forEach(card => cardObserver.observe(card));
     }
 
     function initAutoAdvanceObserver() {
       if (autoCategoryObserver) autoCategoryObserver.disconnect();
       if (currentFilterMode !== 'category') return;
+
       const cards = Array.from(document.querySelectorAll('.food-card'));
       if (!cards.length) return;
+
       const lastCard = cards[cards.length - 1];
       const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
       const currentIndex = active.findIndex(c => Number(c.id) === Number(currentCategory));
@@ -925,31 +1005,33 @@
     function openDetail(productId) {
       const product = products.find(p => Number(p.id) === Number(productId));
       if (!product) return;
+
       const detail = document.getElementById('detail-card');
       detail.innerHTML = `
         <button class="detail-close" onclick="closeDetailModal()"><i class="fas fa-times"></i></button>
         <img class="detail-cover" src="${product.images?.[0] || 'https://via.placeholder.com/1200x900?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}">
-        <div class="p-6 md:p-7">
+        <div class="p-5 sm:p-6 md:p-7">
           <div class="flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <h3 class="text-[26px] md:text-[32px] font-extrabold leading-tight">${escapeHtml(getLocalizedProductName(product))}</h3>
-              <p class="mt-2 text-base text-gray-500">${escapeHtml(getLocalizedProductDesc(product))}</p>
+              <h3 class="text-[22px] sm:text-[24px] md:text-[30px] font-extrabold leading-tight">${escapeHtml(getLocalizedProductName(product))}</h3>
+              <p class="mt-2 text-sm sm:text-base text-gray-500">${escapeHtml(getLocalizedProductDesc(product))}</p>
             </div>
-            <div class="text-[24px] md:text-[30px] font-extrabold text-amber-700">${product.price} AZN</div>
+            <div class="text-[20px] sm:text-[22px] md:text-[28px] font-extrabold text-amber-700">${product.price} AZN</div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
-            <div class="rounded-[22px] border border-gray-200 p-5 bg-gray-50">
-              <div class="font-extrabold text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
-              <p class="text-gray-600 leading-7">${escapeHtml(getLocalized(product.ingredientsAz, product.ingredientsEn) || getLocalizedProductDesc(product) || '-')}</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-5 sm:mt-6">
+            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
+              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
+              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.ingredientsAz, product.ingredientsEn) || getLocalizedProductDesc(product) || '-')}</p>
             </div>
-            <div class="rounded-[22px] border border-gray-200 p-5 bg-gray-50">
-              <div class="font-extrabold text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
-              <p class="text-gray-600 leading-7">${escapeHtml(getLocalized(product.allergensAz, product.allergensEn) || '-')}</p>
+            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
+              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
+              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.allergensAz, product.allergensEn) || '-')}</p>
             </div>
           </div>
         </div>
       `;
+
       document.getElementById('detail-modal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -964,11 +1046,14 @@
       const index = favorites.indexOf(productId);
       if (index > -1) favorites.splice(index, 1);
       else favorites.push(productId);
+
       localStorage.setItem('menu_favorites', JSON.stringify(favorites));
-      if (currentFilterMode === 'favorites') renderProducts();
-      else {
-        button.innerHTML = `<i class="${favorites.includes(productId) ? 'fas' : 'far'} fa-heart"></i>`;
-        button.className = `w-10 h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(productId) ? 'text-red-500' : 'text-gray-500'}`;
+
+      if (currentFilterMode === 'favorites') {
+        renderProducts();
+      } else {
+        button.innerHTML = `<i class="${favorites.includes(productId) ? 'fas' : 'far'} fa-heart text-sm"></i>`;
+        button.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(productId) ? 'text-red-500' : 'text-gray-500'}`;
       }
     }
 
@@ -983,16 +1068,20 @@
     function renderSocials() {
       const container = document.getElementById('social-links');
       let html = '';
+
       if (settings.whatsapp) {
         const num = safeText(settings.whatsapp).replace(/[^\d]/g, '');
-        html += `<a href="https://wa.me/${num}" target="_blank" class="w-14 h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-xl"><i class="fab fa-whatsapp"></i></a>`;
+        html += `<a href="https://wa.me/${num}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-whatsapp"></i></a>`;
       }
+
       if (settings.instagram) {
-        html += `<a href="${settings.instagram}" target="_blank" class="w-14 h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-xl"><i class="fab fa-instagram"></i></a>`;
+        html += `<a href="${settings.instagram}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-instagram"></i></a>`;
       }
+
       if (settings.facebook) {
-        html += `<a href="${settings.facebook}" target="_blank" class="w-14 h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-xl"><i class="fab fa-facebook-f"></i></a>`;
+        html += `<a href="${settings.facebook}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-facebook-f"></i></a>`;
       }
+
       container.innerHTML = html;
     }
 
@@ -1000,16 +1089,18 @@
       document.querySelectorAll('[data-az][data-en]').forEach(el => {
         el.textContent = el.getAttribute(`data-${currentLang}`);
       });
+
       document.getElementById('search-input').placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
       const mobileSearch = document.getElementById('mobile-search-input');
       if (mobileSearch) mobileSearch.placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
+
       document.getElementById('smart-search-label').textContent = currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
     }
 
     function syncSearchInputs() {
       const desktop = document.getElementById('search-input');
       const mobile = document.getElementById('mobile-search-input');
-      desktop.value = searchQuery;
+      if (desktop) desktop.value = searchQuery;
       if (mobile) mobile.value = searchQuery;
     }
 
@@ -1020,6 +1111,7 @@
       syncSearchInputs();
       renderCategoryLists();
       renderProducts();
+
       if (!autoScroll) {
         const section = document.getElementById('products-grid');
         if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1052,12 +1144,14 @@
 
     function focusSearch() {
       const input = document.getElementById('search-input');
+      if (!input) return;
       input.focus();
       input.select();
     }
 
     function focusMobileSearch() {
       const input = document.getElementById('mobile-search-input');
+      if (!input) return;
       input.focus();
       input.select();
     }
