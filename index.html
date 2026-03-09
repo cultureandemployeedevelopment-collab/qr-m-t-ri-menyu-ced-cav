@@ -4,11 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Premium QR Menu</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
   <style>
     :root {
       --bg: #f8f8f5;
@@ -41,7 +43,7 @@
     }
 
     .glass {
-      background: rgba(255,255,255,0.86);
+      background: rgba(255,255,255,0.92);
       backdrop-filter: blur(14px);
     }
 
@@ -57,10 +59,10 @@
       border-radius: 999px;
       padding: 9px 13px;
       white-space: nowrap;
-      transition: .22s ease;
+      transition: .18s ease;
       cursor: pointer;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .category-pill:hover { border-color: #99f6e4; }
@@ -78,10 +80,10 @@
       gap: 12px;
       border-radius: 18px;
       padding: 12px 14px;
-      transition: .2s ease;
+      transition: .18s ease;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .sidebar-link:hover { background: #f0f7f6; }
@@ -89,12 +91,12 @@
     .sidebar-link.active {
       background: #dff2ec;
       color: #0f766e;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .hero {
       position: relative;
-      min-height: 480px;
+      min-height: 460px;
       border-radius: 28px;
       overflow: hidden;
       background: #d4d7dd;
@@ -148,13 +150,7 @@
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
-      animation: pulseGlow 2.2s linear infinite;
       pointer-events: none;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { opacity: .45; }
-      50% { opacity: .95; }
     }
 
     .ai-badge {
@@ -167,7 +163,6 @@
       background: linear-gradient(135deg, #081a32, #112a4b);
       color: white;
       box-shadow: 0 8px 18px rgba(11, 26, 49, 0.2);
-      animation: floatBadge 1.9s ease-in-out infinite;
       cursor: pointer;
       user-select: none;
       font-size: 11px;
@@ -175,11 +170,6 @@
       border: none;
       max-width: 120px;
       white-space: nowrap;
-    }
-
-    @keyframes floatBadge {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-2px); }
     }
 
     .recommended-track {
@@ -201,7 +191,7 @@
       scroll-snap-align: start;
       box-shadow: var(--shadow);
       cursor: pointer;
-      transition: .22s ease;
+      transition: .18s ease;
     }
 
     .recommended-card:hover { transform: translateY(-3px); }
@@ -210,11 +200,9 @@
       width: 100%;
       height: 125px;
       object-fit: cover;
-      transition: transform .4s ease;
       display: block;
+      background: #eef2f6;
     }
-
-    .recommended-card:hover img { transform: scale(1.05); }
 
     .food-card {
       background: white;
@@ -222,16 +210,8 @@
       border-radius: 22px;
       overflow: hidden;
       box-shadow: var(--shadow);
-      transition: transform .22s ease, box-shadow .22s ease;
+      transition: transform .18s ease, box-shadow .18s ease;
       cursor: pointer;
-      transform: translateY(14px);
-      opacity: 0;
-    }
-
-    .food-card.in-view {
-      transform: translateY(0);
-      opacity: 1;
-      transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease;
     }
 
     .food-card:hover {
@@ -249,11 +229,12 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform .5s ease;
+      transition: transform .35s ease;
       display: block;
+      background: #eef2f6;
     }
 
-    .food-card:hover .food-card-image img { transform: scale(1.06); }
+    .food-card:hover .food-card-image img { transform: scale(1.04); }
 
     .detail-modal {
       position: fixed;
@@ -276,7 +257,7 @@
       border-radius: 28px;
       overflow: hidden;
       box-shadow: 0 28px 60px rgba(0,0,0,.24);
-      animation: modalRise .22s ease;
+      animation: modalRise .2s ease;
       position: relative;
     }
 
@@ -326,7 +307,6 @@
     }
 
     .hide-desktop { display: block; }
-
     @media (min-width: 1024px) {
       .hide-desktop { display: none; }
     }
@@ -338,13 +318,45 @@
       overflow: hidden;
     }
 
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: #eef2f6;
+    }
+
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.75), transparent);
+      animation: shimmer 1.1s infinite;
+    }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid #a7f3d0;
+    }
+
     @media (max-width: 1023px) {
-      .hero { min-height: 360px; }
+      .hero { min-height: 340px; }
     }
 
     @media (max-width: 767px) {
       .hero {
-        min-height: 265px;
+        min-height: 245px;
         border-radius: 22px;
       }
 
@@ -361,9 +373,7 @@
         max-width: 165px;
       }
 
-      .recommended-card img {
-        height: 105px;
-      }
+      .recommended-card img { height: 105px; }
 
       .food-card-image { height: 145px; }
 
@@ -393,20 +403,28 @@
 </head>
 <body>
   <header class="sticky top-0 z-40 glass border-b border-gray-100" style="height: var(--header-h);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
         <div id="header-logo" class="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
           <i class="fas fa-utensils text-gray-400"></i>
         </div>
         <div class="min-w-0">
           <h1 id="restaurant-name" class="font-extrabold text-base sm:text-lg text-gray-900 truncate">Yüklənir...</h1>
-          <p id="restaurant-subtitle" class="text-[11px] sm:text-xs text-gray-500 truncate">QR Menyu</p>
+          <p id="restaurant-subtitle" class="text-[11px] sm:text-xs text-gray-500 truncate">QR Menu</p>
         </div>
       </div>
-      <button onclick="toggleLanguage()" class="h-10 sm:h-11 px-3 sm:px-4 border border-gray-200 rounded-2xl bg-white shadow-premium flex items-center gap-2 font-bold text-xs sm:text-sm">
-        <span id="current-lang">AZ</span>
-        <i class="fas fa-chevron-down text-[10px] sm:text-xs text-gray-400"></i>
-      </button>
+
+      <div class="flex items-center gap-2">
+        <div id="live-badge" class="status-pill hidden">
+          <i class="fas fa-bolt"></i>
+          <span>Canlı yeniləndi</span>
+        </div>
+
+        <button onclick="toggleLanguage()" class="h-10 sm:h-11 px-3 sm:px-4 border border-gray-200 rounded-2xl bg-white shadow-premium flex items-center gap-2 font-bold text-xs sm:text-sm">
+          <span id="current-lang">AZ</span>
+          <i class="fas fa-chevron-down text-[10px] sm:text-xs text-gray-400"></i>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -416,18 +434,6 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
       <aside class="hidden lg:block lg:col-span-3">
         <div class="sticky top-24 space-y-4">
-          <div class="bg-[#f8f2dc] border border-[#edd68b] rounded-[26px] p-5 shadow-premium">
-            <div class="flex items-center gap-4">
-              <div class="w-14 h-14 bg-[#f2e6b0] rounded-[18px] flex items-center justify-center text-[#d97706] text-xl">
-                <i class="fas fa-location-dot"></i>
-              </div>
-              <div>
-                <p class="font-bold text-[16px] leading-tight" data-az="Buradasınız" data-en="You are here">Buradasınız</p>
-                <p class="text-sm text-gray-500" id="table-indicator-text">QR Menu</p>
-              </div>
-            </div>
-          </div>
-
           <div class="sidebar-link" onclick="filterPopular()">
             <i class="fas fa-star text-amber-500 text-base"></i>
             <span data-az="Populyar" data-en="Popular">Populyar</span>
@@ -439,7 +445,7 @@
           </div>
 
           <p class="text-[11px] text-gray-400 uppercase tracking-wider font-extrabold px-4 pt-2" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</p>
-          <nav id="categories-list" class="space-y-2 custom-scroll max-h-[60vh] overflow-y-auto"></nav>
+          <nav id="categories-list" class="space-y-2 custom-scroll max-h-[70vh] overflow-y-auto"></nav>
         </div>
       </aside>
 
@@ -455,6 +461,7 @@
             <h2 id="current-category" class="text-[24px] sm:text-[28px] md:text-[32px] font-extrabold text-gray-900 leading-tight">Menu</h2>
             <p id="current-subcategory" class="text-xs sm:text-sm text-gray-400 mt-1">All products</p>
           </div>
+
           <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"></div>
         </section>
 
@@ -476,9 +483,12 @@
 
           <div class="bg-white rounded-[28px] border border-gray-200 p-5 sm:p-6 shadow-premium">
             <h3 class="font-extrabold text-[17px] sm:text-[18px] mb-5" data-az="Məkan məlumatı" data-en="Venue information">Məkan məlumatı</h3>
+
             <div class="space-y-5">
               <div class="flex items-start gap-4">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600"><i class="far fa-clock"></i></div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
+                  <i class="far fa-clock"></i>
+                </div>
                 <div>
                   <p class="text-gray-400 text-xs sm:text-sm" data-az="İş saatları" data-en="Working hours">İş saatları</p>
                   <p id="working-hours" class="font-semibold text-[15px] sm:text-[17px]">07:00 - 24:00</p>
@@ -486,7 +496,9 @@
               </div>
 
               <div class="flex items-start gap-4">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600"><i class="fas fa-location-dot"></i></div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
+                  <i class="fas fa-location-dot"></i>
+                </div>
                 <div>
                   <p class="text-gray-400 text-xs sm:text-sm" data-az="Ünvan" data-en="Address">Ünvan</p>
                   <p id="venue-address" class="font-semibold text-[14px] sm:text-[15px] leading-snug">Address not set</p>
@@ -494,7 +506,9 @@
               </div>
 
               <div class="flex items-start gap-4">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600"><i class="fas fa-phone"></i></div>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
+                  <i class="fas fa-phone"></i>
+                </div>
                 <div>
                   <p class="text-gray-400 text-xs sm:text-sm" data-az="Telefon" data-en="Phone">Telefon</p>
                   <p id="venue-phone" class="font-semibold text-[14px] sm:text-[15px] leading-snug">-</p>
@@ -514,10 +528,12 @@
       <i class="fas fa-list text-lg"></i>
       <span class="text-[11px] font-semibold" data-az="Kateqoriya" data-en="Categories">Kateqoriya</span>
     </button>
+
     <button onclick="showMobileSearch()" class="flex flex-col items-center gap-1 text-gray-600">
       <i class="fas fa-wand-magic-sparkles text-lg"></i>
       <span class="text-[11px] font-semibold" data-az="Axtarış" data-en="Search">Axtarış</span>
     </button>
+
     <button onclick="showFavoritesOnly()" class="flex flex-col items-center gap-1 text-gray-600">
       <i class="fas fa-heart text-lg"></i>
       <span class="text-[11px] font-semibold" data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
@@ -528,7 +544,9 @@
     <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[28px] p-6 max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between mb-5">
         <h3 class="font-extrabold text-lg sm:text-xl" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</h3>
-        <button onclick="closeMobileModal(null, 'mobile-categories-modal')" class="w-10 h-10 rounded-full bg-gray-100"><i class="fas fa-times"></i></button>
+        <button onclick="closeMobileModal(null, 'mobile-categories-modal')" class="w-10 h-10 rounded-full bg-gray-100">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
       <div id="mobile-categories-list" class="space-y-2"></div>
     </div>
@@ -553,8 +571,11 @@
 
   <script>
     const CONFIG = {
-      GAS_URL: 'https://script.google.com/macros/s/AKfycbx5QW5p7ZZ8ehbBjFe4Z5NOI0UiZuWxyQFSwNECo4xc_R7Jzb5ozzSCcRJmCANh3lxjZA/exec',
-      RECOMMENDED_SLIDE_INTERVAL: 3200
+      GAS_URL: 'https://script.google.com/macros/s/AKfycbzQoJbDDNt0DWZocTM2H2-9vAgZZahGTGi84zNn7b1Onr8ZssffxNtjLfmwO7Hiw5kQgA/exec',
+      RECOMMENDED_SLIDE_INTERVAL: 3200,
+      POLL_INTERVAL: 7000,
+      CACHE_KEY: 'premium_qr_menu_cache_v5',
+      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v5'
     };
 
     let currentLang = 'az';
@@ -568,8 +589,11 @@
     let searchQuery = '';
     let currentRecommendedIndex = 0;
     let recommendedTimer = null;
+    let pollTimer = null;
     let cardObserver = null;
-    let autoCategoryObserver = null;
+    let lastObservedCategory = null;
+    let lastScrollY = window.scrollY;
+    let isInitialFastRenderDone = false;
 
     const fallbackData = {
       categories: [
@@ -743,22 +767,135 @@
       }
     }
 
-    async function loadData() {
+    function getCachePayload() {
       try {
-        const res = await fetch(CONFIG.GAS_URL + '?action=getMenu');
-        const data = await res.json();
-        categories = Array.isArray(data.categories) && data.categories.length ? data.categories : fallbackData.categories;
-        products = Array.isArray(data.products) && data.products.length ? data.products : fallbackData.products;
-        settings = Object.keys(data.settings || {}).length ? data.settings : fallbackData.settings;
-      } catch (e) {
-        categories = fallbackData.categories;
-        products = fallbackData.products;
-        settings = fallbackData.settings;
+        const cached = JSON.parse(localStorage.getItem(CONFIG.CACHE_KEY) || 'null');
+        return cached;
+      } catch {
+        return null;
       }
+    }
+
+    function setCachePayload(payload) {
+      localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(payload));
+      localStorage.setItem(CONFIG.CACHE_TIME_KEY, String(Date.now()));
+    }
+
+    function normalizeIncomingData(data) {
+      return {
+        categories: Array.isArray(data?.categories) && data.categories.length ? data.categories : fallbackData.categories,
+        products: Array.isArray(data?.products) && data.products.length ? data.products : fallbackData.products,
+        settings: data?.settings && Object.keys(data.settings).length ? data.settings : fallbackData.settings
+      };
+    }
+
+    function sameData(a, b) {
+      return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    function preloadCriticalImages() {
+      const imgs = [];
+      if (settings.heroImage) imgs.push(settings.heroImage);
+
+      const rec = getRecommendedProducts().slice(0, 4);
+      rec.forEach(p => {
+        if (p.images?.[0]) imgs.push(p.images[0]);
+      });
+
+      getCurrentFilteredProducts().slice(0, 6).forEach(p => {
+        if (p.images?.[0]) imgs.push(p.images[0]);
+      });
+
+      [...new Set(imgs)].forEach(src => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      });
+    }
+
+    function fastInitialRender() {
+      const cached = getCachePayload();
+      const initial = normalizeIncomingData(cached || fallbackData);
+
+      categories = initial.categories;
+      products = initial.products;
+      settings = initial.settings;
 
       const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-      if (active.length) currentCategory = Number(active[0].id);
+      if (!currentCategory && active.length) currentCategory = Number(active[0].id);
+
       renderAll();
+      preloadCriticalImages();
+      isInitialFastRenderDone = true;
+    }
+
+    async function fetchMenuData(showLiveBadge = false) {
+      try {
+        const res = await fetch(`${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        const normalized = normalizeIncomingData(data);
+        const currentData = { categories, products, settings };
+
+        if (!sameData(normalized, currentData)) {
+          categories = normalized.categories;
+          products = normalized.products;
+          settings = normalized.settings;
+
+          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+          if (!active.some(c => Number(c.id) === Number(currentCategory)) && active.length) {
+            currentCategory = Number(active[0].id);
+          }
+
+          setCachePayload(normalized);
+          renderAll();
+          preloadCriticalImages();
+
+          if (showLiveBadge) flashLiveBadge();
+        } else if (!isInitialFastRenderDone) {
+          renderAll();
+          preloadCriticalImages();
+        }
+      } catch (e) {
+        if (!isInitialFastRenderDone) {
+          fastInitialRender();
+        }
+      }
+    }
+
+    function startPolling() {
+      clearInterval(pollTimer);
+      pollTimer = setInterval(() => fetchMenuData(true), CONFIG.POLL_INTERVAL);
+    }
+
+    function flashLiveBadge() {
+      const badge = document.getElementById('live-badge');
+      badge.classList.remove('hidden');
+      clearTimeout(badge._timer);
+      badge._timer = setTimeout(() => {
+        badge.classList.add('hidden');
+      }, 2200);
+    }
+
+    function renderSkeletonCards() {
+      const container = document.getElementById('products-grid');
+      container.innerHTML = Array.from({ length: 6 }).map(() => `
+        <div class="bg-white rounded-[22px] overflow-hidden border border-gray-200 shadow-premium">
+          <div class="skeleton h-[165px]"></div>
+          <div class="p-4 sm:p-5">
+            <div class="skeleton h-5 rounded-lg mb-3"></div>
+            <div class="skeleton h-4 rounded-lg mb-2"></div>
+            <div class="skeleton h-4 rounded-lg w-2/3 mb-4"></div>
+            <div class="skeleton h-6 rounded-lg w-24"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadData() {
+      renderSkeletonCards();
+      fastInitialRender();
+      fetchMenuData(false);
+      startPolling();
     }
 
     function renderAll() {
@@ -778,8 +915,11 @@
       document.getElementById('restaurant-name').textContent = getLocalized(settings.nameAz, settings.nameEn) || 'Restaurant';
       document.getElementById('restaurant-subtitle').textContent = settings.nameAz || settings.nameEn || 'QR Menu';
       document.getElementById('current-lang').textContent = currentLang.toUpperCase();
+
       if (settings.logo) {
-        document.getElementById('header-logo').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-contain">`;
+        document.getElementById('header-logo').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-contain" loading="eager" decoding="async" alt="Logo">`;
+      } else {
+        document.getElementById('header-logo').innerHTML = `<i class="fas fa-utensils text-gray-400"></i>`;
       }
     }
 
@@ -791,7 +931,7 @@
 
       hero.innerHTML = `
         <div class="hero shadow-premium">
-          <img src="${img}" alt="Banner image">
+          <img src="${img}" alt="Banner image" loading="eager" fetchpriority="high" decoding="async">
           <div class="hero-overlay"></div>
           <div class="hero-copy">
             <div class="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold leading-tight">${escapeHtml(title)}</div>
@@ -804,6 +944,7 @@
     function getRecommendedProducts() {
       let recommendedIds = [];
       try { recommendedIds = JSON.parse(settings.recommendedIds || '[]'); } catch { recommendedIds = []; }
+
       let items = products.filter(p => recommendedIds.includes(p.id) || recommendedIds.includes(String(p.id)));
       if (!items.length) items = products.filter(p => p.recommended || p.popular).slice(0, 10);
       return items.filter(p => p.available !== false);
@@ -812,18 +953,30 @@
     function renderRecommendedSection() {
       const wrap = document.getElementById('recommended-section');
       const rec = getRecommendedProducts();
+
       wrap.innerHTML = `
         <div class="flex items-center justify-between mb-4 gap-3">
           <h3 class="text-[20px] sm:text-[24px] md:text-[26px] font-extrabold leading-tight" data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">Tövsiyə olunan yeməklər</h3>
           <div class="flex items-center gap-2">
-            <button onclick="slideRecommended(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-left text-xs sm:text-sm"></i></button>
-            <button onclick="slideRecommended(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-right text-xs sm:text-sm"></i></button>
+            <button onclick="slideRecommended(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-left text-xs sm:text-sm"></i>
+            </button>
+            <button onclick="slideRecommended(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-right text-xs sm:text-sm"></i>
+            </button>
           </div>
         </div>
+
         <div id="recommended-track" class="recommended-track custom-scroll">
-          ${rec.map(product => `
+          ${rec.map((product, index) => `
             <article class="recommended-card" onclick="openDetail(${Number(product.id)})">
-              <img src="${product.images?.[0] || 'https://via.placeholder.com/700x500?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}">
+              <img
+                src="${product.images?.[0] || 'https://via.placeholder.com/700x500?text=Food'}"
+                alt="${escapeHtml(getLocalizedProductName(product))}"
+                loading="${index < 3 ? 'eager' : 'lazy'}"
+                fetchpriority="${index < 2 ? 'high' : 'auto'}"
+                decoding="async"
+              >
               <div class="p-3 sm:p-4">
                 <h4 class="font-extrabold text-[15px] sm:text-[17px] line-clamp-2 leading-snug">${escapeHtml(getLocalizedProductName(product))}</h4>
                 <p class="mt-1 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
@@ -840,10 +993,16 @@
       if (!track) return;
       const cards = track.querySelectorAll('.recommended-card');
       if (!cards.length) return;
+
       currentRecommendedIndex += direction;
       if (currentRecommendedIndex < 0) currentRecommendedIndex = cards.length - 1;
       if (currentRecommendedIndex >= cards.length) currentRecommendedIndex = 0;
-      track.scrollTo({ left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+
+      track.scrollTo({
+        left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft,
+        behavior: 'smooth'
+      });
+
       restartRecommendedAutoplay();
     }
 
@@ -854,8 +1013,12 @@
         if (!track) return;
         const cards = track.querySelectorAll('.recommended-card');
         if (cards.length < 2) return;
+
         currentRecommendedIndex = (currentRecommendedIndex + 1) % cards.length;
-        track.scrollTo({ left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+        track.scrollTo({
+          left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft,
+          behavior: 'smooth'
+        });
       }, CONFIG.RECOMMENDED_SLIDE_INTERVAL);
     }
 
@@ -864,7 +1027,10 @@
     }
 
     function renderCategoryLists() {
-      const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+      const active = categories
+        .filter(c => c.active !== false)
+        .sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+
       const desktop = document.getElementById('categories-list');
       const mobileModal = document.getElementById('mobile-categories-list');
       const mobileSlider = document.getElementById('mobile-category-slider');
@@ -919,8 +1085,7 @@
       sub.textContent = currentLang === 'az' ? 'Bütün yeməklər' : 'All dishes';
     }
 
-    function renderProducts() {
-      const container = document.getElementById('products-grid');
+    function getCurrentFilteredProducts() {
       let filtered = products.filter(p => p.available !== false);
 
       if (currentFilterMode === 'popular') {
@@ -933,6 +1098,12 @@
         filtered = filtered.filter(p => Number(p.categoryId) === Number(currentCategory));
       }
 
+      return filtered;
+    }
+
+    function renderProducts() {
+      const container = document.getElementById('products-grid');
+      const filtered = getCurrentFilteredProducts();
       updateSectionHeader();
 
       if (!filtered.length) {
@@ -940,18 +1111,27 @@
         return;
       }
 
-      container.innerHTML = filtered.map(product => `
+      container.innerHTML = filtered.map((product, index) => `
         <article class="food-card" data-category-id="${Number(product.categoryId)}" onclick="openDetail(${Number(product.id)})">
           <div class="food-card-image">
-            <img src="${product.images?.[0] || 'https://via.placeholder.com/900x700?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}">
+            <img
+              src="${product.images?.[0] || 'https://via.placeholder.com/900x700?text=Food'}"
+              alt="${escapeHtml(getLocalizedProductName(product))}"
+              loading="${index < 4 ? 'eager' : 'lazy'}"
+              fetchpriority="${index < 2 ? 'high' : 'auto'}"
+              decoding="async"
+            >
           </div>
+
           <div class="p-4 sm:p-5">
             <div class="flex items-start justify-between gap-3">
               <h3 class="text-[18px] sm:text-[20px] font-extrabold leading-tight">${currentFilterMode === 'search' ? highlightMatch(getLocalizedProductName(product), searchQuery) : escapeHtml(getLocalizedProductName(product))}</h3>
+
               <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
                 <i class="${favorites.includes(product.id) ? 'fas' : 'far'} fa-heart text-sm"></i>
               </button>
             </div>
+
             <p class="mt-2 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
             <div class="mt-3 sm:mt-4 text-[18px] sm:text-[20px] font-extrabold text-amber-700">${product.price} AZN</div>
           </div>
@@ -959,7 +1139,7 @@
       `).join('');
 
       initCardObserver();
-      initAutoAdvanceObserver();
+      startScrollCategorySync();
     }
 
     function initCardObserver() {
@@ -967,39 +1147,53 @@
 
       cardObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('in-view');
+          if (!entry.isIntersecting) return;
+          const img = entry.target.querySelector('img[loading="lazy"]');
+          if (img) img.loading = 'eager';
+          cardObserver.unobserve(entry.target);
         });
-      }, { threshold: .12 });
+      }, { rootMargin: '250px 0px' });
 
       document.querySelectorAll('.food-card').forEach(card => cardObserver.observe(card));
     }
 
-    function initAutoAdvanceObserver() {
-      if (autoCategoryObserver) autoCategoryObserver.disconnect();
+    function startScrollCategorySync() {
+      lastObservedCategory = currentCategory;
+    }
+
+    function updateCategoryByScroll() {
       if (currentFilterMode !== 'category') return;
 
-      const cards = Array.from(document.querySelectorAll('.food-card'));
+      const cards = Array.from(document.querySelectorAll('.food-card[data-category-id]'));
       if (!cards.length) return;
 
-      const lastCard = cards[cards.length - 1];
-      const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-      const currentIndex = active.findIndex(c => Number(c.id) === Number(currentCategory));
-      const nextCategory = active[currentIndex + 1];
-      if (!nextCategory) return;
+      const triggerY = window.innerHeight * 0.36;
+      let activeCard = null;
 
-      autoCategoryObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              if (currentFilterMode === 'category' && Number(currentCategory) === Number(lastCard.dataset.categoryId)) {
-                selectCategory(Number(nextCategory.id), true);
-              }
-            }, 320);
-          }
-        });
-      }, { threshold: .92 });
+      for (const card of cards) {
+        const rect = card.getBoundingClientRect();
+        if (rect.top <= triggerY && rect.bottom >= triggerY) {
+          activeCard = card;
+          break;
+        }
+      }
 
-      autoCategoryObserver.observe(lastCard);
+      if (!activeCard) {
+        const sorted = cards
+          .map(card => ({ card, dist: Math.abs(card.getBoundingClientRect().top - triggerY) }))
+          .sort((a, b) => a.dist - b.dist);
+
+        activeCard = sorted[0]?.card || null;
+      }
+
+      if (!activeCard) return;
+
+      const newCategory = Number(activeCard.dataset.categoryId);
+      if (newCategory && newCategory !== lastObservedCategory) {
+        lastObservedCategory = newCategory;
+        currentCategory = newCategory;
+        renderCategoryLists();
+      }
     }
 
     function openDetail(productId) {
@@ -1008,8 +1202,12 @@
 
       const detail = document.getElementById('detail-card');
       detail.innerHTML = `
-        <button class="detail-close" onclick="closeDetailModal()"><i class="fas fa-times"></i></button>
-        <img class="detail-cover" src="${product.images?.[0] || 'https://via.placeholder.com/1200x900?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}">
+        <button class="detail-close" onclick="closeDetailModal()">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <img class="detail-cover" src="${product.images?.[0] || 'https://via.placeholder.com/1200x900?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}" loading="eager" fetchpriority="high" decoding="async">
+
         <div class="p-5 sm:p-6 md:p-7">
           <div class="flex items-start justify-between gap-4 flex-wrap">
             <div>
@@ -1024,6 +1222,7 @@
               <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
               <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.ingredientsAz, product.ingredientsEn) || getLocalizedProductDesc(product) || '-')}</p>
             </div>
+
             <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
               <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
               <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.allergensAz, product.allergensEn) || '-')}</p>
@@ -1061,8 +1260,6 @@
       document.getElementById('working-hours').textContent = settings.workWeekday || '07:00 - 24:00';
       document.getElementById('venue-address').textContent = getLocalized(settings.addressAz, settings.addressEn) || 'Address not set';
       document.getElementById('venue-phone').textContent = settings.phone || '-';
-      const table = new URLSearchParams(window.location.search).get('table');
-      document.getElementById('table-indicator-text').textContent = table ? `Table ${table}` : 'QR Menu';
     }
 
     function renderSocials() {
@@ -1095,6 +1292,8 @@
       if (mobileSearch) mobileSearch.placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
 
       document.getElementById('smart-search-label').textContent = currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
+      const badge = document.querySelector('#live-badge span');
+      if (badge) badge.textContent = currentLang === 'az' ? 'Canlı yeniləndi' : 'Live updated';
     }
 
     function syncSearchInputs() {
@@ -1106,6 +1305,7 @@
 
     function selectCategory(categoryId, autoScroll = false) {
       currentCategory = Number(categoryId);
+      lastObservedCategory = currentCategory;
       currentFilterMode = 'category';
       searchQuery = '';
       syncSearchInputs();
@@ -1184,6 +1384,19 @@
         closeMobileModal(null, 'mobile-categories-modal');
         closeMobileModal(null, 'mobile-search-modal');
       }
+    });
+
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+      if (Math.abs(currentY - lastScrollY) > 8) {
+        updateCategoryByScroll();
+        lastScrollY = currentY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('focus', () => fetchMenuData(true));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') fetchMenuData(true);
     });
 
     document.addEventListener('DOMContentLoaded', loadData);
