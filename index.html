@@ -224,14 +224,6 @@
       box-shadow: var(--shadow);
       transition: transform .22s ease, box-shadow .22s ease;
       cursor: pointer;
-      transform: translateY(14px);
-      opacity: 0;
-    }
-
-    .food-card.in-view {
-      transform: translateY(0);
-      opacity: 1;
-      transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease;
     }
 
     .food-card:hover {
@@ -379,66 +371,26 @@
         max-width: 86px;
       }
 
-      .ai-badge span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
       .category-pill {
         font-size: 11px;
         padding: 8px 11px;
       }
     }
 
-    /* Skeleton loading */
-    .skeleton {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    /* Loading shimmer */
+    .shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
       background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      border-radius: 12px;
+      animation: shimmer 1.5s infinite;
     }
 
-    @keyframes loading {
+    @keyframes shimmer {
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
-    }
-
-    .skeleton-text {
-      height: 16px;
-      margin-bottom: 8px;
-    }
-
-    .skeleton-title {
-      height: 24px;
-      width: 60%;
-      margin-bottom: 12px;
-    }
-
-    /* Lazy load blur effect */
-    .blur-load {
-      background-size: cover;
-      background-position: center;
-    }
-
-    .blur-load.loaded > img {
-      opacity: 1;
-    }
-
-    .blur-load > img {
-      opacity: 0;
-      transition: opacity 200ms ease-in-out;
     }
   </style>
 </head>
 <body>
-  <!-- Loading State -->
-  <div id="loading-screen" class="fixed inset-0 bg-[#f8f8f5] z-[200] flex items-center justify-center transition-opacity duration-300">
-    <div class="text-center">
-      <div class="w-16 h-16 border-4 border-[#0f766e] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-gray-600 font-medium">Yüklənir...</p>
-    </div>
-  </div>
-
   <header class="sticky top-0 z-40 glass border-b border-gray-100" style="height: var(--header-h);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
       <div class="flex items-center gap-3 min-w-0">
@@ -459,11 +411,10 @@
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
     <section id="hero-section" class="mb-5 sm:mb-6">
-      <div class="hero shadow-premium skeleton" style="min-height: 265px;">
+      <div class="hero shadow-premium shimmer" style="min-height: 265px;">
         <div class="hero-overlay"></div>
         <div class="hero-copy">
-          <div class="skeleton skeleton-title bg-white/20"></div>
-          <div class="skeleton skeleton-text w-1/2 bg-white/20"></div>
+          <div class="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold leading-tight">Yüklənir...</div>
         </div>
       </div>
     </section>
@@ -495,9 +446,9 @@
 
           <p class="text-[11px] text-gray-400 uppercase tracking-wider font-extrabold px-4 pt-2" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</p>
           <nav id="categories-list" class="space-y-2 custom-scroll max-h-[60vh] overflow-y-auto">
-            <div class="sidebar-link skeleton h-12"></div>
-            <div class="sidebar-link skeleton h-12"></div>
-            <div class="sidebar-link skeleton h-12"></div>
+            <div class="sidebar-link shimmer h-12 rounded-[18px]"></div>
+            <div class="sidebar-link shimmer h-12 rounded-[18px]"></div>
+            <div class="sidebar-link shimmer h-12 rounded-[18px]"></div>
           </nav>
         </div>
       </aside>
@@ -505,36 +456,36 @@
       <main class="lg:col-span-6 space-y-5 sm:space-y-6">
         <div class="hide-desktop overflow-x-auto custom-scroll">
           <div id="mobile-category-slider" class="flex gap-2 min-w-max">
-            <div class="category-pill skeleton w-24 h-10"></div>
-            <div class="category-pill skeleton w-28 h-10"></div>
-            <div class="category-pill skeleton w-20 h-10"></div>
+            <div class="category-pill shimmer w-24 h-10 rounded-full"></div>
+            <div class="category-pill shimmer w-28 h-10 rounded-full"></div>
+            <div class="category-pill shimmer w-20 h-10 rounded-full"></div>
           </div>
         </div>
 
         <section id="recommended-section" class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-5 shadow-premium">
           <div class="flex items-center justify-between mb-4 gap-3">
-            <div class="skeleton h-8 w-48"></div>
+            <div class="shimmer h-8 w-48 rounded-lg"></div>
             <div class="flex gap-2">
-              <div class="skeleton w-10 h-10 rounded-full"></div>
-              <div class="skeleton w-10 h-10 rounded-full"></div>
+              <div class="shimmer w-10 h-10 rounded-full"></div>
+              <div class="shimmer w-10 h-10 rounded-full"></div>
             </div>
           </div>
           <div class="flex gap-4">
-            <div class="skeleton w-40 h-32 rounded-2xl"></div>
-            <div class="skeleton w-40 h-32 rounded-2xl"></div>
+            <div class="shimmer w-40 h-32 rounded-2xl"></div>
+            <div class="shimmer w-40 h-32 rounded-2xl"></div>
           </div>
         </section>
 
         <section class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-6 shadow-premium">
           <div class="mb-4 sm:mb-5">
-            <div class="skeleton h-8 w-32 mb-2"></div>
-            <div class="skeleton h-4 w-24"></div>
+            <div class="shimmer h-8 w-32 mb-2 rounded-lg"></div>
+            <div class="shimmer h-4 w-24 rounded"></div>
           </div>
           <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-            <div class="food-card skeleton h-64"></div>
-            <div class="food-card skeleton h-64"></div>
-            <div class="food-card skeleton h-64"></div>
-            <div class="food-card skeleton h-64"></div>
+            <div class="food-card shimmer h-64 rounded-[22px]"></div>
+            <div class="food-card shimmer h-64 rounded-[22px]"></div>
+            <div class="food-card shimmer h-64 rounded-[22px]"></div>
+            <div class="food-card shimmer h-64 rounded-[22px]"></div>
           </div>
         </section>
 
@@ -632,61 +583,117 @@
   </div>
 
   <script>
+    // ==========================================
+    // CONFIG - BURAYA ÖZ URL-NİZİ YAZIN
+    // ==========================================
     const CONFIG = {
+      // Google Apps Script Web App URL
       GAS_URL: 'https://script.google.com/macros/s/AKfycbxvkYs_MLWIH3WYYymL_wWjAGN7VmosXIcJ2pnPE6xr3HF55kLgmq9Wz3DhQzO9ygXUcA/exec',
-      CACHE_KEY: 'menu_cache_v2',
+      
+      // Cache açarları
+      CACHE_KEY: 'qr_menu_data_v1',
       CACHE_TIME: 5 * 60 * 1000, // 5 dəqiqə
-      RECOMMENDED_SLIDE_INTERVAL: 3200,
-      REFRESH_INTERVAL: 30 * 1000 // 30 saniyədə bir yenilə
+      
+      // Avtomatik yeniləmə
+      REFRESH_INTERVAL: 30 * 1000 // 30 saniyə
     };
 
-    let currentLang = 'az';
-    let categories = [];
-    let products = [];
-    let settings = {};
-    let favorites = JSON.parse(localStorage.getItem('menu_favorites') || '[]');
-    let lastFetch = 0;
-    let isLoading = false;
-
-    let currentCategory = null;
-    let currentFilterMode = 'category';
-    let searchQuery = '';
-    let currentRecommendedIndex = 0;
-    let recommendedTimer = null;
-    let cardObserver = null;
-    let scrollObserver = null;
-    let refreshTimer = null;
-    let searchDebounceTimer = null;
-
-    // Fallback data - dərhal göstərmək üçün
-    const fallbackData = {
+    // ==========================================
+    // FALLBACK DATA - Dərhal göstərmək üçün
+    // ==========================================
+    const FALLBACK_DATA = {
       categories: [
-        { id: 1, nameAz: 'Pizza', nameEn: 'Pizza', icon: '🍕', active: true, sortOrder: 1 },
+        { id: 1, nameAz: 'Əsas Yeməklər', nameEn: 'Main Dishes', icon: '🍽️', active: true, sortOrder: 1 },
         { id: 2, nameAz: 'Salatlar', nameEn: 'Salads', icon: '🥗', active: true, sortOrder: 2 },
         { id: 3, nameAz: 'İçkilər', nameEn: 'Drinks', icon: '🥤', active: true, sortOrder: 3 },
         { id: 4, nameAz: 'Desertlər', nameEn: 'Desserts', icon: '🍰', active: true, sortOrder: 4 }
       ],
       products: [
-        { id: 11, categoryId: 1, nameAz: 'Margarita pizza', nameEn: 'Margherita Pizza', descAz: 'Pomidor sousu, mozzarella, reyhan', descEn: 'Tomato sauce, mozzarella, basil', price: 16, popular: true, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=600&auto=format&fit=crop'], ingredientsAz: 'Pomidor sousu, mozzarella, reyhan', ingredientsEn: 'Tomato sauce, mozzarella, basil', allergensAz: 'Qluten, süd', allergensEn: 'Gluten, dairy' },
-        { id: 12, categoryId: 2, nameAz: 'Sezar salatı', nameEn: 'Caesar Salad', descAz: 'Toyuq, kahı, sous, parmezan', descEn: 'Chicken, lettuce, dressing, parmesan', price: 18, popular: true, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=600&auto=format&fit=crop'], ingredientsAz: 'Toyuq, kahı, sous, parmezan', ingredientsEn: 'Chicken, lettuce, dressing, parmesan', allergensAz: 'Süd, yumurta', allergensEn: 'Dairy, egg' },
-        { id: 13, categoryId: 3, nameAz: 'Limonad', nameEn: 'Lemonade', descAz: 'Təravətli ev limonadı', descEn: 'Fresh homemade lemonade', price: 7, recommended: false, available: true, images: ['https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop'], ingredientsAz: 'Limon, şəkər, su', ingredientsEn: 'Lemon, sugar, water', allergensAz: '-', allergensEn: '-' },
-        { id: 14, categoryId: 4, nameAz: 'Tiramisu', nameEn: 'Tiramisu', descAz: 'Kremli italyan deserti', descEn: 'Creamy Italian dessert', price: 12, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=600&auto=format&fit=crop'], ingredientsAz: 'Mascarpone, qəhvə, biskvit', ingredientsEn: 'Mascarpone, coffee, biscuit', allergensAz: 'Süd, yumurta, qluten', allergensEn: 'Dairy, egg, gluten' }
+        { 
+          id: 1, 
+          categoryId: 1, 
+          nameAz: 'Lülə Kabab', 
+          nameEn: 'Lyulya Kebab', 
+          descAz: 'Təzə qoyun ətindən hazırlanmış lülə kabab', 
+          descEn: 'Minced lamb kebab', 
+          price: 18, 
+          popular: true, 
+          recommended: true, 
+          available: true, 
+          images: ['https://images.unsplash.com/photo-1603360946369-dc9bb6f54262?q=80&w=600&auto=format&fit=crop'],
+          ingredientsAz: 'Qoyun əti, soğan, istiot',
+          ingredientsEn: 'Lamb, onion, spices',
+          allergensAz: '-',
+          allergensEn: '-'
+        },
+        { 
+          id: 2, 
+          categoryId: 2, 
+          nameAz: 'Sezar Salatı', 
+          nameEn: 'Caesar Salad', 
+          descAz: 'Toyuq filesi ilə sezar salatı', 
+          descEn: 'Classic caesar with chicken', 
+          price: 14, 
+          popular: true, 
+          recommended: true, 
+          available: true, 
+          images: ['https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=600&auto=format&fit=crop'],
+          ingredientsAz: 'Toyuq, kahı, parmezan, sous',
+          ingredientsEn: 'Chicken, lettuce, parmesan, dressing',
+          allergensAz: 'Süd, yumurta',
+          allergensEn: 'Dairy, egg'
+        },
+        { 
+          id: 3, 
+          categoryId: 3, 
+          nameAz: 'Ev Limonadı', 
+          nameEn: 'Homemade Lemonade', 
+          descAz: 'Təravətli ev limonadı', 
+          descEn: 'Fresh homemade lemonade', 
+          price: 5, 
+          popular: false, 
+          recommended: false, 
+          available: true, 
+          images: ['https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop'],
+          ingredientsAz: 'Limon, su, şəkər',
+          ingredientsEn: 'Lemon, water, sugar',
+          allergensAz: '-',
+          allergensEn: '-'
+        }
       ],
       settings: {
-        nameAz: 'Panorama',
-        nameEn: 'Panorama',
-        phone: '502903931',
+        nameAz: 'Panorama Restaurant',
+        nameEn: 'Panorama Restaurant',
+        phone: '+994502903931',
         addressAz: 'Qafqaz Riverside Hotel, Qəbələ, Azərbaycan',
         addressEn: 'Qafqaz Riverside Hotel, Gabala, Azerbaijan',
         workWeekday: '07:00 - 24:00',
+        workWeekend: '07:00 - 24:00',
         heroTitleAz: 'Panorama',
         heroTitleEn: 'Panorama',
         heroImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200&auto=format&fit=crop',
         smartSearchBadge: 'true',
-        recommendedIds: '[11,12,14]'
+        recommendedIds: '[1,2]'
       }
     };
 
+    // ==========================================
+    // STATE
+    // ==========================================
+    let currentLang = 'az';
+    let categories = [];
+    let products = [];
+    let settings = {};
+    let favorites = JSON.parse(localStorage.getItem('menu_favorites') || '[]');
+    let currentCategory = null;
+    let currentFilterMode = 'category';
+    let searchQuery = '';
+    let refreshTimer = null;
+    let searchDebounceTimer = null;
+
+    // ==========================================
+    // UTILITY FUNCTIONS
+    // ==========================================
     function safeText(v) { return v == null ? '' : String(v); }
 
     function escapeHtml(value = '') {
@@ -698,44 +705,6 @@
         .replaceAll("'", '&#039;');
     }
 
-    function normalizeText(str) {
-      const map = { 'ə':'e','Ə':'e','ı':'i','I':'i','İ':'i','ö':'o','Ö':'o','ğ':'g','Ğ':'g','ü':'u','Ü':'u','ş':'s','Ş':'s','ç':'c','Ç':'c' };
-      return safeText(str)
-        .split('')
-        .map(ch => map[ch] || ch)
-        .join('')
-        .toLowerCase()
-        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function tokenize(str) { return normalizeText(str).split(' ').filter(Boolean); }
-
-    function levenshtein(a, b) {
-      const m = a.length, n = b.length;
-      if (!m) return n;
-      if (!n) return m;
-      const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-      for (let i = 0; i <= m; i++) dp[i][0] = i;
-      for (let j = 0; j <= n; j++) dp[0][j] = j;
-      for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-          dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-        }
-      }
-      return dp[m][n];
-    }
-
-    function fuzzySimilarity(a, b) {
-      if (!a || !b) return 0;
-      if (a === b) return 1;
-      if (a.includes(b) || b.includes(a)) return .9;
-      const dist = levenshtein(a, b);
-      return Math.max(0, 1 - dist / Math.max(a.length, b.length));
-    }
-
     function getLocalized(fieldAz, fieldEn) {
       return currentLang === 'az' ? (fieldAz || fieldEn || '') : (fieldEn || fieldAz || '');
     }
@@ -744,95 +713,10 @@
       return categories.find(c => Number(c.id) === Number(id));
     }
 
-    function getLocalizedCategoryName(cat) {
-      return cat ? getLocalized(cat.nameAz, cat.nameEn) : '';
-    }
-
-    function getLocalizedProductName(product) {
-      return getLocalized(product.nameAz, product.nameEn);
-    }
-
-    function getLocalizedProductDesc(product) {
-      return getLocalized(product.descAz, product.descEn);
-    }
-
-    function buildSearchCorpus(product) {
-      const category = getCategoryById(product.categoryId);
-      return [
-        product.nameAz, product.nameEn,
-        product.descAz, product.descEn,
-        product.ingredientsAz, product.ingredientsEn,
-        category?.nameAz, category?.nameEn,
-        product.categoryName
-      ].map(safeText).join(' ');
-    }
-
-    function scoreProduct(product, query) {
-      const q = normalizeText(query);
-      if (!q) return 0;
-      const qTokens = tokenize(q);
-      const corpus = buildSearchCorpus(product);
-      const corpusTokens = tokenize(corpus);
-      const nameAz = normalizeText(product.nameAz);
-      const nameEn = normalizeText(product.nameEn);
-      const descAz = normalizeText(product.descAz);
-      const descEn = normalizeText(product.descEn);
-      let score = 0;
-
-      [nameAz, nameEn, descAz, descEn, normalizeText(corpus)].forEach(field => {
-        if (!field) return;
-        if (field === q) score += 120;
-        if (field.startsWith(q)) score += 60;
-        if (field.includes(q)) score += 40;
-      });
-
-      qTokens.forEach(qt => {
-        corpusTokens.forEach(tok => {
-          const sim = fuzzySimilarity(qt, tok);
-          if (sim >= .98) score += 22;
-          else if (sim >= .88) score += 12;
-          else if (sim >= .78) score += 6;
-        });
-
-        [nameAz, nameEn].forEach(field => {
-          tokenize(field).forEach(tok => {
-            const sim = fuzzySimilarity(qt, tok);
-            if (sim >= .98) score += 30;
-            else if (sim >= .88) score += 18;
-            else if (sim >= .78) score += 8;
-          });
-        });
-      });
-
-      if (product.popular) score += 4;
-      if (product.recommended) score += 5;
-      return score;
-    }
-
-    function getSearchResults(query) {
-      return products
-        .filter(p => p.available !== false)
-        .map(product => ({ product, score: scoreProduct(product, query) }))
-        .filter(item => item.score > 12)
-        .sort((a, b) => b.score - a.score)
-        .map(item => item.product);
-    }
-
-    function highlightMatch(text, query) {
-      if (!query || !text) return escapeHtml(text);
-      const escaped = escapeHtml(text);
-      const q = safeText(query).trim();
-      if (!q) return escaped;
-      try {
-        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig');
-        return escaped.replace(regex, '<span class="bg-yellow-200 rounded px-1">$1</span>');
-      } catch {
-        return escaped;
-      }
-    }
-
-    // Cache functions
-    function getCachedData() {
+    // ==========================================
+    // CACHE FUNCTIONS
+    // ==========================================
+    function getCache() {
       try {
         const cached = localStorage.getItem(CONFIG.CACHE_KEY);
         if (!cached) return null;
@@ -844,7 +728,7 @@
       }
     }
 
-    function setCachedData(data) {
+    function setCache(data) {
       try {
         localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify({
           data,
@@ -855,28 +739,24 @@
       }
     }
 
-    async function loadData(forceRefresh = false) {
-      if (isLoading) return;
-      isLoading = true;
-
-      // İlk olaraq cache'dən göstər
-      if (!forceRefresh) {
-        const cached = getCachedData();
-        if (cached) {
-          categories = cached.categories || [];
-          products = cached.products || [];
-          settings = cached.settings || {};
-          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-          if (active.length && !currentCategory) currentCategory = Number(active[0].id);
-          renderAll();
-          hideLoading();
-        }
+    // ==========================================
+    // DATA LOADING - ƏSAS FUNKSIYA
+    // ==========================================
+    async function loadData() {
+      // 1. Dərhal fallback data göstər
+      showFallbackData();
+      
+      // 2. Cache'dən oxu (əgər varsa)
+      const cached = getCache();
+      if (cached) {
+        updateData(cached);
+        renderAll();
       }
-
-      // Sonra serverdən yenilə
+      
+      // 3. Serverdən yenilə
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 saniyə timeout
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
         
         const res = await fetch(CONFIG.GAS_URL + '?action=getMenu&t=' + Date.now(), {
           signal: controller.signal,
@@ -885,80 +765,72 @@
         
         clearTimeout(timeoutId);
         
+        if (!res.ok) throw new Error('HTTP error: ' + res.status);
+        
         const data = await res.json();
         
-        if (data.categories?.length || data.products?.length) {
-          categories = Array.isArray(data.categories) ? data.categories : [];
-          products = Array.isArray(data.products) ? data.products : [];
-          settings = data.settings || {};
-          
-          setCachedData({ categories, products, settings });
-          
-          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-          if (active.length && !currentCategory) currentCategory = Number(active[0].id);
-          
-          // Yalnız dəyişiklik varsa render et
-          if (forceRefresh || JSON.stringify(data) !== JSON.stringify(getCachedData())) {
-            renderAll();
-          }
-        }
-      } catch (e) {
-        console.error('Fetch error:', e);
-        // Cache yoxdursa fallback göstər
-        if (!categories.length) {
-          categories = fallbackData.categories;
-          products = fallbackData.products;
-          settings = fallbackData.settings;
-          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-          if (active.length) currentCategory = Number(active[0].id);
+        if (data.categories && data.products) {
+          updateData(data);
+          setCache(data);
           renderAll();
         }
-      } finally {
-        isLoading = false;
-        hideLoading();
+      } catch (error) {
+        console.error('Fetch error:', error);
+        // Fallback artıq göstərilib, heç nə etmə
       }
     }
 
-    function hideLoading() {
-      const loader = document.getElementById('loading-screen');
-      if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 300);
+    function showFallbackData() {
+      updateData(FALLBACK_DATA);
+      renderAll();
+    }
+
+    function updateData(data) {
+      categories = data.categories || [];
+      products = data.products || [];
+      settings = data.settings || {};
+      
+      if (!currentCategory && categories.length > 0) {
+        const active = categories.filter(c => c.active !== false).sort((a,b) => (a.sortOrder||0) - (b.sortOrder||0));
+        if (active.length) currentCategory = Number(active[0].id);
       }
     }
 
+    // ==========================================
+    // RENDER FUNCTIONS
+    // ==========================================
     function renderAll() {
       updateHeader();
       renderHero();
-      renderRecommendedSection();
-      renderCategoryLists();
+      renderRecommended();
+      renderCategories();
       renderProducts();
       renderInfo();
       renderSocials();
-      renderTextLabels();
-      startRecommendedAutoplay();
-      syncSearchInputs();
-      initScrollObserver();
+      updateTextLabels();
     }
 
     function updateHeader() {
-      document.getElementById('restaurant-name').textContent = getLocalized(settings.nameAz, settings.nameEn) || 'Restaurant';
-      document.getElementById('restaurant-subtitle').textContent = settings.nameAz || settings.nameEn || 'QR Menu';
+      const name = getLocalized(settings.nameAz, settings.nameEn) || 'Restaurant';
+      document.getElementById('restaurant-name').textContent = name;
+      document.getElementById('restaurant-subtitle').textContent = name;
       document.getElementById('current-lang').textContent = currentLang.toUpperCase();
+      
       if (settings.logo) {
-        document.getElementById('header-logo').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-contain" loading="eager">`;
+        document.getElementById('header-logo').innerHTML = 
+          `<img src="${settings.logo}" class="w-full h-full object-contain">`;
       }
     }
 
     function renderHero() {
-      const hero = document.getElementById('hero-section');
-      const title = getLocalized(settings.heroTitleAz, settings.heroTitleEn) || getLocalized(settings.nameAz, settings.nameEn);
+      const title = getLocalized(settings.heroTitleAz, settings.heroTitleEn) || 
+                    getLocalized(settings.nameAz, settings.nameEn);
       const sub = getLocalized(settings.nameAz, settings.nameEn);
-      const img = settings.heroImage || fallbackData.settings.heroImage;
+      const img = settings.heroImage || FALLBACK_DATA.settings.heroImage;
 
-      hero.innerHTML = `
+      document.getElementById('hero-section').innerHTML = `
         <div class="hero shadow-premium">
-          <img src="${img}" alt="Banner image" loading="eager" onload="this.parentElement.classList.add('loaded')">
+          <img src="${img}" alt="Banner" loading="eager">
           <div class="hero-overlay"></div>
           <div class="hero-copy">
             <div class="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold leading-tight">${escapeHtml(title)}</div>
@@ -969,400 +841,291 @@
     }
 
     function getRecommendedProducts() {
-      let recommendedIds = [];
-      try { recommendedIds = JSON.parse(settings.recommendedIds || '[]'); } catch { recommendedIds = []; }
-      let items = products.filter(p => recommendedIds.includes(p.id) || recommendedIds.includes(String(p.id)));
-      if (!items.length) items = products.filter(p => p.recommended || p.popular).slice(0, 10);
+      let ids = [];
+      try { ids = JSON.parse(settings.recommendedIds || '[]'); } catch {}
+      let items = products.filter(p => ids.includes(p.id) || ids.includes(String(p.id)));
+      if (!items.length) items = products.filter(p => p.recommended || p.popular).slice(0, 6);
       return items.filter(p => p.available !== false);
     }
 
-    function renderRecommendedSection() {
-      const wrap = document.getElementById('recommended-section');
+    function renderRecommended() {
       const rec = getRecommendedProducts();
-      wrap.innerHTML = `
-        <div class="flex items-center justify-between mb-4 gap-3">
-          <h3 class="text-[20px] sm:text-[24px] md:text-[26px] font-extrabold leading-tight" data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">Tövsiyə olunan yeməklər</h3>
-          <div class="flex items-center gap-2">
-            <button onclick="slideRecommended(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-left text-xs sm:text-sm"></i></button>
-            <button onclick="slideRecommended(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50"><i class="fas fa-chevron-right text-xs sm:text-sm"></i></button>
-          </div>
-        </div>
-        <div id="recommended-track" class="recommended-track custom-scroll">
-          ${rec.map(product => `
-            <article class="recommended-card" onclick="openDetail(${Number(product.id)})">
-              <img src="${product.images?.[0] || 'https://via.placeholder.com/700x500?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}" loading="lazy">
-              <div class="p-3 sm:p-4">
-                <h4 class="font-extrabold text-[15px] sm:text-[17px] line-clamp-2 leading-snug">${escapeHtml(getLocalizedProductName(product))}</h4>
-                <p class="mt-1 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
-                <div class="mt-2.5 text-[17px] sm:text-[19px] font-extrabold text-amber-700">${product.price} AZN</div>
-              </div>
-            </article>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    function slideRecommended(direction) {
-      const track = document.getElementById('recommended-track');
-      if (!track) return;
-      const cards = track.querySelectorAll('.recommended-card');
-      if (!cards.length) return;
-      currentRecommendedIndex += direction;
-      if (currentRecommendedIndex < 0) currentRecommendedIndex = cards.length - 1;
-      if (currentRecommendedIndex >= cards.length) currentRecommendedIndex = 0;
-      track.scrollTo({ left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft, behavior: 'smooth' });
-      restartRecommendedAutoplay();
-    }
-
-    function startRecommendedAutoplay() {
-      clearInterval(recommendedTimer);
-      recommendedTimer = setInterval(() => {
-        const track = document.getElementById('recommended-track');
-        if (!track) return;
-        const cards = track.querySelectorAll('.recommended-card');
-        if (cards.length < 2) return;
-        currentRecommendedIndex = (currentRecommendedIndex + 1) % cards.length;
-        track.scrollTo({ left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft, behavior: 'smooth' });
-      }, CONFIG.RECOMMENDED_SLIDE_INTERVAL);
-    }
-
-    function restartRecommendedAutoplay() {
-      startRecommendedAutoplay();
-    }
-
-    function renderCategoryLists() {
-      const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-      const desktop = document.getElementById('categories-list');
-      const mobileModal = document.getElementById('mobile-categories-list');
-      const mobileSlider = document.getElementById('mobile-category-slider');
-
-      const desktopHtml = active.map(cat => `
-        <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})" data-category-id="${cat.id}">
-          <span class="text-base">${cat.icon || '🍽️'}</span>
-          <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
-        </div>
-      `).join('');
-
-      const mobileModalHtml = active.map(cat => `
-        <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)}); closeMobileModal(null,'mobile-categories-modal')">
-          <span class="text-base">${cat.icon || '🍽️'}</span>
-          <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
-        </div>
-      `).join('');
-
-      const mobileSliderHtml = active.map(cat => `
-        <button class="category-pill ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})" data-category-id="${cat.id}">
-          <span class="mr-1">${cat.icon || '🍽️'}</span>${escapeHtml(getLocalizedCategoryName(cat))}
-        </button>
-      `).join('');
-
-      desktop.innerHTML = desktopHtml;
-      mobileModal.innerHTML = mobileModalHtml;
-      mobileSlider.innerHTML = mobileSliderHtml;
-
-      updateSectionHeader();
-    }
-
-    function updateSectionHeader() {
-      const title = document.getElementById('current-category');
-      const sub = document.getElementById('current-subcategory');
-
-      if (currentFilterMode === 'popular') {
-        title.textContent = currentLang === 'az' ? 'Populyar yeməklər' : 'Popular dishes';
-        sub.textContent = currentLang === 'az' ? 'Ən çox seçilənlər' : 'Most selected';
-        return;
-      }
-
-      if (currentFilterMode === 'favorites') {
-        title.textContent = currentLang === 'az' ? 'Seçilənlər' : 'Favorites';
-        sub.textContent = currentLang === 'az' ? 'Bəyəndiyiniz yeməklər' : 'Saved dishes';
-        return;
-      }
-
-      if (currentFilterMode === 'search') {
-        title.textContent = currentLang === 'az' ? 'Ağıllı axtarış nəticələri' : 'Smart search results';
-        sub.textContent = searchQuery ? `“${searchQuery}”` : '';
-        return;
-      }
-
-      const cat = getCategoryById(currentCategory);
-      title.textContent = getLocalizedCategoryName(cat) || 'Menu';
-      sub.textContent = currentLang === 'az' ? 'Bütün yeməklər' : 'All dishes';
-    }
-
-    function renderProducts() {
-      const container = document.getElementById('products-grid');
-      let filtered = products.filter(p => p.available !== false);
-
-      if (currentFilterMode === 'popular') {
-        filtered = filtered.filter(p => p.popular);
-      } else if (currentFilterMode === 'favorites') {
-        filtered = filtered.filter(p => favorites.includes(p.id));
-      } else if (currentFilterMode === 'search') {
-        filtered = getSearchResults(searchQuery);
-      } else {
-        filtered = filtered.filter(p => Number(p.categoryId) === Number(currentCategory));
-      }
-
-      updateSectionHeader();
-
-      if (!filtered.length) {
-        container.innerHTML = `<div class="sm:col-span-2 text-center py-12 sm:py-14 text-sm sm:text-base text-gray-500">${currentLang === 'az' ? 'Məhsul tapılmadı' : 'No dishes found'}</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(product => `
-        <article class="food-card" data-category-id="${Number(product.categoryId)}" data-product-id="${product.id}" onclick="openDetail(${Number(product.id)})">
-          <div class="food-card-image">
-            <img src="${product.images?.[0] || 'https://via.placeholder.com/900x700?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}" loading="lazy">
-          </div>
-          <div class="p-4 sm:p-5">
-            <div class="flex items-start justify-between gap-3">
-              <h3 class="text-[18px] sm:text-[20px] font-extrabold leading-tight">${currentFilterMode === 'search' ? highlightMatch(getLocalizedProductName(product), searchQuery) : escapeHtml(getLocalizedProductName(product))}</h3>
-              <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
-                <i class="${favorites.includes(product.id) ? 'fas' : 'far'} fa-heart text-sm"></i>
-              </button>
-            </div>
-            <p class="mt-2 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
-            <div class="mt-3 sm:mt-4 text-[18px] sm:text-[20px] font-extrabold text-amber-700">${product.price} AZN</div>
+      const html = rec.map(p => `
+        <article class="recommended-card" onclick="openDetail(${p.id})">
+          <img src="${p.images?.[0] || 'https://via.placeholder.com/400x300?text=Food'}" 
+               alt="${escapeHtml(getLocalized(p.nameAz, p.nameEn))}" loading="lazy">
+          <div class="p-3 sm:p-4">
+            <h4 class="font-extrabold text-[15px] sm:text-[17px] line-clamp-2">${escapeHtml(getLocalized(p.nameAz, p.nameEn))}</h4>
+            <p class="mt-1 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalized(p.descAz, p.descEn))}</p>
+            <div class="mt-2.5 text-[17px] sm:text-[19px] font-extrabold text-amber-700">${p.price} AZN</div>
           </div>
         </article>
       `).join('');
 
-      initCardObserver();
-    }
-
-    function initCardObserver() {
-      if (cardObserver) cardObserver.disconnect();
-
-      cardObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('in-view');
-        });
-      }, { threshold: .12 });
-
-      document.querySelectorAll('.food-card').forEach(card => cardObserver.observe(card));
-    }
-
-    // Yuxarı və aşağı scroll edəndə kateqoriya dəyişmə
-    function initScrollObserver() {
-      if (scrollObserver) scrollObserver.disconnect();
-
-      const options = {
-        root: null,
-        rootMargin: '-20% 0px -70% 0px',
-        threshold: 0
-      };
-
-      scrollObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const categoryId = entry.target.dataset.categoryId;
-            if (categoryId && currentFilterMode === 'category') {
-              const newCategory = Number(categoryId);
-              if (newCategory !== currentCategory) {
-                currentCategory = newCategory;
-                updateActiveCategoryUI();
-              }
-            }
-          }
-        });
-      }, options);
-
-      // Hər kateqoriyanın ilk məhsulunu izlə
-      const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-      active.forEach(cat => {
-        const firstProduct = document.querySelector(`[data-category-id="${cat.id}"]`);
-        if (firstProduct) {
-          scrollObserver.observe(firstProduct);
-        }
-      });
-    }
-
-    function updateActiveCategoryUI() {
-      // Desktop sidebar
-      document.querySelectorAll('#categories-list .sidebar-link').forEach(link => {
-        link.classList.remove('active');
-        if (Number(link.dataset.categoryId) === currentCategory) {
-          link.classList.add('active');
-        }
-      });
-
-      // Mobile slider
-      document.querySelectorAll('#mobile-category-slider .category-pill').forEach(pill => {
-        pill.classList.remove('active');
-        if (Number(pill.dataset.categoryId) === currentCategory) {
-          pill.classList.add('active');
-        }
-      });
-
-      updateSectionHeader();
-    }
-
-    function openDetail(productId) {
-      const product = products.find(p => Number(p.id) === Number(productId));
-      if (!product) return;
-
-      const detail = document.getElementById('detail-card');
-      detail.innerHTML = `
-        <button class="detail-close" onclick="closeDetailModal()"><i class="fas fa-times"></i></button>
-        <img class="detail-cover" src="${product.images?.[0] || 'https://via.placeholder.com/1200x900?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}" loading="lazy">
-        <div class="p-5 sm:p-6 md:p-7">
-          <div class="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h3 class="text-[22px] sm:text-[24px] md:text-[30px] font-extrabold leading-tight">${escapeHtml(getLocalizedProductName(product))}</h3>
-              <p class="mt-2 text-sm sm:text-base text-gray-500">${escapeHtml(getLocalizedProductDesc(product))}</p>
-            </div>
-            <div class="text-[20px] sm:text-[22px] md:text-[28px] font-extrabold text-amber-700">${product.price} AZN</div>
+      document.getElementById('recommended-section').innerHTML = `
+        <div class="flex items-center justify-between mb-4 gap-3">
+          <h3 class="text-[20px] sm:text-[24px] md:text-[26px] font-extrabold leading-tight" 
+              data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">
+            ${currentLang === 'az' ? 'Tövsiyə olunan yeməklər' : 'Recommended dishes'}
+          </h3>
+          <div class="flex items-center gap-2">
+            <button onclick="slideRec(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-left text-xs sm:text-sm"></i>
+            </button>
+            <button onclick="slideRec(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-right text-xs sm:text-sm"></i>
+            </button>
           </div>
+        </div>
+        <div id="rec-track" class="recommended-track custom-scroll">${html}</div>
+      `;
+    }
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-5 sm:mt-6">
-            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
-              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
-              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.ingredientsAz, product.ingredientsEn) || getLocalizedProductDesc(product) || '-')}</p>
-            </div>
-            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
-              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
-              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.allergensAz, product.allergensEn) || '-')}</p>
-            </div>
-          </div>
+    function slideRec(dir) {
+      const track = document.getElementById('rec-track');
+      if (!track) return;
+      const scrollAmount = 220;
+      track.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
+    }
+
+    function renderCategories() {
+      const active = categories.filter(c => c.active !== false)
+        .sort((a,b) => (a.sortOrder||0) - (b.sortOrder||0));
+
+      const makeLink = (cat, isMobile = false) => `
+        <div class="${isMobile ? 'sidebar-link' : 'sidebar-link'} ${currentFilterMode === 'category' && currentCategory === cat.id ? 'active' : ''}" 
+             onclick="selectCategory(${cat.id}${isMobile ? `; closeMobileModal(null,'mobile-categories-modal')` : ''})"
+             ${!isMobile ? `data-cat-id="${cat.id}"` : ''}>
+          <span class="text-base">${cat.icon || '🍽️'}</span>
+          <span>${escapeHtml(getLocalized(cat.nameAz, cat.nameEn))}</span>
         </div>
       `;
 
-      document.getElementById('detail-modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
+      const makePill = (cat) => `
+        <button class="category-pill ${currentFilterMode === 'category' && currentCategory === cat.id ? 'active' : ''}" 
+                onclick="selectCategory(${cat.id})" data-cat-id="${cat.id}">
+          <span class="mr-1">${cat.icon || '🍽️'}</span>${escapeHtml(getLocalized(cat.nameAz, cat.nameEn))}
+        </button>
+      `;
+
+      document.getElementById('categories-list').innerHTML = active.map(c => makeLink(c)).join('');
+      document.getElementById('mobile-categories-list').innerHTML = active.map(c => makeLink(c, true)).join('');
+      document.getElementById('mobile-category-slider').innerHTML = active.map(c => makePill(c)).join('');
     }
 
-    function closeDetailModal(event) {
-      if (event && event.target !== event.currentTarget) return;
-      document.getElementById('detail-modal').classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    function toggleFavorite(productId, button) {
-      const index = favorites.indexOf(productId);
-      if (index > -1) favorites.splice(index, 1);
-      else favorites.push(productId);
-
-      localStorage.setItem('menu_favorites', JSON.stringify(favorites));
-
-      if (currentFilterMode === 'favorites') {
-        renderProducts();
+    function renderProducts() {
+      let filtered = products.filter(p => p.available !== false);
+      
+      if (currentFilterMode === 'popular') {
+        filtered = filtered.filter(p => p.popular);
+      } else if (currentFilterMode === 'favorites') {
+        filtered = filtered.filter(p => favorites.includes(p.id));
+      } else if (currentFilterMode === 'search' && searchQuery) {
+        filtered = products.filter(p => {
+          const text = [p.nameAz, p.nameEn, p.descAz, p.descEn].join(' ').toLowerCase();
+          return text.includes(searchQuery.toLowerCase());
+        });
       } else {
-        button.innerHTML = `<i class="${favorites.includes(productId) ? 'fas' : 'far'} fa-heart text-sm"></i>`;
-        button.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(productId) ? 'text-red-500' : 'text-gray-500'}`;
+        filtered = filtered.filter(p => p.categoryId === currentCategory);
       }
+
+      // Update headers
+      const titleEl = document.querySelector('#products-grid').previousElementSibling.querySelector('h2');
+      const subEl = document.querySelector('#products-grid').previousElementSibling.querySelector('p');
+      
+      if (currentFilterMode === 'popular') {
+        titleEl.textContent = currentLang === 'az' ? 'Populyar yeməklər' : 'Popular dishes';
+        subEl.textContent = currentLang === 'az' ? 'Ən çox seçilənlər' : 'Most selected';
+      } else if (currentFilterMode === 'favorites') {
+        titleEl.textContent = currentLang === 'az' ? 'Seçilənlər' : 'Favorites';
+        subEl.textContent = currentLang === 'az' ? 'Bəyəndiyiniz yeməklər' : 'Your favorites';
+      } else if (currentFilterMode === 'search') {
+        titleEl.textContent = currentLang === 'az' ? 'Axtarış nəticələri' : 'Search results';
+        subEl.textContent = searchQuery ? `"${searchQuery}"` : '';
+      } else {
+        const cat = getCategoryById(currentCategory);
+        titleEl.textContent = cat ? getLocalized(cat.nameAz, cat.nameEn) : 'Menu';
+        subEl.textContent = currentLang === 'az' ? 'Bütün yeməklər' : 'All dishes';
+      }
+
+      // Update active states
+      document.querySelectorAll('[data-cat-id]').forEach(el => {
+        el.classList.toggle('active', 
+          currentFilterMode === 'category' && Number(el.dataset.catId) === currentCategory);
+      });
+
+      if (!filtered.length) {
+        document.getElementById('products-grid').innerHTML = `
+          <div class="sm:col-span-2 text-center py-12 text-gray-500">
+            ${currentLang === 'az' ? 'Məhsul tapılmadı' : 'No dishes found'}
+          </div>`;
+        return;
+      }
+
+      document.getElementById('products-grid').innerHTML = filtered.map(p => `
+        <article class="food-card" onclick="openDetail(${p.id})">
+          <div class="food-card-image">
+            <img src="${p.images?.[0] || 'https://via.placeholder.com/600x400?text=Food'}" 
+                 alt="${escapeHtml(getLocalized(p.nameAz, p.nameEn))}" loading="lazy">
+          </div>
+          <div class="p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-[18px] sm:text-[20px] font-extrabold leading-tight">${escapeHtml(getLocalized(p.nameAz, p.nameEn))}</h3>
+              <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(p.id) ? 'text-red-500' : 'text-gray-500'}" 
+                      onclick="event.stopPropagation(); toggleFav(${p.id}, this)">
+                <i class="${favorites.includes(p.id) ? 'fas' : 'far'} fa-heart text-sm"></i>
+              </button>
+            </div>
+            <p class="mt-2 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalized(p.descAz, p.descEn))}</p>
+            <div class="mt-3 sm:mt-4 text-[18px] sm:text-[20px] font-extrabold text-amber-700">${p.price} AZN</div>
+          </div>
+        </article>
+      `).join('');
     }
 
     function renderInfo() {
       document.getElementById('working-hours').textContent = settings.workWeekday || '07:00 - 24:00';
-      document.getElementById('venue-address').textContent = getLocalized(settings.addressAz, settings.addressEn) || 'Address not set';
+      document.getElementById('venue-address').textContent = 
+        getLocalized(settings.addressAz, settings.addressEn) || 'Address not set';
       document.getElementById('venue-phone').textContent = settings.phone || '-';
+      
       const table = new URLSearchParams(window.location.search).get('table');
-      document.getElementById('table-indicator-text').textContent = table ? `Table ${table}` : 'QR Menu';
+      document.getElementById('table-indicator-text').textContent = table ? `Masa ${table}` : 'QR Menu';
     }
 
     function renderSocials() {
-      const container = document.getElementById('social-links');
       let html = '';
-
       if (settings.whatsapp) {
-        const num = safeText(settings.whatsapp).replace(/[^\d]/g, '');
+        const num = String(settings.whatsapp).replace(/\D/g, '');
         html += `<a href="https://wa.me/${num}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-whatsapp"></i></a>`;
       }
-
       if (settings.instagram) {
         html += `<a href="${settings.instagram}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-instagram"></i></a>`;
       }
-
       if (settings.facebook) {
         html += `<a href="${settings.facebook}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-facebook-f"></i></a>`;
       }
-
-      container.innerHTML = html;
+      document.getElementById('social-links').innerHTML = html;
     }
 
-    function renderTextLabels() {
+    function updateTextLabels() {
       document.querySelectorAll('[data-az][data-en]').forEach(el => {
         el.textContent = el.getAttribute(`data-${currentLang}`);
       });
-
-      document.getElementById('search-input').placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
+      
+      const searchPlaceholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
+      document.getElementById('search-input').placeholder = searchPlaceholder;
       const mobileSearch = document.getElementById('mobile-search-input');
-      if (mobileSearch) mobileSearch.placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
-
-      document.getElementById('smart-search-label').textContent = currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
+      if (mobileSearch) mobileSearch.placeholder = searchPlaceholder;
+      
+      document.getElementById('smart-search-label').textContent = 
+        currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
     }
 
-    function syncSearchInputs() {
-      const desktop = document.getElementById('search-input');
-      const mobile = document.getElementById('mobile-search-input');
-      if (desktop) desktop.value = searchQuery;
-      if (mobile) mobile.value = searchQuery;
-    }
-
-    function debouncedSearch(value) {
-      clearTimeout(searchDebounceTimer);
-      searchDebounceTimer = setTimeout(() => {
-        smartSearch(value);
-      }, 150);
-    }
-
-    function selectCategory(categoryId, autoScroll = false) {
-      currentCategory = Number(categoryId);
+    // ==========================================
+    // INTERACTION FUNCTIONS
+    // ==========================================
+    function selectCategory(id) {
+      currentCategory = Number(id);
       currentFilterMode = 'category';
       searchQuery = '';
-      syncSearchInputs();
-      renderCategoryLists();
+      document.getElementById('search-input').value = '';
+      const mobileSearch = document.getElementById('mobile-search-input');
+      if (mobileSearch) mobileSearch.value = '';
+      
+      renderCategories();
       renderProducts();
-
-      if (!autoScroll) {
-        const section = document.getElementById('products-grid');
-        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
     }
 
     function filterPopular() {
       currentFilterMode = 'popular';
       searchQuery = '';
-      syncSearchInputs();
-      renderCategoryLists();
+      renderCategories();
       renderProducts();
     }
 
     function showFavoritesOnly() {
       currentFilterMode = 'favorites';
       searchQuery = '';
-      syncSearchInputs();
-      renderCategoryLists();
+      renderCategories();
       renderProducts();
     }
 
-    function smartSearch(value) {
-      searchQuery = safeText(value).trim();
-      syncSearchInputs();
-      currentFilterMode = searchQuery ? 'search' : 'category';
-      renderCategoryLists();
-      renderProducts();
+    function debouncedSearch(value) {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        searchQuery = value.trim();
+        currentFilterMode = searchQuery ? 'search' : 'category';
+        renderCategories();
+        renderProducts();
+      }, 150);
     }
 
     function focusSearch() {
-      const input = document.getElementById('search-input');
-      if (!input) return;
-      input.focus();
-      input.select();
+      document.getElementById('search-input').focus();
     }
 
     function focusMobileSearch() {
       const input = document.getElementById('mobile-search-input');
-      if (!input) return;
-      input.focus();
-      input.select();
+      if (input) input.focus();
     }
 
     function toggleLanguage() {
       currentLang = currentLang === 'az' ? 'en' : 'az';
       renderAll();
+    }
+
+    function toggleFav(id, btn) {
+      const idx = favorites.indexOf(id);
+      if (idx > -1) favorites.splice(idx, 1);
+      else favorites.push(id);
+      
+      localStorage.setItem('menu_favorites', JSON.stringify(favorites));
+      
+      if (currentFilterMode === 'favorites') {
+        renderProducts();
+      } else {
+        btn.innerHTML = `<i class="${favorites.includes(id) ? 'fas' : 'far'} fa-heart text-sm"></i>`;
+        btn.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(id) ? 'text-red-500' : 'text-gray-500'}`;
+      }
+    }
+
+    function openDetail(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      
+      document.getElementById('detail-card').innerHTML = `
+        <button class="detail-close" onclick="closeDetailModal()"><i class="fas fa-times"></i></button>
+        <img class="detail-cover" src="${p.images?.[0] || 'https://via.placeholder.com/800x600?text=Food'}" alt="">
+        <div class="p-5 sm:p-6 md:p-7">
+          <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h3 class="text-[22px] sm:text-[24px] md:text-[30px] font-extrabold leading-tight">${escapeHtml(getLocalized(p.nameAz, p.nameEn))}</h3>
+              <p class="mt-2 text-sm sm:text-base text-gray-500">${escapeHtml(getLocalized(p.descAz, p.descEn))}</p>
+            </div>
+            <div class="text-[20px] sm:text-[22px] md:text-[28px] font-extrabold text-amber-700">${p.price} AZN</div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-5 sm:mt-6">
+            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
+              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
+              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(p.ingredientsAz, p.ingredientsEn) || '-')}</p>
+            </div>
+            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
+              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
+              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(p.allergensAz, p.allergensEn) || '-')}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('detail-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('detail-modal').classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     function showMobileCategories() {
@@ -1371,23 +1134,30 @@
 
     function showMobileSearch() {
       document.getElementById('mobile-search-modal').classList.remove('hidden');
-      setTimeout(() => {
-        const input = document.getElementById('mobile-search-input');
-        if (input) input.focus();
-      }, 80);
+      setTimeout(focusMobileSearch, 100);
     }
 
-    function closeMobileModal(event, id) {
-      if (event && event.target !== event.currentTarget) return;
+    function closeMobileModal(e, id) {
+      if (e && e.target !== e.currentTarget) return;
       document.getElementById(id).classList.add('hidden');
     }
 
-    // Auto refresh every 30 seconds
+    // ==========================================
+    // AUTO REFRESH
+    // ==========================================
     function startAutoRefresh() {
       refreshTimer = setInterval(() => {
-        loadData(true);
+        if (!document.hidden) loadData();
       }, CONFIG.REFRESH_INTERVAL);
     }
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      startAutoRefresh();
+    });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -1397,23 +1167,8 @@
       }
     });
 
-    // Visibility change - tab açıldıqda dərhal yenilə
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        loadData(true);
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadData();
-      startAutoRefresh();
-    });
-
-    // Page unload - timerları təmizlə
-    window.addEventListener('beforeunload', () => {
-      clearInterval(refreshTimer);
-      clearInterval(recommendedTimer);
-      clearTimeout(searchDebounceTimer);
+      if (!document.hidden) loadData();
     });
   </script>
 </body>
