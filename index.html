@@ -750,6 +750,37 @@
     // ============================================
     function safeText(v) { return v == null ? '' : String(v); }
 
+    function normalizeMediaUrl(url) {
+      const raw = safeText(url).trim();
+      if (!raw) return '';
+
+      const drivePatterns = [
+        /https?:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i,
+        /https?:\/\/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/i,
+        /https?:\/\/drive\.google\.com\/uc\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i,
+        /https?:\/\/docs\.google\.com\/uc\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i
+      ];
+
+      for (const pattern of drivePatterns) {
+        const match = raw.match(pattern);
+        if (match?.[1]) {
+          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w2000`;
+        }
+      }
+
+      if (/drive\.google\.com|docs\.google\.com/i.test(raw)) {
+        try {
+          const parsed = new URL(raw);
+          const id = parsed.searchParams.get('id');
+          if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+        } catch {
+          // parse mümkün olmazsa olduğu kimi saxla
+        }
+      }
+
+      return raw;
+    }
+
     function escapeHtml(value = '') {
       return String(value)
         .replaceAll('&', '&amp;')
@@ -992,6 +1023,8 @@
           images = [fallbackImage];
         }
 
+        images = images.map(normalizeMediaUrl).filter(Boolean);
+
         return {
           id: parseNumber(product.id ?? product.productId ?? product.product_id, index + 1),
           categoryId: parseNumber(product.categoryId ?? product.category_id ?? product.category, 0),
@@ -1009,7 +1042,7 @@
           recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
           available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
           images: images,
-          videoUrl: safeText(product.videoUrl)
+          videoUrl: normalizeMediaUrl(product.videoUrl)
         };
       });
 
@@ -1024,6 +1057,14 @@
       if (!Array.isArray(settingsData.bannerImages)) {
         settingsData.bannerImages = [];
       }
+
+      settingsData.logo = normalizeMediaUrl(settingsData.logo || settingsData.logoUrl);
+      settingsData.heroImage = normalizeMediaUrl(settingsData.heroImage);
+      settingsData.popupImage = normalizeMediaUrl(settingsData.popupImage);
+      settingsData.bannerImages = settingsData.bannerImages.map(item => ({
+        ...item,
+        image: normalizeMediaUrl(item?.image)
+      }));
 
       // recommendedIds string olmalıdır
       if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
@@ -1097,28 +1138,33 @@
     // ============================================
     async function fetchMenuData(showLiveBadge = false) {
       try {
-        // CORS problemini həll etmək üçün JSONP istifadə et
         const url = `${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`;
-        
-        const res = await fetch(url, { 
+
+        const res = await fetch(url, {
           method: 'GET',
           cache: 'no-store',
-          headers: { 
+          headers: {
             'Accept': 'application/json'
           }
         });
-        
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
-        
-        const data = await res.json();
-        
+
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          const text = await res.text();
+          data = JSON.parse(text);
+        }
+
         // Cavabı yoxla
         if (!data.success && data.error) {
           throw new Error(data.error);
         }
-        
+
         const normalized = normalizeIncomingData(data);
         const currentData = { categories, products, settings };
 
@@ -1148,12 +1194,66 @@
           maybeShowPopup();
         }
       } catch (e) {
-        console.error('Fetch error:', e);
+        console.error('Fetch error, JSONP fallback işə salınır:', e);
+        try {
+          const data = await fetchMenuDataJsonp();
+          const normalized = normalizeIncomingData(data);
+          categories = normalized.categories;
+          products = normalized.products;
+          settings = normalized.settings;
+
+          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+          currentCategory = active.length ? Number(active[0].id) : null;
+
+          setCachePayload(normalized);
+          renderAll();
+          preloadCriticalImages();
+          maybeShowPopup();
+          if (showLiveBadge) flashLiveBadge();
+          return;
+        } catch (jsonpError) {
+          console.error('JSONP fallback da uğursuz oldu:', jsonpError);
+        }
+
         // Xəta baş verərsə, keşdəki məlumatı istifadə et
         if (!isInitialFastRenderDone) {
           fastInitialRender();
         }
       }
+    }
+
+    function fetchMenuDataJsonp() {
+      return new Promise((resolve, reject) => {
+        const callbackName = `menuJsonpCb_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+        const script = document.createElement('script');
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error('JSONP timeout'));
+        }, 10000);
+
+        function cleanup() {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[callbackName] = (payload) => {
+          cleanup();
+          if (!payload) {
+            reject(new Error('JSONP cavabı boşdur'));
+            return;
+          }
+          resolve(payload);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('JSONP script yüklənmədi'));
+        };
+
+        script.src = `${CONFIG.GAS_URL}?action=getMenu&callback=${callbackName}&_=${Date.now()}`;
+        document.body.appendChild(script);
+      });
     }
 
     function startPolling() {
