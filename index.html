@@ -965,33 +965,87 @@
       return [];
     }
 
+
+    function pickFirstValue(obj, keys, fallback = '') {
+      for (const key of keys) {
+        if (!key) continue;
+        const value = obj?.[key];
+        if (value !== undefined && value !== null && String(value).trim() !== '') {
+          return value;
+        }
+      }
+      return fallback;
+    }
+
+    function normalizeSettingsShape(rawSettings) {
+      let settings = rawSettings || {};
+
+      // Bəzi sheet qurulumlarında settings key-value siyahısı kimi gələ bilir
+      if (Array.isArray(settings)) {
+        const mapped = {};
+        settings.forEach((row) => {
+          const key = safeText(row?.key ?? row?.name ?? row?.field ?? row?.settingKey).trim();
+          if (!key) return;
+          mapped[key] = row?.value ?? row?.val ?? row?.settingValue ?? '';
+        });
+        settings = mapped;
+      }
+
+      if (!settings || typeof settings !== 'object') return {};
+
+      const resolved = {
+        ...settings,
+        nameAz: safeText(pickFirstValue(settings, ['nameAz', 'restaurantNameAz', 'restaurantName', 'titleAz', 'title'])),
+        nameEn: safeText(pickFirstValue(settings, ['nameEn', 'restaurantNameEn', 'restaurantName', 'titleEn', 'title'])),
+        logo: normalizeMediaUrl(pickFirstValue(settings, ['logo', 'logoUrl', 'brandLogo', 'headerLogo'])),
+        heroTitleAz: safeText(pickFirstValue(settings, ['heroTitleAz', 'heroTitle', 'coverTitleAz', 'mainTitleAz', 'mainTitle'])),
+        heroTitleEn: safeText(pickFirstValue(settings, ['heroTitleEn', 'coverTitleEn', 'mainTitleEn', 'mainTitle'])),
+        heroImage: normalizeMediaUrl(pickFirstValue(settings, ['heroImage', 'heroImageUrl', 'coverImage', 'coverPhoto', 'mainImage'])),
+        workWeekday: safeText(pickFirstValue(settings, ['workWeekday', 'workingHoursWeekday', 'weekdayHours', 'hoursWeekday'])),
+        workWeekend: safeText(pickFirstValue(settings, ['workWeekend', 'workingHoursWeekend', 'weekendHours', 'hoursWeekend'])),
+        addressAz: safeText(pickFirstValue(settings, ['addressAz', 'address', 'location', 'venueAddressAz'])),
+        addressEn: safeText(pickFirstValue(settings, ['addressEn', 'address', 'location', 'venueAddressEn'])),
+        phone: safeText(pickFirstValue(settings, ['phone', 'phoneNumber', 'contactPhone', 'tel'])),
+        whatsapp: safeText(pickFirstValue(settings, ['whatsapp', 'whatsappNumber', 'wa'])),
+        instagram: safeText(pickFirstValue(settings, ['instagram', 'instagramUrl', 'insta'])),
+        facebook: safeText(pickFirstValue(settings, ['facebook', 'facebookUrl', 'fb'])),
+        bannerEnabled: parseBoolean(pickFirstValue(settings, ['bannerEnabled', 'showBanner', 'showBanners'], settings.bannerEnabled), false),
+        bannerTitle: safeText(pickFirstValue(settings, ['bannerTitle', 'promoTitle', 'campaignTitle'])),
+        bannerInterval: parseNumber(pickFirstValue(settings, ['bannerInterval', 'bannerDuration', 'sliderInterval'], 3000), 3000),
+        popupEnabled: parseBoolean(pickFirstValue(settings, ['popupEnabled', 'showPopup'], settings.popupEnabled), false),
+        popupShowOnce: parseBoolean(pickFirstValue(settings, ['popupShowOnce', 'showPopupOnce'], settings.popupShowOnce), true),
+        popupTitle: safeText(pickFirstValue(settings, ['popupTitle', 'announcementTitle', 'modalTitle'])),
+        popupText: safeText(pickFirstValue(settings, ['popupText', 'announcementText', 'modalText'])),
+        popupLink: safeText(pickFirstValue(settings, ['popupLink', 'announcementLink', 'modalLink'])),
+        popupImage: normalizeMediaUrl(pickFirstValue(settings, ['popupImage', 'popupImageUrl', 'announcementImage', 'modalImage']))
+      };
+
+      return resolved;
+    }
+
     // ============================================
     // DATA NORMALIZASIYA - GOOGLE SHEETS UYĞUN
     // ============================================
     function normalizeIncomingData(data) {
       // Google Sheets-dən gələn cavabı emal et
       let source = data;
-      
-      // Əgər data.data varsa (Apps Script strukturu)
+
       if (data && typeof data === 'object' && data.data) {
         source = data.data;
       }
-      
-      // Əgər data.result varsa
+
       if (data && typeof data === 'object' && data.result) {
         source = data.result;
       }
 
-      let categoriesData = source.categories || [];
-      let productsData = source.products || [];
-      let settingsData = source.settings || {};
+      let categoriesData = source?.categories || source?.category || source?.menuCategories || [];
+      let productsData = source?.products || source?.items || source?.menuItems || [];
+      let settingsData = source?.settings || source?.config || source?.restaurant || {};
 
-      // Massiv olduğunu təmin et
       categoriesData = Array.isArray(categoriesData) ? categoriesData : [];
       productsData = Array.isArray(productsData) ? productsData : [];
-      settingsData = settingsData && typeof settingsData === 'object' ? settingsData : {};
+      settingsData = normalizeSettingsShape(settingsData);
 
-      // Kateqoriyaları normalizasiya et
       categoriesData = categoriesData.map((category, index) => ({
         id: parseNumber(category.id ?? category.categoryId ?? category.category_id, index + 1),
         nameAz: safeText(category.nameAz ?? category.nameAZ ?? category.azName ?? category.name ?? category.title),
@@ -1001,9 +1055,7 @@
         active: parseBoolean(category.active ?? category.isActive ?? category.enabled ?? category.status, true)
       }));
 
-      // Məhsulları normalizasiya et
       productsData = productsData.map((product, index) => {
-        // Şəkilləri müxtəlif formatlardan oxu
         let images = [];
         if (product.images && Array.isArray(product.images)) {
           images = product.images;
@@ -1016,9 +1068,8 @@
         } else if (product.gallery) {
           images = parseArrayMaybe(product.gallery);
         }
-        
-        // Tək şəkil varsa
-        const fallbackImage = safeText(product.image ?? product.photo);
+
+        const fallbackImage = safeText(product.image ?? product.photo ?? product.imageUrl);
         if (!images.length && fallbackImage) {
           images = [fallbackImage];
         }
@@ -1028,7 +1079,7 @@
         return {
           id: parseNumber(product.id ?? product.productId ?? product.product_id, index + 1),
           categoryId: parseNumber(product.categoryId ?? product.category_id ?? product.category, 0),
-          categoryName: safeText(product.categoryName),
+          categoryName: safeText(product.categoryName ?? product.category_name),
           nameAz: safeText(product.nameAz ?? product.nameAZ ?? product.azName ?? product.name ?? product.title),
           nameEn: safeText(product.nameEn ?? product.nameEN ?? product.enName ?? product.name ?? product.title),
           descAz: safeText(product.descAz ?? product.descriptionAz ?? product.azDescription ?? product.description),
@@ -1041,12 +1092,15 @@
           popular: parseBoolean(product.popular ?? product.isPopular, false),
           recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
           available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
+ codex/fix-image-upload-to-menu-site-8tz4mg
+          images,
+
           images: images,
+ main
           videoUrl: normalizeMediaUrl(product.videoUrl)
         };
       });
 
-      // Banner şəkillərini emal et
       if (settingsData.bannerImages && typeof settingsData.bannerImages === 'string') {
         try {
           settingsData.bannerImages = JSON.parse(settingsData.bannerImages);
@@ -1055,8 +1109,22 @@
         }
       }
       if (!Array.isArray(settingsData.bannerImages)) {
-        settingsData.bannerImages = [];
+        settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImagesJson || settingsData.banners || '[]');
       }
+
+ codex/fix-image-upload-to-menu-site-8tz4mg
+      settingsData.bannerImages = settingsData.bannerImages.map(item => {
+        if (typeof item === 'string') {
+          return { image: normalizeMediaUrl(item), title: '', active: true };
+        }
+        return {
+          ...item,
+          image: normalizeMediaUrl(item?.image ?? item?.url ?? item?.imageUrl),
+          title: safeText(item?.title ?? item?.name),
+          active: parseBoolean(item?.active ?? item?.enabled, true)
+        };
+      }).filter(item => item.image);
+
 
       settingsData.logo = normalizeMediaUrl(settingsData.logo || settingsData.logoUrl);
       settingsData.heroImage = normalizeMediaUrl(settingsData.heroImage);
@@ -1067,6 +1135,7 @@
       }));
 
       // recommendedIds string olmalıdır
+ main
       if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
         try {
           settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
