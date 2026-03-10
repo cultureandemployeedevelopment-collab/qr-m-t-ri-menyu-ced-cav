@@ -3,815 +3,1707 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Menyu</title>
-  
+  <title>Premium QR Menu</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
-    * { font-family: 'Inter', sans-serif; }
-    body { background: #f5f5f0; }
-    
-    .hero-gradient {
-      background: linear-gradient(135deg, #0a1f0a 0%, #1a3a1a 100%);
+    :root {
+      --bg: #f8f8f5;
+      --card: #ffffff;
+      --text: #1d2939;
+      --muted: #667085;
+      --line: #e6e8ec;
+      --brand: #0f766e;
+      --brand-2: #14b8a6;
+      --gold: #b35b00;
+      --shadow: 0 10px 28px rgba(16, 24, 40, 0.07);
+      --radius: 24px;
+      --header-h: 72px;
     }
-    
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 82px;
+    }
+
+    @media (min-width: 1024px) {
+      body { padding-bottom: 0; }
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .shadow-premium { box-shadow: var(--shadow); }
+
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cfd4dc; border-radius: 999px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+
     .category-pill {
-      transition: all 0.3s ease;
-      scroll-snap-align: start;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 999px;
+      padding: 9px 13px;
+      white-space: nowrap;
+      transition: .18s ease;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
     }
+
+    .category-pill:hover { border-color: #99f6e4; }
+
     .category-pill.active {
-      background: #059669;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
       color: white;
-      border-color: #059669;
+      border-color: transparent;
+      box-shadow: 0 8px 18px rgba(20, 184, 166, .24);
     }
-    
-    .product-card {
-      transition: all 0.3s ease;
-    }
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
-    }
-    
-    .video-badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #ef4444;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 20px;
-      font-size: 10px;
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      transition: .18s ease;
+      cursor: pointer;
+      font-size: 14px;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      z-index: 10;
     }
-    
-    .play-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s;
-      border-radius: 12px;
+
+    .sidebar-link:hover { background: #f0f7f6; }
+
+    .sidebar-link.active {
+      background: #dff2ec;
+      color: #0f766e;
+      font-weight: 800;
     }
-    .product-image-container:hover .play-overlay {
-      opacity: 1;
-    }
-    .play-button {
-      width: 60px;
-      height: 60px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #059669;
-      font-size: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    
-    .image-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .image-modal.active {
-      display: flex;
-    }
-    .image-modal img {
-      max-width: 100%;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 12px;
-    }
-    
-    .video-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .video-modal.active {
-      display: flex;
-    }
-    .video-container {
-      width: 100%;
-      max-width: 900px;
+
+    .hero {
       position: relative;
-    }
-    .video-container video {
-      width: 100%;
-      border-radius: 12px;
-    }
-    
-    .popup-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 90;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .popup-modal.active {
-      display: flex;
-    }
-    
-    .banner-slider {
-      position: relative;
+      min-height: 460px;
+      border-radius: 28px;
       overflow: hidden;
-      border-radius: 16px;
+      background: #d4d7dd;
+      border: 1px solid var(--line);
     }
-    .banner-slide {
-      display: none;
-      animation: fadeSlide 0.5s;
-    }
-    .banner-slide.active {
+
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
-    @keyframes fadeSlide {
-      from { opacity: 0; }
-      to { opacity: 1; }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 28%, rgba(0,0,0,.03) 55%, rgba(0,0,0,0) 100%);
     }
-    
-    .search-badge {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #059669;
+
+    .hero-copy {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 18px;
       color: white;
-      padding: 12px 20px;
-      border-radius: 50px;
-      font-weight: 600;
-      box-shadow: 0 4px 20px rgba(5,150,105,0.4);
-      z-index: 50;
+      z-index: 2;
+    }
+
+    .banner-slider-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .banner-track {
+      display: flex;
+      transition: transform .45s ease;
+      width: 100%;
+    }
+
+    .banner-slide {
+      min-width: 100%;
+      position: relative;
+      height: 210px;
+      background: #eef2f6;
+    }
+
+    .banner-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.42), rgba(0,0,0,.06));
+    }
+
+    .banner-caption {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 14px;
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+      z-index: 2;
+    }
+
+    .banner-dots {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      display: flex;
+      gap: 7px;
+      z-index: 3;
+    }
+
+    .banner-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.45);
+      border: none;
+      cursor: pointer;
+    }
+
+    .banner-dot.active {
+      background: white;
+    }
+
+    .ai-search-wrap {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      min-height: 52px;
+      padding: 0 10px 0 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      width: 100%;
     }
-    
-    .loading-screen {
+
+    .ai-search-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(120deg, rgba(20,184,166,.12), rgba(124,58,237,.12), rgba(20,184,166,.12));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .ai-badge {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #081a32, #112a4b);
+      color: white;
+      box-shadow: 0 8px 18px rgba(11, 26, 49, 0.2);
+      cursor: pointer;
+      user-select: none;
+      font-size: 11px;
+      font-weight: 700;
+      border: none;
+      max-width: 120px;
+      white-space: nowrap;
+    }
+
+    .recommended-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 4px;
+    }
+
+    .recommended-card {
+      min-width: 200px;
+      max-width: 200px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      scroll-snap-align: start;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .recommended-card:hover { transform: translateY(-3px); }
+
+    .recommended-card img {
+      width: 100%;
+      height: 125px;
+      object-fit: cover;
+      display: block;
+      background: #eef2f6;
+    }
+
+    .food-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease;
+      cursor: pointer;
+    }
+
+    .food-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 34px rgba(17, 24, 39, 0.11);
+    }
+
+    .food-card-image {
+      overflow: hidden;
+      height: 165px;
+      background: #eef2f6;
+    }
+
+    .food-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .35s ease;
+      display: block;
+      background: #eef2f6;
+    }
+
+    .food-card:hover .food-card-image img { transform: scale(1.04); }
+
+    .detail-modal {
       position: fixed;
       inset: 0;
-      background: #0a1f0a;
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
+      background: rgba(7, 12, 22, .6);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
       align-items: center;
       justify-content: center;
+      padding: 18px;
+    }
+
+    .detail-modal.active { display: flex; }
+
+    .detail-card {
+      width: 100%;
+      max-width: 690px;
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px rgba(0,0,0,.24);
+      animation: modalRise .2s ease;
+      position: relative;
+    }
+
+    @keyframes modalRise {
+      from { opacity: 0; transform: scale(.97) translateY(14px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .detail-cover {
+      width: 100%;
+      height: 310px;
+      object-fit: cover;
+      display: block;
+      background: #eef2f6;
+    }
+
+    .detail-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(183,121,31,.93);
       color: white;
+      font-size: 20px;
+      cursor: pointer;
     }
-    .loading-screen.hidden {
+
+    .mobile-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 70;
+    }
+
+    @media (min-width: 1024px) {
+      .mobile-bottom-bar { display: none; }
+    }
+
+    .hide-desktop { display: block; }
+    @media (min-width: 1024px) {
+      .hide-desktop { display: none; }
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: #eef2f6;
+    }
+
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.75), transparent);
+      animation: shimmer 1.1s infinite;
+    }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid #a7f3d0;
+    }
+
+    .popup-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(8px);
+      z-index: 120;
       display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
     }
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-top-color: #f59e0b;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+
+    .popup-modal.active {
+      display: flex;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+
+    .popup-card {
+      width: 100%;
+      max-width: 560px;
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.28);
+      position: relative;
+      animation: modalRise .22s ease;
     }
-    
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      backdrop-filter: blur(10px);
-      background: rgba(245,245,240,0.95);
+
+    .popup-image {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      background: #eef2f6;
     }
-    
-    .category-scroll {
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
+
+    .popup-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(0,0,0,.55);
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
     }
-    .category-scroll::-webkit-scrollbar {
-      display: none;
+
+    @media (max-width: 1023px) {
+      .hero { min-height: 340px; }
+      .banner-slide { height: 180px; }
     }
-    
-    .price-tag {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+
+    @media (max-width: 767px) {
+      .hero {
+        min-height: 245px;
+        border-radius: 22px;
+      }
+
+      .hero-copy {
+        left: 16px;
+        right: 16px;
+        bottom: 12px;
+      }
+
+      .detail-cover { height: 220px; }
+
+      .recommended-card {
+        min-width: 165px;
+        max-width: 165px;
+      }
+
+      .recommended-card img { height: 105px; }
+
+      .food-card-image { height: 145px; }
+
+      .ai-search-wrap {
+        min-height: 48px;
+        padding: 0 8px 0 12px;
+        gap: 6px;
+      }
+
+      .ai-badge {
+        padding: 6px 8px;
+        font-size: 10px;
+        max-width: 86px;
+      }
+
+      .ai-badge span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .category-pill {
+        font-size: 11px;
+        padding: 8px 11px;
+      }
+
+      .popup-image {
+        height: 210px;
+      }
+
+      .banner-slide {
+        height: 150px;
+      }
+
+      .banner-caption {
+        font-size: 15px;
+      }
     }
-    
-    .badge-popular { background: #fbbf24; color: #92400e; }
-    .badge-new { background: #10b981; color: white; }
-    .badge-recommended { background: #059669; color: white; }
-    .badge-unavailable { background: #ef4444; color: white; }
   </style>
 </head>
-<body class="text-gray-800">
-
-<!-- Loading Screen -->
-<div id="loading-screen" class="loading-screen">
-  <div class="spinner"></div>
-  <p class="text-lg font-medium">Menyu yüklənir...</p>
-</div>
-
-<!-- Image Modal -->
-<div id="image-modal" class="image-modal" onclick="closeImageModal()">
-  <img id="modal-image" src="" alt="Product Image" onclick="event.stopPropagation()">
-  <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300" onclick="closeImageModal()">
-    <i class="fas fa-times"></i>
-  </button>
-</div>
-
-<!-- Video Modal -->
-<div id="video-modal" class="video-modal" onclick="closeVideoModal()">
-  <div class="video-container" onclick="event.stopPropagation()">
-    <video id="modal-video" controls poster="">
-      <source src="" type="video/mp4">
-      Brauzeriniz video tag-ni dəstəkləmir.
-    </video>
-  </div>
-  <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300" onclick="closeVideoModal()">
-    <i class="fas fa-times"></i>
-  </button>
-</div>
-
-<!-- Popup Modal -->
-<div id="popup-modal" class="popup-modal" onclick="closePopup()">
-  <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
-    <div id="popup-content">
-      <img id="popup-image" src="" class="w-full h-64 object-cover hidden">
-      <div class="p-6">
-        <h3 id="popup-title" class="text-xl font-bold text-gray-800 mb-2"></h3>
-        <p id="popup-text" class="text-gray-600 mb-4"></p>
-        <div class="flex gap-3">
-          <button onclick="closePopup()" class="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200">
-            Bağla
-          </button>
-          <a id="popup-link" href="#" class="flex-1 py-3 bg-green-600 text-white rounded-xl font-medium text-center hover:bg-green-700 hidden">
-            Ətraflı
-          </a>
+<body>
+  <header class="sticky top-0 z-40 glass border-b border-gray-100" style="height: var(--header-h);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div id="header-logo" class="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <i class="fas fa-utensils text-gray-400"></i>
+        </div>
+        <div class="min-w-0">
+          <h1 id="restaurant-name" class="font-extrabold text-base sm:text-lg text-gray-900 truncate">Yüklənir...</h1>
+          <p id="restaurant-subtitle" class="text-[11px] sm:text-xs text-gray-500 truncate">QR Menu</p>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- Main Content -->
-<div id="main-content" class="min-h-screen pb-20">
+      <div class="flex items-center gap-2">
+        <div id="live-badge" class="status-pill hidden">
+          <i class="fas fa-bolt"></i>
+          <span>Canlı yeniləndi</span>
+        </div>
 
-  <!-- Hero Section -->
-  <section id="hero-section" class="hero-gradient text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20">
-      <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    </div>
-    
-    <div class="relative px-6 py-12 md:py-16">
-      <div class="max-w-4xl mx-auto text-center">
-        <div id="restaurant-logo" class="w-24 h-24 bg-white/10 rounded-2xl mx-auto mb-6 flex items-center justify-center backdrop-blur hidden">
-          <img src="" alt="Logo" class="w-20 h-20 object-contain">
-        </div>
-        
-        <h1 id="hero-title" class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
-          Restoran Menyusu
-        </h1>
-        <p id="hero-subtitle" class="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
-          Ən təzə məhsullar və möhtəşəm təamlar
-        </p>
-        
-        <div id="hero-image-container" class="mt-8 hidden">
-          <img id="hero-image" src="" class="w-full max-w-3xl mx-auto rounded-2xl shadow-2xl" alt="Hero">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Banner Slider -->
-  <section id="banner-section" class="px-4 py-6 hidden">
-    <div class="max-w-6xl mx-auto">
-      <h2 id="banner-title" class="text-xl font-bold text-gray-800 mb-4 hidden">Təkliflər</h2>
-      <div class="banner-slider relative" id="banner-slider">
-        <!-- Banners will be inserted here -->
-      </div>
-    </div>
-  </section>
-
-  <!-- Info Bar -->
-  <section class="bg-white border-b border-gray-200">
-    <div class="max-w-6xl mx-auto px-4 py-4">
-      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
-        <div class="flex items-center gap-2">
-          <i class="fas fa-map-marker-alt text-green-600"></i>
-          <span id="rest-address">Ünvan yüklənir...</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <i class="fas fa-clock text-green-600"></i>
-          <span id="rest-hours">07:00 - 24:00</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <i class="fas fa-phone text-green-600"></i>
-          <a id="rest-phone" href="tel:" class="hover:text-green-600">Telefon</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Search & Categories -->
-  <section class="sticky-header py-4">
-    <div class="max-w-6xl mx-auto px-4">
-      <!-- Search -->
-      <div class="relative mb-4">
-        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-        <input 
-          type="text" 
-          id="search-input" 
-          placeholder="Yemək axtar..." 
-          class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
-          onkeyup="handleSearch()"
-        >
-      </div>
-      
-      <!-- Categories -->
-      <div class="category-scroll flex gap-3 overflow-x-auto pb-2" id="categories-container">
-        <button class="category-pill active px-5 py-2.5 rounded-full border-2 border-gray-200 bg-white text-gray-700 font-medium whitespace-nowrap" onclick="filterCategory('all')">
-          Hamısı
+        <button onclick="toggleLanguage()" class="h-10 sm:h-11 px-3 sm:px-4 border border-gray-200 rounded-2xl bg-white shadow-premium flex items-center gap-2 font-bold text-xs sm:text-sm">
+          <span id="current-lang">AZ</span>
+          <i class="fas fa-chevron-down text-[10px] sm:text-xs text-gray-400"></i>
         </button>
-        <!-- Categories will be inserted here -->
       </div>
     </div>
-  </section>
+  </header>
 
-  <!-- Products Grid -->
-  <section class="max-w-6xl mx-auto px-4 py-6">
-    <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Products will be inserted here -->
-    </div>
-    
-    <div id="no-results" class="hidden text-center py-16">
-      <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-      <p class="text-gray-500 text-lg">Heç bir nəticə tapılmadı</p>
-    </div>
-  </section>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+    <section id="hero-section" class="mb-5 sm:mb-6"></section>
 
-</div>
+    <section id="banner-section" class="mb-5 sm:mb-6 hidden"></section>
 
-<!-- Smart Search Badge -->
-<div id="smart-search-badge" class="search-badge hidden" onclick="startVoiceSearch()">
-  <i class="fas fa-microphone"></i>
-  <span>Ağıllı Axtarış</span>
-</div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
+      <aside class="hidden lg:block lg:col-span-3">
+        <div class="sticky top-24 space-y-4">
+          <div class="sidebar-link" onclick="filterPopular()">
+            <i class="fas fa-star text-amber-500 text-base"></i>
+            <span data-az="Populyar" data-en="Popular">Populyar</span>
+          </div>
 
-<script>
-const CONFIG = {
-  GAS_URL: 'https://script.google.com/macros/s/AKfycbzIbfA4tpJV89K6u28XioYLasvfMPBUC8jwVLDjK_1gf9q5PLWd1YnaWOy2jH6_sM4BbQ/exec'
-};
+          <div class="sidebar-link" onclick="showFavoritesOnly()">
+            <i class="fas fa-heart text-red-500 text-base"></i>
+            <span data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
+          </div>
 
-let allData = {
-  categories: [],
-  products: [],
-  settings: {}
-};
-let currentCategory = 'all';
-let bannerInterval = null;
+          <p class="text-[11px] text-gray-400 uppercase tracking-wider font-extrabold px-4 pt-2" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</p>
+          <nav id="categories-list" class="space-y-2 custom-scroll max-h-[70vh] overflow-y-auto"></nav>
+        </div>
+      </aside>
 
-// Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadMenuData();
-  hideLoading();
-  checkPopup();
-});
+      <main class="lg:col-span-6 space-y-5 sm:space-y-6">
+        <div class="hide-desktop overflow-x-auto custom-scroll">
+          <div id="mobile-category-slider" class="flex gap-2 min-w-max"></div>
+        </div>
 
-async function loadMenuData() {
-  try {
-    const response = await fetch(`${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`, {
-      cache: 'no-store'
-    });
-    const result = await response.json();
-    
-    if (result.success && result.data) {
-      allData = {
-        categories: result.data.categories || [],
-        products: result.data.products || [],
-        settings: result.data.settings || {}
-      };
-      
-      applySettings();
-      renderCategories();
-      renderProducts();
-      initBannerSlider();
-    }
-  } catch (error) {
-    console.error('Load error:', error);
-    // Try to load from localStorage as fallback
-    const saved = localStorage.getItem('menuData');
-    if (saved) {
-      allData = JSON.parse(saved);
-      applySettings();
-      renderCategories();
-      renderProducts();
-    }
-  }
-}
+        <section id="recommended-section" class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-5 shadow-premium"></section>
 
-function hideLoading() {
-  document.getElementById('loading-screen').classList.add('hidden');
-}
+        <section class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-6 shadow-premium">
+          <div class="mb-4 sm:mb-5">
+            <h2 id="current-category" class="text-[24px] sm:text-[28px] md:text-[32px] font-extrabold text-gray-900 leading-tight">Menu</h2>
+            <p id="current-subcategory" class="text-xs sm:text-sm text-gray-400 mt-1">All products</p>
+          </div>
 
-function applySettings() {
-  const s = allData.settings;
-  
-  // Restaurant name
-  if (s.nameAz) {
-    document.getElementById('hero-title').textContent = s.nameAz;
-    document.title = s.nameAz + ' - Menyu';
-  }
-  
-  // Hero subtitle
-  if (s.heroTitleAz) {
-    document.getElementById('hero-subtitle').textContent = s.heroTitleAz;
-  }
-  
-  // Logo
-  if (s.logo) {
-    const logoContainer = document.getElementById('restaurant-logo');
-    logoContainer.querySelector('img').src = s.logo;
-    logoContainer.classList.remove('hidden');
-  }
-  
-  // Hero image
-  if (s.heroImage) {
-    document.getElementById('hero-image').src = s.heroImage;
-    document.getElementById('hero-image-container').classList.remove('hidden');
-  }
-  
-  // Contact info
-  if (s.addressAz) document.getElementById('rest-address').textContent = s.addressAz;
-  if (s.phone) {
-    document.getElementById('rest-phone').href = 'tel:' + s.phone;
-    document.getElementById('rest-phone').textContent = s.phone;
-  }
-  if (s.workWeekday) document.getElementById('rest-hours').textContent = s.workWeekday;
-  
-  // Smart search badge
-  if (s.smartSearchBadge === 'true') {
-    document.getElementById('smart-search-badge').classList.remove('hidden');
-  }
-}
+          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"></div>
+        </section>
 
-function renderCategories() {
-  const container = document.getElementById('categories-container');
-  const categories = allData.categories
-    .filter(c => c.active !== false)
-    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-  
-  categories.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'category-pill px-5 py-2.5 rounded-full border-2 border-gray-200 bg-white text-gray-700 font-medium whitespace-nowrap';
-    btn.innerHTML = `${cat.icon || '🍽️'} ${escapeHtml(cat.nameAz)}`;
-    btn.onclick = () => filterCategory(cat.id);
-    container.appendChild(btn);
-  });
-}
+        <footer class="text-center text-xs sm:text-sm text-gray-500 pb-6 pt-1 px-2">
+          Korperativ Mədəniyyət və İşçilərin inkişafı komdası tərəfindən hazırlanıb.
+        </footer>
+      </main>
 
-function filterCategory(catId) {
-  currentCategory = catId;
-  
-  // Update active state
-  document.querySelectorAll('.category-pill').forEach((btn, idx) => {
-    if ((catId === 'all' && idx === 0) || 
-        (catId !== 'all' && btn.textContent.includes(getCategoryName(catId)))) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-  
-  renderProducts();
-}
+      <aside class="hidden lg:block lg:col-span-3">
+        <div class="sticky top-24 space-y-4">
+          <div id="smart-search-box" class="ai-search-wrap">
+            <i class="fas fa-magnifying-glass text-gray-400 text-base"></i>
+            <input id="search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 min-w-0 outline-none bg-transparent text-sm" />
+            <button type="button" class="ai-badge" onclick="focusSearch()" aria-label="Ağıllı axtarış">
+              <i class="fas fa-wand-magic-sparkles text-emerald-400 text-[10px]"></i>
+              <span id="smart-search-label">Ağıllı Axtarış</span>
+            </button>
+          </div>
 
-function getCategoryName(catId) {
-  const cat = allData.categories.find(c => c.id == catId);
-  return cat ? cat.nameAz : '';
-}
+          <div class="bg-white rounded-[28px] border border-gray-200 p-5 sm:p-6 shadow-premium">
+            <h3 class="font-extrabold text-[17px] sm:text-[18px] mb-5" data-az="Məkan məlumatı" data-en="Venue information">Məkan məlumatı</h3>
 
-function handleSearch() {
-  renderProducts();
-}
+            <div class="space-y-5">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
+                  <i class="far fa-clock"></i>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-xs sm:text-sm" data-az="İş saatları" data-en="Working hours">İş saatları</p>
+                  <p id="working-hours" class="font-semibold text-[15px] sm:text-[17px]">07:00 - 24:00</p>
+                </div>
+              </div>
 
-function renderProducts() {
-  const grid = document.getElementById('products-grid');
-  const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  const noResults = document.getElementById('no-results');
-  
-  let products = allData.products.filter(p => p.available !== false);
-  
-  // Filter by category
-  if (currentCategory !== 'all') {
-    products = products.filter(p => p.categoryId == currentCategory);
-  }
-  
-  // Filter by search
-  if (searchTerm) {
-    products = products.filter(p => 
-      (p.nameAz || '').toLowerCase().includes(searchTerm) ||
-      (p.nameEn || '').toLowerCase().includes(searchTerm) ||
-      (p.descAz || '').toLowerCase().includes(searchTerm)
-    );
-  }
-  
-  // Sort: recommended first, then popular, then new
-  products.sort((a, b) => {
-    if (a.recommended && !b.recommended) return -1;
-    if (!a.recommended && b.recommended) return 1;
-    if (a.popular && !b.popular) return -1;
-    if (!a.popular && b.popular) return 1;
-    if (a.isNew && !b.isNew) return -1;
-    return 0;
-  });
-  
-  if (products.length === 0) {
-    grid.innerHTML = '';
-    noResults.classList.remove('hidden');
-    return;
-  }
-  
-  noResults.classList.add('hidden');
-  
-  grid.innerHTML = products.map(product => {
-    const badges = [];
-    if (product.recommended) badges.push('<span class="badge-recommended text-xs font-bold px-2 py-1 rounded-full">Tövsiyə</span>');
-    if (product.popular) badges.push('<span class="badge-popular text-xs font-bold px-2 py-1 rounded-full">Populyar</span>');
-    if (product.isNew) badges.push('<span class="badge-new text-xs font-bold px-2 py-1 rounded-full">Yeni</span>');
-    
-    const hasVideo = product.videoUrl && product.videoUrl.trim() !== '';
-    const hasImages = product.images && product.images.length > 0;
-    
-    let imageHtml = '';
-    if (hasImages) {
-      const firstImage = product.images[0];
-      imageHtml = `
-        <div class="product-image-container relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 cursor-pointer group">
-          <img src="${firstImage}" 
-               alt="${escapeHtml(product.nameAz)}" 
-               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-               onclick="openImageModal('${firstImage.replace(/'/g, "\\'")}')"
-          >
-          ${hasVideo ? `
-            <div class="video-badge">
-              <i class="fas fa-video"></i> Video
-            </div>
-            <div class="play-overlay" onclick="event.stopPropagation(); openVideoModal('${product.videoUrl.replace(/'/g, "\\'")}')">
-              <div class="play-button">
-                <i class="fas fa-play ml-1"></i>
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
+                  <i class="fas fa-location-dot"></i>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-xs sm:text-sm" data-az="Ünvan" data-en="Address">Ünvan</p>
+                  <p id="venue-address" class="font-semibold text-[14px] sm:text-[15px] leading-snug">Address not set</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
+                  <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-xs sm:text-sm" data-az="Telefon" data-en="Phone">Telefon</p>
+                  <p id="venue-phone" class="font-semibold text-[14px] sm:text-[15px] leading-snug">-</p>
+                </div>
               </div>
             </div>
+          </div>
+
+          <div id="social-links" class="flex gap-3"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="mobile-bottom-bar">
+    <button onclick="showMobileCategories()" class="flex flex-col items-center gap-1 text-gray-600">
+      <i class="fas fa-list text-lg"></i>
+      <span class="text-[11px] font-semibold" data-az="Kateqoriya" data-en="Categories">Kateqoriya</span>
+    </button>
+
+    <button onclick="showMobileSearch()" class="flex flex-col items-center gap-1 text-gray-600">
+      <i class="fas fa-wand-magic-sparkles text-lg"></i>
+      <span class="text-[11px] font-semibold" data-az="Axtarış" data-en="Search">Axtarış</span>
+    </button>
+
+    <button onclick="showFavoritesOnly()" class="flex flex-col items-center gap-1 text-gray-600">
+      <i class="fas fa-heart text-lg"></i>
+      <span class="text-[11px] font-semibold" data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
+    </button>
+  </div>
+
+  <div id="mobile-categories-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-categories-modal')">
+    <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[28px] p-6 max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-extrabold text-lg sm:text-xl" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</h3>
+        <button onclick="closeMobileModal(null, 'mobile-categories-modal')" class="w-10 h-10 rounded-full bg-gray-100">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="mobile-categories-list" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <div id="mobile-search-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-search-modal')">
+    <div class="absolute top-20 left-4 right-4 bg-white rounded-[24px] p-4 shadow-premium" onclick="event.stopPropagation()">
+      <div class="ai-search-wrap">
+        <i class="fas fa-magnifying-glass text-gray-400 text-base"></i>
+        <input id="mobile-search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 min-w-0 outline-none bg-transparent text-sm" />
+        <button type="button" class="ai-badge" onclick="focusMobileSearch()">
+          <i class="fas fa-wand-magic-sparkles text-emerald-400 text-[10px]"></i>
+          <span>Ağıllı</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="detail-modal" class="detail-modal" onclick="closeDetailModal(event)">
+    <div id="detail-card" class="detail-card" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <div id="popup-modal" class="popup-modal" onclick="closePopup(event)">
+    <div class="popup-card" onclick="event.stopPropagation()">
+      <button class="popup-close" onclick="closePopup()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      GAS_URL: 'https://script.google.com/macros/s/AKfycbzIbfA4tpJV89K6u28XioYLasvfMPBUC8jwVLDjK_1gf9q5PLWd1YnaWOy2jH6_sM4BbQ/exec',
+      RECOMMENDED_SLIDE_INTERVAL: 3200,
+      POLL_INTERVAL: 7000,
+      CACHE_KEY: 'premium_qr_menu_cache_v6',
+      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v6',
+      POPUP_ONCE_KEY: 'menu_popup_seen_v1'
+    };
+
+    let currentLang = 'az';
+    let categories = [];
+    let products = [];
+    let settings = {};
+    let favorites = JSON.parse(localStorage.getItem('menu_favorites') || '[]');
+
+    let currentCategory = null;
+    let currentFilterMode = 'category';
+    let searchQuery = '';
+    let currentRecommendedIndex = 0;
+    let recommendedTimer = null;
+    let pollTimer = null;
+    let cardObserver = null;
+    let lastObservedCategory = null;
+    let lastScrollY = window.scrollY;
+    let isInitialFastRenderDone = false;
+
+    let bannerIndex = 0;
+    let bannerTimer = null;
+
+    const fallbackData = {
+      categories: [
+        { id: 1, nameAz: 'Pizza', nameEn: 'Pizza', icon: '🍕', active: true, sortOrder: 1 },
+        { id: 2, nameAz: 'Salatlar', nameEn: 'Salads', icon: '🥗', active: true, sortOrder: 2 },
+        { id: 3, nameAz: 'İçkilər', nameEn: 'Drinks', icon: '🥤', active: true, sortOrder: 3 },
+        { id: 4, nameAz: 'Desertlər', nameEn: 'Desserts', icon: '🍰', active: true, sortOrder: 4 }
+      ],
+      products: [
+        { id: 11, categoryId: 1, nameAz: 'Margarita pizza', nameEn: 'Margherita Pizza', descAz: 'Pomidor sousu, mozzarella, reyhan', descEn: 'Tomato sauce, mozzarella, basil', price: 16, popular: true, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop'], ingredientsAz: 'Pomidor sousu, mozzarella, reyhan', ingredientsEn: 'Tomato sauce, mozzarella, basil', allergensAz: 'Qluten, süd', allergensEn: 'Gluten, dairy' },
+        { id: 12, categoryId: 2, nameAz: 'Sezar salatı', nameEn: 'Caesar Salad', descAz: 'Toyuq, kahı, sous, parmezan', descEn: 'Chicken, lettuce, dressing, parmesan', price: 18, popular: true, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=1200&auto=format&fit=crop'], ingredientsAz: 'Toyuq, kahı, sous, parmezan', ingredientsEn: 'Chicken, lettuce, dressing, parmesan', allergensAz: 'Süd, yumurta', allergensEn: 'Dairy, egg' }
+      ],
+      settings: {
+        nameAz: 'Panorama',
+        nameEn: 'Panorama',
+        phone: '502903931',
+        addressAz: 'Qafqaz Riverside Hotel, Qəbələ, Azərbaycan',
+        addressEn: 'Qafqaz Riverside Hotel, Gabala, Azerbaijan',
+        workWeekday: '07:00 - 24:00',
+        heroTitleAz: 'Panorama',
+        heroTitleEn: 'Panorama',
+        heroImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop',
+        smartSearchBadge: 'true',
+        recommendedIds: '[11,12]'
+      }
+    };
+
+    function safeText(v) { return v == null ? '' : String(v); }
+
+    function escapeHtml(value = '') {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function normalizeText(str) {
+      const map = { 'ə':'e','Ə':'e','ı':'i','I':'i','İ':'i','ö':'o','Ö':'o','ğ':'g','Ğ':'g','ü':'u','Ü':'u','ş':'s','Ş':'s','ç':'c','Ç':'c' };
+      return safeText(str)
+        .split('')
+        .map(ch => map[ch] || ch)
+        .join('')
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function tokenize(str) { return normalizeText(str).split(' ').filter(Boolean); }
+
+    function levenshtein(a, b) {
+      const m = a.length, n = b.length;
+      if (!m) return n;
+      if (!n) return m;
+      const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+        }
+      }
+      return dp[m][n];
+    }
+
+    function fuzzySimilarity(a, b) {
+      if (!a || !b) return 0;
+      if (a === b) return 1;
+      if (a.includes(b) || b.includes(a)) return .9;
+      const dist = levenshtein(a, b);
+      return Math.max(0, 1 - dist / Math.max(a.length, b.length));
+    }
+
+    function getLocalized(fieldAz, fieldEn) {
+      return currentLang === 'az' ? (fieldAz || fieldEn || '') : (fieldEn || fieldAz || '');
+    }
+
+    function getCategoryById(id) {
+      return categories.find(c => Number(c.id) === Number(id));
+    }
+
+    function getLocalizedCategoryName(cat) {
+      return cat ? getLocalized(cat.nameAz, cat.nameEn) : '';
+    }
+
+    function getLocalizedProductName(product) {
+      return getLocalized(product.nameAz, product.nameEn);
+    }
+
+    function getLocalizedProductDesc(product) {
+      return getLocalized(product.descAz, product.descEn);
+    }
+
+    function buildSearchCorpus(product) {
+      const category = getCategoryById(product.categoryId);
+      return [
+        product.nameAz, product.nameEn,
+        product.descAz, product.descEn,
+        product.ingredientsAz, product.ingredientsEn,
+        category?.nameAz, category?.nameEn,
+        product.categoryName
+      ].map(safeText).join(' ');
+    }
+
+    function scoreProduct(product, query) {
+      const q = normalizeText(query);
+      if (!q) return 0;
+      const qTokens = tokenize(q);
+      const corpus = buildSearchCorpus(product);
+      const corpusTokens = tokenize(corpus);
+      const nameAz = normalizeText(product.nameAz);
+      const nameEn = normalizeText(product.nameEn);
+      const descAz = normalizeText(product.descAz);
+      const descEn = normalizeText(product.descEn);
+      let score = 0;
+
+      [nameAz, nameEn, descAz, descEn, normalizeText(corpus)].forEach(field => {
+        if (!field) return;
+        if (field === q) score += 120;
+        if (field.startsWith(q)) score += 60;
+        if (field.includes(q)) score += 40;
+      });
+
+      qTokens.forEach(qt => {
+        corpusTokens.forEach(tok => {
+          const sim = fuzzySimilarity(qt, tok);
+          if (sim >= .98) score += 22;
+          else if (sim >= .88) score += 12;
+          else if (sim >= .78) score += 6;
+        });
+
+        [nameAz, nameEn].forEach(field => {
+          tokenize(field).forEach(tok => {
+            const sim = fuzzySimilarity(qt, tok);
+            if (sim >= .98) score += 30;
+            else if (sim >= .88) score += 18;
+            else if (sim >= .78) score += 8;
+          });
+        });
+      });
+
+      if (product.popular) score += 4;
+      if (product.recommended) score += 5;
+      return score;
+    }
+
+    function getSearchResults(query) {
+      return products
+        .filter(p => p.available !== false)
+        .map(product => ({ product, score: scoreProduct(product, query) }))
+        .filter(item => item.score > 12)
+        .sort((a, b) => b.score - a.score)
+        .map(item => item.product);
+    }
+
+    function highlightMatch(text, query) {
+      if (!query || !text) return escapeHtml(text);
+      const escaped = escapeHtml(text);
+      const q = safeText(query).trim();
+      if (!q) return escaped;
+      try {
+        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig');
+        return escaped.replace(regex, '<span class="bg-yellow-200 rounded px-1">$1</span>');
+      } catch {
+        return escaped;
+      }
+    }
+
+    function getCachePayload() {
+      try {
+        return JSON.parse(localStorage.getItem(CONFIG.CACHE_KEY) || 'null');
+      } catch {
+        return null;
+      }
+    }
+
+    function setCachePayload(payload) {
+      localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(payload));
+      localStorage.setItem(CONFIG.CACHE_TIME_KEY, String(Date.now()));
+    }
+
+    function normalizeIncomingData(data) {
+      const source = data?.data && typeof data.data === 'object' ? data.data : data || {};
+      let categoriesData = Array.isArray(source.categories) ? source.categories : [];
+      let productsData = Array.isArray(source.products) ? source.products : [];
+      let settingsData = source.settings && typeof source.settings === 'object' ? source.settings : {};
+
+      if (!categoriesData.length) categoriesData = fallbackData.categories;
+      if (!productsData.length) productsData = fallbackData.products;
+      if (!Object.keys(settingsData).length) settingsData = fallbackData.settings;
+
+      if (typeof settingsData.bannerImages === 'string') {
+        try {
+          settingsData.bannerImages = JSON.parse(settingsData.bannerImages);
+        } catch {
+          settingsData.bannerImages = [];
+        }
+      }
+
+      if (!Array.isArray(settingsData.bannerImages)) settingsData.bannerImages = [];
+
+      if (typeof settingsData.recommendedIds !== 'string') {
+        try {
+          settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
+        } catch {
+          settingsData.recommendedIds = '[]';
+        }
+      }
+
+      return {
+        categories: categoriesData,
+        products: productsData,
+        settings: settingsData
+      };
+    }
+
+    function sameData(a, b) {
+      return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    function preloadCriticalImages() {
+      const imgs = [];
+      if (settings.heroImage) imgs.push(settings.heroImage);
+
+      getActiveBannerImages().slice(0, 3).forEach(b => {
+        if (b.image) imgs.push(b.image);
+      });
+
+      getRecommendedProducts().slice(0, 4).forEach(p => {
+        if (p.images?.[0]) imgs.push(p.images[0]);
+      });
+
+      getCurrentFilteredProducts().slice(0, 6).forEach(p => {
+        if (p.images?.[0]) imgs.push(p.images[0]);
+      });
+
+      [...new Set(imgs)].forEach(src => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      });
+    }
+
+    function fastInitialRender() {
+      const cached = getCachePayload();
+      const initial = normalizeIncomingData(cached || fallbackData);
+
+      categories = initial.categories;
+      products = initial.products;
+      settings = initial.settings;
+
+      const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+      if (!currentCategory && active.length) currentCategory = Number(active[0].id);
+
+      renderAll();
+      preloadCriticalImages();
+      maybeShowPopup();
+      isInitialFastRenderDone = true;
+    }
+
+    async function fetchMenuData(showLiveBadge = false) {
+      try {
+        const res = await fetch(`${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        const normalized = normalizeIncomingData(data);
+        const currentData = { categories, products, settings };
+
+        if (!sameData(normalized, currentData)) {
+          categories = normalized.categories;
+          products = normalized.products;
+          settings = normalized.settings;
+
+          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+          if (!active.some(c => Number(c.id) === Number(currentCategory)) && active.length) {
+            currentCategory = Number(active[0].id);
+          }
+
+          setCachePayload(normalized);
+          renderAll();
+          preloadCriticalImages();
+          maybeShowPopup();
+
+          if (showLiveBadge) flashLiveBadge();
+        } else if (!isInitialFastRenderDone) {
+          renderAll();
+          preloadCriticalImages();
+          maybeShowPopup();
+        }
+      } catch (e) {
+        if (!isInitialFastRenderDone) {
+          fastInitialRender();
+        }
+      }
+    }
+
+    function startPolling() {
+      clearInterval(pollTimer);
+      pollTimer = setInterval(() => fetchMenuData(true), CONFIG.POLL_INTERVAL);
+    }
+
+    function flashLiveBadge() {
+      const badge = document.getElementById('live-badge');
+      badge.classList.remove('hidden');
+      clearTimeout(badge._timer);
+      badge._timer = setTimeout(() => {
+        badge.classList.add('hidden');
+      }, 2200);
+    }
+
+    function renderSkeletonCards() {
+      const container = document.getElementById('products-grid');
+      container.innerHTML = Array.from({ length: 6 }).map(() => `
+        <div class="bg-white rounded-[22px] overflow-hidden border border-gray-200 shadow-premium">
+          <div class="skeleton h-[165px]"></div>
+          <div class="p-4 sm:p-5">
+            <div class="skeleton h-5 rounded-lg mb-3"></div>
+            <div class="skeleton h-4 rounded-lg mb-2"></div>
+            <div class="skeleton h-4 rounded-lg w-2/3 mb-4"></div>
+            <div class="skeleton h-6 rounded-lg w-24"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadData() {
+      renderSkeletonCards();
+      fastInitialRender();
+      fetchMenuData(false);
+      startPolling();
+    }
+
+    function renderAll() {
+      updateHeader();
+      renderHero();
+      renderBannerSlider();
+      renderRecommendedSection();
+      renderCategoryLists();
+      renderProducts();
+      renderInfo();
+      renderSocials();
+      renderTextLabels();
+      startRecommendedAutoplay();
+      syncSearchInputs();
+    }
+
+    function updateHeader() {
+      document.getElementById('restaurant-name').textContent = getLocalized(settings.nameAz, settings.nameEn) || 'Restaurant';
+      document.getElementById('restaurant-subtitle').textContent = settings.nameAz || settings.nameEn || 'QR Menu';
+      document.getElementById('current-lang').textContent = currentLang.toUpperCase();
+
+      if (settings.logo) {
+        document.getElementById('header-logo').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-contain" loading="eager" decoding="async" alt="Logo">`;
+      } else {
+        document.getElementById('header-logo').innerHTML = `<i class="fas fa-utensils text-gray-400"></i>`;
+      }
+    }
+
+    function renderHero() {
+      const hero = document.getElementById('hero-section');
+      const title = getLocalized(settings.heroTitleAz, settings.heroTitleEn) || getLocalized(settings.nameAz, settings.nameEn);
+      const sub = getLocalized(settings.nameAz, settings.nameEn);
+      const img = settings.heroImage || fallbackData.settings.heroImage;
+
+      hero.innerHTML = `
+        <div class="hero shadow-premium">
+          <img src="${img}" alt="Banner image" loading="eager" fetchpriority="high" decoding="async">
+          <div class="hero-overlay"></div>
+          <div class="hero-copy">
+            <div class="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold leading-tight">${escapeHtml(title)}</div>
+            <div class="text-sm sm:text-base md:text-lg text-white/90 mt-1.5">${escapeHtml(sub)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getActiveBannerImages() {
+      return (Array.isArray(settings.bannerImages) ? settings.bannerImages : []).filter(item => item && item.image && item.active !== false);
+    }
+
+    function renderBannerSlider() {
+      const section = document.getElementById('banner-section');
+      const enabled = !!settings.bannerEnabled;
+      const banners = getActiveBannerImages();
+
+      clearInterval(bannerTimer);
+      bannerIndex = 0;
+
+      if (!enabled || !banners.length) {
+        section.classList.add('hidden');
+        section.innerHTML = '';
+        return;
+      }
+
+      section.classList.remove('hidden');
+
+      section.innerHTML = `
+        <div class="banner-slider-wrap">
+          <div id="banner-track" class="banner-track">
+            ${banners.map(item => `
+              <div class="banner-slide">
+                <img src="${item.image}" alt="${escapeHtml(item.title || 'Banner')}" loading="eager" decoding="async">
+                <div class="banner-overlay"></div>
+                <div class="banner-caption">${escapeHtml(item.title || settings.bannerTitle || '')}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div id="banner-dots" class="banner-dots">
+            ${banners.map((_, index) => `
+              <button class="banner-dot ${index === 0 ? 'active' : ''}" onclick="goToBanner(${index})"></button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      if (banners.length > 1) {
+        const interval = Number(settings.bannerInterval) || 3000;
+        bannerTimer = setInterval(() => {
+          bannerIndex = (bannerIndex + 1) % banners.length;
+          updateBannerSlider();
+        }, interval);
+      }
+    }
+
+    function updateBannerSlider() {
+      const track = document.getElementById('banner-track');
+      const dots = document.querySelectorAll('.banner-dot');
+      if (!track) return;
+
+      track.style.transform = `translateX(-${bannerIndex * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === bannerIndex);
+      });
+    }
+
+    function goToBanner(index) {
+      bannerIndex = index;
+      updateBannerSlider();
+
+      const banners = getActiveBannerImages();
+      clearInterval(bannerTimer);
+
+      if (banners.length > 1) {
+        const interval = Number(settings.bannerInterval) || 3000;
+        bannerTimer = setInterval(() => {
+          bannerIndex = (bannerIndex + 1) % banners.length;
+          updateBannerSlider();
+        }, interval);
+      }
+    }
+
+    function getRecommendedProducts() {
+      let recommendedIds = [];
+      try { recommendedIds = JSON.parse(settings.recommendedIds || '[]'); } catch { recommendedIds = []; }
+
+      let items = products.filter(p => recommendedIds.includes(p.id) || recommendedIds.includes(String(p.id)));
+      if (!items.length) items = products.filter(p => p.recommended || p.popular).slice(0, 10);
+      return items.filter(p => p.available !== false);
+    }
+
+    function renderRecommendedSection() {
+      const wrap = document.getElementById('recommended-section');
+      const rec = getRecommendedProducts();
+
+      wrap.innerHTML = `
+        <div class="flex items-center justify-between mb-4 gap-3">
+          <h3 class="text-[20px] sm:text-[24px] md:text-[26px] font-extrabold leading-tight" data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">Tövsiyə olunan yeməklər</h3>
+          <div class="flex items-center gap-2">
+            <button onclick="slideRecommended(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-left text-xs sm:text-sm"></i>
+            </button>
+            <button onclick="slideRecommended(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-right text-xs sm:text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="recommended-track" class="recommended-track custom-scroll">
+          ${rec.map((product, index) => `
+            <article class="recommended-card" onclick="openDetail(${Number(product.id)})">
+              <img
+                src="${product.images?.[0] || 'https://via.placeholder.com/700x500?text=Food'}"
+                alt="${escapeHtml(getLocalizedProductName(product))}"
+                loading="${index < 3 ? 'eager' : 'lazy'}"
+                fetchpriority="${index < 2 ? 'high' : 'auto'}"
+                decoding="async"
+              >
+              <div class="p-3 sm:p-4">
+                <h4 class="font-extrabold text-[15px] sm:text-[17px] line-clamp-2 leading-snug">${escapeHtml(getLocalizedProductName(product))}</h4>
+                <p class="mt-1 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
+                <div class="mt-2.5 text-[17px] sm:text-[19px] font-extrabold text-amber-700">${product.price} AZN</div>
+              </div>
+            </article>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function slideRecommended(direction) {
+      const track = document.getElementById('recommended-track');
+      if (!track) return;
+      const cards = track.querySelectorAll('.recommended-card');
+      if (!cards.length) return;
+
+      currentRecommendedIndex += direction;
+      if (currentRecommendedIndex < 0) currentRecommendedIndex = cards.length - 1;
+      if (currentRecommendedIndex >= cards.length) currentRecommendedIndex = 0;
+
+      track.scrollTo({
+        left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft,
+        behavior: 'smooth'
+      });
+
+      restartRecommendedAutoplay();
+    }
+
+    function startRecommendedAutoplay() {
+      clearInterval(recommendedTimer);
+      recommendedTimer = setInterval(() => {
+        const track = document.getElementById('recommended-track');
+        if (!track) return;
+        const cards = track.querySelectorAll('.recommended-card');
+        if (cards.length < 2) return;
+
+        currentRecommendedIndex = (currentRecommendedIndex + 1) % cards.length;
+        track.scrollTo({
+          left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft,
+          behavior: 'smooth'
+        });
+      }, CONFIG.RECOMMENDED_SLIDE_INTERVAL);
+    }
+
+    function restartRecommendedAutoplay() {
+      startRecommendedAutoplay();
+    }
+
+    function renderCategoryLists() {
+      const active = categories
+        .filter(c => c.active !== false)
+        .sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+
+      const desktop = document.getElementById('categories-list');
+      const mobileModal = document.getElementById('mobile-categories-list');
+      const mobileSlider = document.getElementById('mobile-category-slider');
+
+      desktop.innerHTML = active.map(cat => `
+        <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
+          <span class="text-base">${cat.icon || '🍽️'}</span>
+          <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
+        </div>
+      `).join('');
+
+      mobileModal.innerHTML = active.map(cat => `
+        <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)}); closeMobileModal(null,'mobile-categories-modal')">
+          <span class="text-base">${cat.icon || '🍽️'}</span>
+          <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
+        </div>
+      `).join('');
+
+      mobileSlider.innerHTML = active.map(cat => `
+        <button class="category-pill ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
+          <span class="mr-1">${cat.icon || '🍽️'}</span>${escapeHtml(getLocalizedCategoryName(cat))}
+        </button>
+      `).join('');
+
+      updateSectionHeader();
+    }
+
+    function updateSectionHeader() {
+      const title = document.getElementById('current-category');
+      const sub = document.getElementById('current-subcategory');
+
+      if (currentFilterMode === 'popular') {
+        title.textContent = currentLang === 'az' ? 'Populyar yeməklər' : 'Popular dishes';
+        sub.textContent = currentLang === 'az' ? 'Ən çox seçilənlər' : 'Most selected';
+        return;
+      }
+
+      if (currentFilterMode === 'favorites') {
+        title.textContent = currentLang === 'az' ? 'Seçilənlər' : 'Favorites';
+        sub.textContent = currentLang === 'az' ? 'Bəyəndiyiniz yeməklər' : 'Saved dishes';
+        return;
+      }
+
+      if (currentFilterMode === 'search') {
+        title.textContent = currentLang === 'az' ? 'Ağıllı axtarış nəticələri' : 'Smart search results';
+        sub.textContent = searchQuery ? `“${searchQuery}”` : '';
+        return;
+      }
+
+      const cat = getCategoryById(currentCategory);
+      title.textContent = getLocalizedCategoryName(cat) || 'Menu';
+      sub.textContent = currentLang === 'az' ? 'Bütün yeməklər' : 'All dishes';
+    }
+
+    function getCurrentFilteredProducts() {
+      let filtered = products.filter(p => p.available !== false);
+
+      if (currentFilterMode === 'popular') {
+        filtered = filtered.filter(p => p.popular);
+      } else if (currentFilterMode === 'favorites') {
+        filtered = filtered.filter(p => favorites.includes(p.id));
+      } else if (currentFilterMode === 'search') {
+        filtered = getSearchResults(searchQuery);
+      } else {
+        filtered = filtered.filter(p => Number(p.categoryId) === Number(currentCategory));
+      }
+
+      return filtered;
+    }
+
+    function renderProducts() {
+      const container = document.getElementById('products-grid');
+      const filtered = getCurrentFilteredProducts();
+      updateSectionHeader();
+
+      if (!filtered.length) {
+        container.innerHTML = `<div class="sm:col-span-2 text-center py-12 sm:py-14 text-sm sm:text-base text-gray-500">${currentLang === 'az' ? 'Məhsul tapılmadı' : 'No dishes found'}</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map((product, index) => `
+        <article class="food-card" data-category-id="${Number(product.categoryId)}" onclick="openDetail(${Number(product.id)})">
+          <div class="food-card-image">
+            <img
+              src="${product.images?.[0] || 'https://via.placeholder.com/900x700?text=Food'}"
+              alt="${escapeHtml(getLocalizedProductName(product))}"
+              loading="${index < 4 ? 'eager' : 'lazy'}"
+              fetchpriority="${index < 2 ? 'high' : 'auto'}"
+              decoding="async"
+            >
+          </div>
+
+          <div class="p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-[18px] sm:text-[20px] font-extrabold leading-tight">${currentFilterMode === 'search' ? highlightMatch(getLocalizedProductName(product), searchQuery) : escapeHtml(getLocalizedProductName(product))}</h3>
+
+              <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
+                <i class="${favorites.includes(product.id) ? 'fas' : 'far'} fa-heart text-sm"></i>
+              </button>
+            </div>
+
+            <p class="mt-2 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
+            <div class="mt-3 sm:mt-4 text-[18px] sm:text-[20px] font-extrabold text-amber-700">${product.price} AZN</div>
+          </div>
+        </article>
+      `).join('');
+
+      initCardObserver();
+      startScrollCategorySync();
+    }
+
+    function initCardObserver() {
+      if (cardObserver) cardObserver.disconnect();
+
+      cardObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const img = entry.target.querySelector('img[loading="lazy"]');
+          if (img) img.loading = 'eager';
+          cardObserver.unobserve(entry.target);
+        });
+      }, { rootMargin: '250px 0px' });
+
+      document.querySelectorAll('.food-card').forEach(card => cardObserver.observe(card));
+    }
+
+    function startScrollCategorySync() {
+      lastObservedCategory = currentCategory;
+    }
+
+    function updateCategoryByScroll() {
+      if (currentFilterMode !== 'category') return;
+
+      const cards = Array.from(document.querySelectorAll('.food-card[data-category-id]'));
+      if (!cards.length) return;
+
+      const triggerY = window.innerHeight * 0.36;
+      let activeCard = null;
+
+      for (const card of cards) {
+        const rect = card.getBoundingClientRect();
+        if (rect.top <= triggerY && rect.bottom >= triggerY) {
+          activeCard = card;
+          break;
+        }
+      }
+
+      if (!activeCard) {
+        const sorted = cards
+          .map(card => ({ card, dist: Math.abs(card.getBoundingClientRect().top - triggerY) }))
+          .sort((a, b) => a.dist - b.dist);
+
+        activeCard = sorted[0]?.card || null;
+      }
+
+      if (!activeCard) return;
+
+      const newCategory = Number(activeCard.dataset.categoryId);
+      if (newCategory && newCategory !== lastObservedCategory) {
+        lastObservedCategory = newCategory;
+        currentCategory = newCategory;
+        renderCategoryLists();
+      }
+    }
+
+    function openDetail(productId) {
+      const product = products.find(p => Number(p.id) === Number(productId));
+      if (!product) return;
+
+      const detail = document.getElementById('detail-card');
+      detail.innerHTML = `
+        <button class="detail-close" onclick="closeDetailModal()">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <img class="detail-cover" src="${product.images?.[0] || 'https://via.placeholder.com/1200x900?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}" loading="eager" fetchpriority="high" decoding="async">
+
+        <div class="p-5 sm:p-6 md:p-7">
+          <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h3 class="text-[22px] sm:text-[24px] md:text-[30px] font-extrabold leading-tight">${escapeHtml(getLocalizedProductName(product))}</h3>
+              <p class="mt-2 text-sm sm:text-base text-gray-500">${escapeHtml(getLocalizedProductDesc(product))}</p>
+            </div>
+            <div class="text-[20px] sm:text-[22px] md:text-[28px] font-extrabold text-amber-700">${product.price} AZN</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-5 sm:mt-6">
+            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
+              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
+              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.ingredientsAz, product.ingredientsEn) || getLocalizedProductDesc(product) || '-')}</p>
+            </div>
+
+            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
+              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
+              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.allergensAz, product.allergensEn) || '-')}</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('detail-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('detail-modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function toggleFavorite(productId, button) {
+      const index = favorites.indexOf(productId);
+      if (index > -1) favorites.splice(index, 1);
+      else favorites.push(productId);
+
+      localStorage.setItem('menu_favorites', JSON.stringify(favorites));
+
+      if (currentFilterMode === 'favorites') {
+        renderProducts();
+      } else {
+        button.innerHTML = `<i class="${favorites.includes(productId) ? 'fas' : 'far'} fa-heart text-sm"></i>`;
+        button.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(productId) ? 'text-red-500' : 'text-gray-500'}`;
+      }
+    }
+
+    function renderInfo() {
+      const weekday = settings.workWeekday || '';
+      const weekend = settings.workWeekend || '';
+      document.getElementById('working-hours').textContent = weekend ? `${weekday} / ${weekend}` : (weekday || '07:00 - 24:00');
+      document.getElementById('venue-address').textContent = getLocalized(settings.addressAz, settings.addressEn) || 'Address not set';
+      document.getElementById('venue-phone').textContent = settings.phone || '-';
+    }
+
+    function renderSocials() {
+      const container = document.getElementById('social-links');
+      let html = '';
+
+      if (settings.whatsapp) {
+        const num = safeText(settings.whatsapp).replace(/[^\d]/g, '');
+        html += `<a href="https://wa.me/${num}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-whatsapp"></i></a>`;
+      }
+
+      if (settings.instagram) {
+        html += `<a href="${settings.instagram}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-instagram"></i></a>`;
+      }
+
+      if (settings.facebook) {
+        html += `<a href="${settings.facebook}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-facebook-f"></i></a>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderTextLabels() {
+      document.querySelectorAll('[data-az][data-en]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${currentLang}`);
+      });
+
+      document.getElementById('search-input').placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
+      const mobileSearch = document.getElementById('mobile-search-input');
+      if (mobileSearch) mobileSearch.placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
+
+      document.getElementById('smart-search-label').textContent = currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
+      const badge = document.querySelector('#live-badge span');
+      if (badge) badge.textContent = currentLang === 'az' ? 'Canlı yeniləndi' : 'Live updated';
+
+      const smartEnabled = String(settings.smartSearchBadge || 'true') === 'true';
+      document.getElementById('smart-search-box').style.display = smartEnabled ? 'flex' : 'none';
+    }
+
+    function syncSearchInputs() {
+      const desktop = document.getElementById('search-input');
+      const mobile = document.getElementById('mobile-search-input');
+      if (desktop) desktop.value = searchQuery;
+      if (mobile) mobile.value = searchQuery;
+    }
+
+    function selectCategory(categoryId, autoScroll = false) {
+      currentCategory = Number(categoryId);
+      lastObservedCategory = currentCategory;
+      currentFilterMode = 'category';
+      searchQuery = '';
+      syncSearchInputs();
+      renderCategoryLists();
+      renderProducts();
+
+      if (!autoScroll) {
+        const section = document.getElementById('products-grid');
+        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function filterPopular() {
+      currentFilterMode = 'popular';
+      searchQuery = '';
+      syncSearchInputs();
+      renderCategoryLists();
+      renderProducts();
+    }
+
+    function showFavoritesOnly() {
+      currentFilterMode = 'favorites';
+      searchQuery = '';
+      syncSearchInputs();
+      renderCategoryLists();
+      renderProducts();
+    }
+
+    function smartSearch(value) {
+      searchQuery = safeText(value).trim();
+      syncSearchInputs();
+      currentFilterMode = searchQuery ? 'search' : 'category';
+      renderCategoryLists();
+      renderProducts();
+    }
+
+    function focusSearch() {
+      const input = document.getElementById('search-input');
+      if (!input) return;
+      input.focus();
+      input.select();
+    }
+
+    function focusMobileSearch() {
+      const input = document.getElementById('mobile-search-input');
+      if (!input) return;
+      input.focus();
+      input.select();
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'az' ? 'en' : 'az';
+      renderAll();
+      maybeShowPopup(true);
+    }
+
+    function showMobileCategories() {
+      document.getElementById('mobile-categories-modal').classList.remove('hidden');
+    }
+
+    function showMobileSearch() {
+      document.getElementById('mobile-search-modal').classList.remove('hidden');
+      setTimeout(() => {
+        const input = document.getElementById('mobile-search-input');
+        if (input) input.focus();
+      }, 80);
+    }
+
+    function closeMobileModal(event, id) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function maybeShowPopup(force = false) {
+      if (!settings.popupEnabled) {
+        closePopup();
+        return;
+      }
+
+      const seen = localStorage.getItem(CONFIG.POPUP_ONCE_KEY) === '1';
+      if (!force && settings.popupShowOnce && seen) return;
+      if (!settings.popupImage && !settings.popupTitle && !settings.popupText) return;
+
+      const content = document.getElementById('popup-content');
+      const title = settings.popupTitle || '';
+      const text = settings.popupText || '';
+      const link = settings.popupLink || '';
+      const image = settings.popupImage || '';
+
+      content.innerHTML = `
+        ${image ? `<img src="${image}" class="popup-image" alt="${escapeHtml(title || 'Popup')}" loading="eager" decoding="async">` : ''}
+        <div class="p-5 sm:p-6">
+          ${title ? `<h3 class="text-[22px] sm:text-[26px] font-extrabold text-gray-900 mb-3">${escapeHtml(title)}</h3>` : ''}
+          ${text ? `<p class="text-sm sm:text-base text-gray-600 leading-7">${escapeHtml(text)}</p>` : ''}
+          ${link ? `
+            <a href="${link}" target="_blank" class="inline-flex items-center justify-center mt-5 px-5 py-3 rounded-2xl bg-teal-700 text-white font-bold hover:bg-teal-800">
+              ${currentLang === 'az' ? 'Ətraflı bax' : 'View more'}
+            </a>
           ` : ''}
         </div>
       `;
-    } else if (hasVideo) {
-      imageHtml = `
-        <div class="product-image-container relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-800 cursor-pointer" onclick="openVideoModal('${product.videoUrl.replace(/'/g, "\\'")}')">
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="play-button">
-              <i class="fas fa-play ml-1"></i>
-            </div>
-          </div>
-          <div class="video-badge">
-            <i class="fas fa-video"></i> Video
-          </div>
-        </div>
-      `;
-    } else {
-      imageHtml = `
-        <div class="aspect-[4/3] rounded-xl bg-gray-100 flex items-center justify-center">
-          <i class="fas fa-utensils text-4xl text-gray-300"></i>
-        </div>
-      `;
+
+      document.getElementById('popup-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      if (settings.popupShowOnce) {
+        localStorage.setItem(CONFIG.POPUP_ONCE_KEY, '1');
+      }
     }
-    
-    // Thumbnail gallery for multiple images
-    let thumbnailsHtml = '';
-    if (product.images && product.images.length > 1) {
-      thumbnailsHtml = `
-        <div class="flex gap-2 mt-2 overflow-x-auto pb-1">
-          ${product.images.slice(0, 4).map((img, idx) => `
-            <img src="${img}" 
-                 class="w-12 h-12 rounded-lg object-cover cursor-pointer hover:ring-2 hover:ring-green-500 flex-shrink-0"
-                 onclick="openImageModal('${img.replace(/'/g, "\\'")}')"
-                 alt="Thumbnail ${idx + 1}"
-            >
-          `).join('')}
-          ${product.images.length > 4 ? `<span class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-xs text-gray-500 flex-shrink-0">+${product.images.length - 4}</span>` : ''}
-        </div>
-      `;
+
+    function closePopup(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('popup-modal').classList.remove('active');
+      if (!document.getElementById('detail-modal').classList.contains('active')) {
+        document.body.style.overflow = '';
+      }
     }
-    
-    return `
-      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden">
-        ${imageHtml}
-        ${thumbnailsHtml}
-        
-        <div class="p-5">
-          <div class="flex gap-2 mb-2 flex-wrap">
-            ${badges.join('')}
-          </div>
-          
-          <h3 class="text-lg font-bold text-gray-800 mb-1">${escapeHtml(product.nameAz)}</h3>
-          <p class="text-sm text-gray-500 mb-1">${escapeHtml(product.nameEn || '')}</p>
-          
-          ${product.descAz ? `<p class="text-sm text-gray-600 mb-3 line-clamp-2">${escapeHtml(product.descAz)}</p>` : ''}
-          
-          ${product.specs?.volume ? `<p class="text-xs text-gray-400 mb-3"><i class="fas fa-weight-hanging mr-1"></i>${escapeHtml(product.specs.volume)}</p>` : ''}
-          
-          <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-            <div>
-              <span class="price-tag text-white px-4 py-2 rounded-xl font-bold text-lg">
-                ${parseFloat(product.price || 0).toFixed(2)} ₼
-              </span>
-            </div>
-            ${product.specs?.time ? `<span class="text-xs text-gray-400"><i class="fas fa-clock mr-1"></i>${escapeHtml(product.specs.time)}</span>` : ''}
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
 
-// Image Modal
-function openImageModal(src) {
-  const modal = document.getElementById('image-modal');
-  const img = document.getElementById('modal-image');
-  img.src = src;
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDetailModal();
+        closePopup();
+        closeMobileModal(null, 'mobile-categories-modal');
+        closeMobileModal(null, 'mobile-search-modal');
+      }
+    });
 
-function closeImageModal() {
-  const modal = document.getElementById('image-modal');
-  modal.classList.remove('active');
-  document.body.style.overflow = '';
-}
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+      if (Math.abs(currentY - lastScrollY) > 8) {
+        updateCategoryByScroll();
+        lastScrollY = currentY;
+      }
+    }, { passive: true });
 
-// Video Modal
-function openVideoModal(src) {
-  const modal = document.getElementById('video-modal');
-  const video = document.getElementById('modal-video');
-  
-  // Handle YouTube URLs
-  const youtubeMatch = src.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/);
-  if (youtubeMatch) {
-    const videoId = youtubeMatch[1];
-    // For YouTube, we'd need to use iframe, but for now show message
-    video.innerHTML = `<p class="text-white text-center p-8">YouTube videosu: <a href="${src}" target="_blank" class="text-green-400 underline">${src}</a></p>`;
-  } else {
-    video.innerHTML = `<source src="${src}" type="video/mp4">`;
-    video.load();
-    video.play();
-  }
-  
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
+    window.addEventListener('focus', () => fetchMenuData(true));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') fetchMenuData(true);
+    });
 
-function closeVideoModal() {
-  const modal = document.getElementById('video-modal');
-  const video = document.getElementById('modal-video');
-  video.pause();
-  modal.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// Banner Slider
-function initBannerSlider() {
-  const banners = allData.settings.bannerImages || [];
-  const enabled = allData.settings.bannerEnabled;
-  
-  if (!enabled || banners.length === 0) return;
-  
-  const section = document.getElementById('banner-section');
-  const slider = document.getElementById('banner-slider');
-  const title = document.getElementById('banner-title');
-  
-  section.classList.remove('hidden');
-  if (allData.settings.bannerTitle) {
-    title.textContent = allData.settings.bannerTitle;
-    title.classList.remove('hidden');
-  }
-  
-  const activeBanners = banners.filter(b => b.active !== false);
-  
-  slider.innerHTML = activeBanners.map((banner, idx) => `
-    <div class="banner-slide ${idx === 0 ? 'active' : ''}" data-slide="${idx}">
-      <img src="${banner.image}" alt="${escapeHtml(banner.title || '')}" class="w-full h-48 md:h-64 object-cover">
-    </div>
-  `).join('');
-  
-  // Auto slide
-  let currentSlide = 0;
-  const interval = parseInt(allData.settings.bannerInterval) || 3000;
-  
-  bannerInterval = setInterval(() => {
-    const slides = slider.querySelectorAll('.banner-slide');
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add('active');
-  }, interval);
-}
-
-// Popup
-function checkPopup() {
-  const s = allData.settings;
-  if (!s.popupEnabled) return;
-  
-  // Check if show once
-  if (s.popupShowOnce && localStorage.getItem('popupShown')) return;
-  
-  setTimeout(() => {
-    showPopup();
-    if (s.popupShowOnce) {
-      localStorage.setItem('popupShown', 'true');
-    }
-  }, 1000);
-}
-
-function showPopup() {
-  const s = allData.settings;
-  const modal = document.getElementById('popup-modal');
-  
-  if (s.popupImage) {
-    document.getElementById('popup-image').src = s.popupImage;
-    document.getElementById('popup-image').classList.remove('hidden');
-  }
-  
-  document.getElementById('popup-title').textContent = s.popupTitle || 'Xüsusi Təklif';
-  document.getElementById('popup-text').textContent = s.popupText || '';
-  
-  if (s.popupLink) {
-    const linkBtn = document.getElementById('popup-link');
-    linkBtn.href = s.popupLink;
-    linkBtn.classList.remove('hidden');
-  }
-  
-  modal.classList.add('active');
-}
-
-function closePopup() {
-  document.getElementById('popup-modal').classList.remove('active');
-}
-
-// Voice Search (placeholder)
-function startVoiceSearch() {
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    
-    recognition.lang = 'az-AZ';
-    recognition.start();
-    
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      document.getElementById('search-input').value = transcript;
-      handleSearch();
-    };
-  } else {
-    alert('Brauzeriniz səsli axtarışı dəstəkləmir');
-  }
-}
-
-// Utilities
-function escapeHtml(text) {
-  if (!text) return '';
-  return String(text)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-// Close modals on escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeImageModal();
-    closeVideoModal();
-    closePopup();
-  }
-});
-</script>
-
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
 </body>
 </html>
