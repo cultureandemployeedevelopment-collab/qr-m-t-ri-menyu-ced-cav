@@ -598,7 +598,7 @@
         </section>
 
         <footer class="text-center text-xs sm:text-sm text-gray-500 pb-6 pt-1 px-2">
-          Korperativ Mədəniyyət və İşçilərin inkişafı komdası tərəfindən hazırlanıb.
+          Korporativ Mədəniyyət və İşçilərin İnkişafı Komandası tərəfindən hazırlanıb.
         </footer>
       </main>
 
@@ -711,12 +711,17 @@
   </div>
 
   <script>
+    // ============================================
+    // KONFIQURASIYA - BURAYA ÖZ URL-NİZİ YAZIN
+    // ============================================
     const CONFIG = {
+      // Google Apps Script Web App URL-nizi bura əlavə edin
       GAS_URL: 'https://script.google.com/macros/s/AKfycbwPMJA52jhbfcYTWweDi5qDIHXHyxsbjdEC_eaEtW2Ui5e-ItZkI703o_hNfFfzNGI1HQ/exec',
+      
       RECOMMENDED_SLIDE_INTERVAL: 3200,
       POLL_INTERVAL: 7000,
-      CACHE_KEY: 'premium_qr_menu_cache_v7',
-      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v7',
+      CACHE_KEY: 'premium_qr_menu_cache_v6',
+      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v6',
       POPUP_ONCE_KEY: 'menu_popup_seen_v1'
     };
 
@@ -740,32 +745,9 @@
     let bannerIndex = 0;
     let bannerTimer = null;
 
-    const fallbackData = {
-      categories: [
-        { id: 1, nameAz: 'Pizza', nameEn: 'Pizza', icon: '🍕', active: true, sortOrder: 1 },
-        { id: 2, nameAz: 'Salatlar', nameEn: 'Salads', icon: '🥗', active: true, sortOrder: 2 },
-        { id: 3, nameAz: 'İçkilər', nameEn: 'Drinks', icon: '🥤', active: true, sortOrder: 3 },
-        { id: 4, nameAz: 'Desertlər', nameEn: 'Desserts', icon: '🍰', active: true, sortOrder: 4 }
-      ],
-      products: [
-        { id: 11, categoryId: 1, nameAz: 'Margarita pizza', nameEn: 'Margherita Pizza', descAz: 'Pomidor sousu, mozzarella, reyhan', descEn: 'Tomato sauce, mozzarella, basil', price: 16, popular: true, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop'], ingredientsAz: 'Pomidor sousu, mozzarella, reyhan', ingredientsEn: 'Tomato sauce, mozzarella, basil', allergensAz: 'Qluten, süd', allergensEn: 'Gluten, dairy' },
-        { id: 12, categoryId: 2, nameAz: 'Sezar salatı', nameEn: 'Caesar Salad', descAz: 'Toyuq, kahı, sous, parmezan', descEn: 'Chicken, lettuce, dressing, parmesan', price: 18, popular: true, recommended: true, available: true, images: ['https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=1200&auto=format&fit=crop'], ingredientsAz: 'Toyuq, kahı, sous, parmezan', ingredientsEn: 'Chicken, lettuce, dressing, parmesan', allergensAz: 'Süd, yumurta', allergensEn: 'Dairy, egg' }
-      ],
-      settings: {
-        nameAz: 'Panorama',
-        nameEn: 'Panorama',
-        phone: '502903931',
-        addressAz: 'Qafqaz Riverside Hotel, Qəbələ, Azərbaycan',
-        addressEn: 'Qafqaz Riverside Hotel, Gabala, Azerbaijan',
-        workWeekday: '07:00 - 24:00',
-        heroTitleAz: 'Panorama',
-        heroTitleEn: 'Panorama',
-        heroImage: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop',
-        smartSearchBadge: 'true',
-        recommendedIds: '[11,12]'
-      }
-    };
-
+    // ============================================
+    // YARDIMCI FUNKSIYALAR
+    // ============================================
     function safeText(v) { return v == null ? '' : String(v); }
 
     function escapeHtml(value = '') {
@@ -952,16 +934,19 @@
       return [];
     }
 
+    // ============================================
+    // DATA NORMALIZASIYA - GOOGLE SHEETS UYĞUN
+    // ============================================
     function normalizeIncomingData(data) {
-      // Handle different response structures from Apps Script
+      // Google Sheets-dən gələn cavabı emal et
       let source = data;
       
-      // If data has a 'data' property (our Apps Script returns {success: true, data: {...}})
+      // Əgər data.data varsa (Apps Script strukturu)
       if (data && typeof data === 'object' && data.data) {
         source = data.data;
       }
       
-      // If data has a 'result' property
+      // Əgər data.result varsa
       if (data && typeof data === 'object' && data.result) {
         source = data.result;
       }
@@ -970,17 +955,12 @@
       let productsData = source.products || [];
       let settingsData = source.settings || {};
 
-      // Ensure arrays
+      // Massiv olduğunu təmin et
       categoriesData = Array.isArray(categoriesData) ? categoriesData : [];
       productsData = Array.isArray(productsData) ? productsData : [];
       settingsData = settingsData && typeof settingsData === 'object' ? settingsData : {};
 
-      // Keep fallback settings for visual defaults only.
-      // Category/product fallback is intentionally disabled so menu data
-      // always comes from Google Sheets (or last cached live payload).
-      if (!Object.keys(settingsData).length) settingsData = fallbackData.settings;
-
-      // Normalize categories
+      // Kateqoriyaları normalizasiya et
       categoriesData = categoriesData.map((category, index) => ({
         id: parseNumber(category.id ?? category.categoryId ?? category.category_id, index + 1),
         nameAz: safeText(category.nameAz ?? category.nameAZ ?? category.azName ?? category.name ?? category.title),
@@ -990,14 +970,32 @@
         active: parseBoolean(category.active ?? category.isActive ?? category.enabled ?? category.status, true)
       }));
 
-      // Normalize products
+      // Məhsulları normalizasiya et
       productsData = productsData.map((product, index) => {
-        const images = parseArrayMaybe(product.images ?? product.imageUrls ?? product.photos ?? product.gallery);
+        // Şəkilləri müxtəlif formatlardan oxu
+        let images = [];
+        if (product.images && Array.isArray(product.images)) {
+          images = product.images;
+        } else if (product.imagesJson) {
+          images = parseArrayMaybe(product.imagesJson);
+        } else if (product.imageUrls) {
+          images = parseArrayMaybe(product.imageUrls);
+        } else if (product.photos) {
+          images = parseArrayMaybe(product.photos);
+        } else if (product.gallery) {
+          images = parseArrayMaybe(product.gallery);
+        }
+        
+        // Tək şəkil varsa
         const fallbackImage = safeText(product.image ?? product.photo);
+        if (!images.length && fallbackImage) {
+          images = [fallbackImage];
+        }
 
         return {
           id: parseNumber(product.id ?? product.productId ?? product.product_id, index + 1),
           categoryId: parseNumber(product.categoryId ?? product.category_id ?? product.category, 0),
+          categoryName: safeText(product.categoryName),
           nameAz: safeText(product.nameAz ?? product.nameAZ ?? product.azName ?? product.name ?? product.title),
           nameEn: safeText(product.nameEn ?? product.nameEN ?? product.enName ?? product.name ?? product.title),
           descAz: safeText(product.descAz ?? product.descriptionAz ?? product.azDescription ?? product.description),
@@ -1010,21 +1008,32 @@
           popular: parseBoolean(product.popular ?? product.isPopular, false),
           recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
           available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
-          images: images.length ? images : (fallbackImage ? [fallbackImage] : [])
+          images: images,
+          videoUrl: safeText(product.videoUrl)
         };
       });
 
-      // Normalize settings
-      settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImages ?? settingsData.banners);
-      settingsData.recommendedIds = settingsData.recommendedIds ?? '[]';
+      // Banner şəkillərini emal et
+      if (settingsData.bannerImages && typeof settingsData.bannerImages === 'string') {
+        try {
+          settingsData.bannerImages = JSON.parse(settingsData.bannerImages);
+        } catch {
+          settingsData.bannerImages = [];
+        }
+      }
+      if (!Array.isArray(settingsData.bannerImages)) {
+        settingsData.bannerImages = [];
+      }
 
-      if (typeof settingsData.recommendedIds !== 'string') {
+      // recommendedIds string olmalıdır
+      if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
         try {
           settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
         } catch {
           settingsData.recommendedIds = '[]';
         }
       }
+      if (!settingsData.recommendedIds) settingsData.recommendedIds = '[]';
 
       return {
         categories: categoriesData,
@@ -1062,7 +1071,7 @@
 
     function fastInitialRender() {
       const cached = getCachePayload();
-      const initial = normalizeIncomingData(cached || { categories: [], products: [], settings: fallbackData.settings });
+      const initial = normalizeIncomingData(cached || { categories: [], products: [], settings: {} });
 
       categories = initial.categories;
       products = initial.products;
@@ -1083,23 +1092,33 @@
       isInitialFastRenderDone = true;
     }
 
+    // ============================================
+    // GOOGLE SHEETS-DƏN MƏLUMAT ÇƏKMƏ
+    // ============================================
     async function fetchMenuData(showLiveBadge = false) {
       try {
-        const res = await fetch(`${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`, { 
+        // CORS problemini həll etmək üçün JSONP istifadə et
+        const url = `${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`;
+        
+        const res = await fetch(url, { 
+          method: 'GET',
           cache: 'no-store',
-          headers: { 'Accept': 'application/json' }
+          headers: { 
+            'Accept': 'application/json'
+          }
         });
-
+        
         if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
         
         const data = await res.json();
-
-        if (data && typeof data === 'object' && data.success === false) {
-          throw new Error(data.error || 'Google Sheets response returned success=false');
+        
+        // Cavabı yoxla
+        if (!data.success && data.error) {
+          throw new Error(data.error);
         }
-
+        
         const normalized = normalizeIncomingData(data);
         const currentData = { categories, products, settings };
 
@@ -1130,6 +1149,7 @@
         }
       } catch (e) {
         console.error('Fetch error:', e);
+        // Xəta baş verərsə, keşdəki məlumatı istifadə et
         if (!isInitialFastRenderDone) {
           fastInitialRender();
         }
@@ -1172,6 +1192,9 @@
       startPolling();
     }
 
+    // ============================================
+    // RENDER FUNKSİYALARI
+    // ============================================
     function renderAll() {
       updateHeader();
       renderHero();
@@ -1202,7 +1225,7 @@
       const hero = document.getElementById('hero-section');
       const title = getLocalized(settings.heroTitleAz, settings.heroTitleEn) || getLocalized(settings.nameAz, settings.nameEn);
       const sub = getLocalized(settings.nameAz, settings.nameEn);
-      const img = settings.heroImage || fallbackData.settings.heroImage;
+      const img = settings.heroImage || 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop';
 
       hero.innerHTML = `
         <div class="hero shadow-premium">
@@ -1294,7 +1317,11 @@
 
     function getRecommendedProducts() {
       let recommendedIds = [];
-      try { recommendedIds = JSON.parse(settings.recommendedIds || '[]'); } catch { recommendedIds = []; }
+      try { 
+        recommendedIds = JSON.parse(settings.recommendedIds || '[]'); 
+      } catch { 
+        recommendedIds = []; 
+      }
 
       let items = products.filter(p => recommendedIds.includes(p.id) || recommendedIds.includes(String(p.id)));
       if (!items.length) items = products.filter(p => p.recommended || p.popular).slice(0, 10);
@@ -1304,6 +1331,13 @@
     function renderRecommendedSection() {
       const wrap = document.getElementById('recommended-section');
       const rec = getRecommendedProducts();
+
+      if (!rec.length) {
+        wrap.classList.add('hidden');
+        return;
+      }
+
+      wrap.classList.remove('hidden');
 
       wrap.innerHTML = `
         <div class="flex items-center justify-between mb-4 gap-3">
@@ -1780,6 +1814,9 @@
       }
     }
 
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeDetailModal();
