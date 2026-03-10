@@ -923,25 +923,86 @@
       localStorage.setItem(CONFIG.CACHE_TIME_KEY, String(Date.now()));
     }
 
-    function normalizeIncomingData(data) {
-      const source = data?.data && typeof data.data === 'object' ? data.data : data || {};
-      let categoriesData = Array.isArray(source.categories) ? source.categories : [];
-      let productsData = Array.isArray(source.products) ? source.products : [];
-      let settingsData = source.settings && typeof source.settings === 'object' ? source.settings : {};
+    function parseBoolean(value, defaultValue = true) {
+      if (typeof value === 'boolean') return value;
+      if (typeof value === 'number') return value !== 0;
+      if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase();
+        if (['true', '1', 'yes', 'y', 'active', 'on'].includes(normalized)) return true;
+        if (['false', '0', 'no', 'n', 'inactive', 'off'].includes(normalized)) return false;
+      }
+      return defaultValue;
+    }
 
-      if (!categoriesData.length) categoriesData = fallbackData.categories;
-      if (!productsData.length) productsData = fallbackData.products;
-      if (!Object.keys(settingsData).length) settingsData = fallbackData.settings;
+    function parseNumber(value, fallback = 0) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
 
-      if (typeof settingsData.bannerImages === 'string') {
+    function parseArrayMaybe(value) {
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') {
         try {
-          settingsData.bannerImages = JSON.parse(settingsData.bannerImages);
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed : [];
         } catch {
-          settingsData.bannerImages = [];
+          return [];
         }
       }
+      return [];
+    }
 
-      if (!Array.isArray(settingsData.bannerImages)) settingsData.bannerImages = [];
+    function normalizeIncomingData(data) {
+      const container = (data && typeof data === 'object') ? data : {};
+      const source = [container.data, container.result, container.payload, container]
+        .find(item => item && typeof item === 'object') || {};
+
+      let categoriesData = source.categories || source.category || source.categoryList || source.kateqoriyalar || [];
+      let productsData = source.products || source.items || source.menu || source.menuItems || source.mehsullar || [];
+      let settingsData = source.settings || source.config || source.info || {};
+
+      categoriesData = Array.isArray(categoriesData) ? categoriesData : [];
+      productsData = Array.isArray(productsData) ? productsData : [];
+      settingsData = settingsData && typeof settingsData === 'object' ? settingsData : {};
+
+      if (!Object.keys(settingsData).length) settingsData = fallbackData.settings;
+
+      categoriesData = categoriesData.map((category, index) => ({
+        ...category,
+        id: parseNumber(category.id ?? category.categoryId ?? category.category_id, index + 1),
+        nameAz: safeText(category.nameAz ?? category.nameAZ ?? category.azName ?? category.name ?? category.title),
+        nameEn: safeText(category.nameEn ?? category.nameEN ?? category.enName ?? category.name ?? category.title),
+        icon: safeText(category.icon || '🍽️'),
+        sortOrder: parseNumber(category.sortOrder ?? category.order ?? category.sort ?? index + 1, index + 1),
+        active: parseBoolean(category.active ?? category.isActive ?? category.enabled ?? category.status, true)
+      }));
+
+      productsData = productsData.map((product, index) => {
+        const images = parseArrayMaybe(product.images ?? product.imageUrls ?? product.photos ?? product.gallery);
+        const fallbackImage = safeText(product.image ?? product.photo);
+
+        return {
+          ...product,
+          id: parseNumber(product.id ?? product.productId ?? product.product_id, index + 1),
+          categoryId: parseNumber(product.categoryId ?? product.category_id ?? product.category, 0),
+          nameAz: safeText(product.nameAz ?? product.nameAZ ?? product.azName ?? product.name ?? product.title),
+          nameEn: safeText(product.nameEn ?? product.nameEN ?? product.enName ?? product.name ?? product.title),
+          descAz: safeText(product.descAz ?? product.descriptionAz ?? product.azDescription ?? product.description),
+          descEn: safeText(product.descEn ?? product.descriptionEn ?? product.enDescription ?? product.description),
+          ingredientsAz: safeText(product.ingredientsAz ?? product.azIngredients ?? product.ingredients),
+          ingredientsEn: safeText(product.ingredientsEn ?? product.enIngredients ?? product.ingredients),
+          allergensAz: safeText(product.allergensAz ?? product.azAllergens ?? product.allergens),
+          allergensEn: safeText(product.allergensEn ?? product.enAllergens ?? product.allergens),
+          price: parseNumber(product.price ?? product.cost ?? product.amount, 0),
+          popular: parseBoolean(product.popular ?? product.isPopular, false),
+          recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
+          available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
+          images: images.length ? images : (fallbackImage ? [fallbackImage] : [])
+        };
+      });
+
+      settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImages ?? settingsData.banners ?? settingsData.banner);
+      settingsData.recommendedIds = settingsData.recommendedIds ?? settingsData.recommended ?? '[]';
 
       if (typeof settingsData.recommendedIds !== 'string') {
         try {
@@ -987,14 +1048,20 @@
 
     function fastInitialRender() {
       const cached = getCachePayload();
-      const initial = normalizeIncomingData(cached || fallbackData);
+      const initial = normalizeIncomingData(cached || { categories: [], products: [], settings: fallbackData.settings });
 
       categories = initial.categories;
       products = initial.products;
       settings = initial.settings;
 
       const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-      if (!currentCategory && active.length) currentCategory = Number(active[0].id);
+      if (active.length) {
+        if (!active.some(c => Number(c.id) === Number(currentCategory))) {
+          currentCategory = Number(active[0].id);
+        }
+      } else {
+        currentCategory = null;
+      }
 
       renderAll();
       preloadCriticalImages();
@@ -1015,8 +1082,12 @@
           settings = normalized.settings;
 
           const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-          if (!active.some(c => Number(c.id) === Number(currentCategory)) && active.length) {
-            currentCategory = Number(active[0].id);
+          if (active.length) {
+            if (!active.some(c => Number(c.id) === Number(currentCategory))) {
+              currentCategory = Number(active[0].id);
+            }
+          } else {
+            currentCategory = null;
           }
 
           setCachePayload(normalized);
