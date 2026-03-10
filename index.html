@@ -959,7 +959,10 @@
           const parsed = JSON.parse(value);
           return Array.isArray(parsed) ? parsed : [];
         } catch {
-          return [];
+          return value
+            .split(/[\n,;]/)
+            .map(item => item.trim())
+            .filter(Boolean);
         }
       }
       return [];
@@ -997,10 +1000,10 @@
         ...settings,
         nameAz: safeText(pickFirstValue(settings, ['nameAz', 'restaurantNameAz', 'restaurantName', 'titleAz', 'title'])),
         nameEn: safeText(pickFirstValue(settings, ['nameEn', 'restaurantNameEn', 'restaurantName', 'titleEn', 'title'])),
-        logo: normalizeMediaUrl(pickFirstValue(settings, ['logo', 'logoUrl', 'brandLogo', 'headerLogo'])),
+        logo: normalizeMediaUrl(pickFirstValue(settings, ['logo', 'logoUrl', 'brandLogo', 'headerLogo', 'siteLogo', 'logo_image'])),
         heroTitleAz: safeText(pickFirstValue(settings, ['heroTitleAz', 'heroTitle', 'coverTitleAz', 'mainTitleAz', 'mainTitle'])),
         heroTitleEn: safeText(pickFirstValue(settings, ['heroTitleEn', 'coverTitleEn', 'mainTitleEn', 'mainTitle'])),
-        heroImage: normalizeMediaUrl(pickFirstValue(settings, ['heroImage', 'heroImageUrl', 'coverImage', 'coverPhoto', 'mainImage'])),
+        heroImage: normalizeMediaUrl(pickFirstValue(settings, ['heroImage', 'heroImageUrl', 'coverImage', 'coverPhoto', 'mainImage', 'headerImage', 'header_image', 'hero_image'])),
         workWeekday: safeText(pickFirstValue(settings, ['workWeekday', 'workingHoursWeekday', 'weekdayHours', 'hoursWeekday'])),
         workWeekend: safeText(pickFirstValue(settings, ['workWeekend', 'workingHoursWeekend', 'weekendHours', 'hoursWeekend'])),
         addressAz: safeText(pickFirstValue(settings, ['addressAz', 'address', 'location', 'venueAddressAz'])),
@@ -1011,7 +1014,8 @@
         facebook: safeText(pickFirstValue(settings, ['facebook', 'facebookUrl', 'fb'])),
         bannerEnabled: parseBoolean(pickFirstValue(settings, ['bannerEnabled', 'showBanner', 'showBanners'], settings.bannerEnabled), false),
         bannerTitle: safeText(pickFirstValue(settings, ['bannerTitle', 'promoTitle', 'campaignTitle'])),
-        bannerInterval: parseNumber(pickFirstValue(settings, ['bannerInterval', 'bannerDuration', 'sliderInterval'], 3000), 3000),
+        bannerInterval: parseNumber(pickFirstValue(settings, ['bannerInterval', 'bannerDuration', 'sliderInterval', 'slideInterval', 'intervalMs'], 3000), 3000),
+        adImage: normalizeMediaUrl(pickFirstValue(settings, ['adImage', 'adImageUrl', 'reklamImage', 'reklamSekli', 'advertisementImage'])),
         popupEnabled: parseBoolean(pickFirstValue(settings, ['popupEnabled', 'showPopup'], settings.popupEnabled), false),
         popupShowOnce: parseBoolean(pickFirstValue(settings, ['popupShowOnce', 'showPopupOnce'], settings.popupShowOnce), true),
         popupTitle: safeText(pickFirstValue(settings, ['popupTitle', 'announcementTitle', 'modalTitle'])),
@@ -1092,11 +1096,7 @@
           popular: parseBoolean(product.popular ?? product.isPopular, false),
           recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
           available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
- codex/fix-image-upload-to-menu-site-8tz4mg
-          images,
-
           images: images,
- main
           videoUrl: normalizeMediaUrl(product.videoUrl)
         };
       });
@@ -1112,7 +1112,6 @@
         settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImagesJson || settingsData.banners || '[]');
       }
 
- codex/fix-image-upload-to-menu-site-8tz4mg
       settingsData.bannerImages = settingsData.bannerImages.map(item => {
         if (typeof item === 'string') {
           return { image: normalizeMediaUrl(item), title: '', active: true };
@@ -1129,13 +1128,32 @@
       settingsData.logo = normalizeMediaUrl(settingsData.logo || settingsData.logoUrl);
       settingsData.heroImage = normalizeMediaUrl(settingsData.heroImage);
       settingsData.popupImage = normalizeMediaUrl(settingsData.popupImage);
+      settingsData.adImage = normalizeMediaUrl(settingsData.adImage);
       settingsData.bannerImages = settingsData.bannerImages.map(item => ({
         ...item,
         image: normalizeMediaUrl(item?.image)
       }));
 
+      if (!settingsData.bannerImages.length) {
+        const rawBannerCandidates = pickFirstValue(settingsData, ['bannerImage', 'bannerImageUrl', 'banner_image', 'bannerImagesList', 'sliderImages', 'sliderImageUrls']);
+        const parsedBannerCandidates = parseArrayMaybe(rawBannerCandidates)
+          .map(item => {
+            if (typeof item === 'string') return { image: normalizeMediaUrl(item), title: '', active: true };
+            return {
+              image: normalizeMediaUrl(item?.image ?? item?.url ?? item?.imageUrl),
+              title: safeText(item?.title ?? item?.name),
+              active: parseBoolean(item?.active ?? item?.enabled, true)
+            };
+          })
+          .filter(item => item.image);
+        settingsData.bannerImages = parsedBannerCandidates;
+      }
+
+      if (!settingsData.popupImage && settingsData.adImage) {
+        settingsData.popupImage = settingsData.adImage;
+      }
+
       // recommendedIds string olmalıdır
- main
       if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
         try {
           settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
@@ -1409,7 +1427,27 @@
     }
 
     function getActiveBannerImages() {
-      return (Array.isArray(settings.bannerImages) ? settings.bannerImages : []).filter(item => item && item.image && item.active !== false);
+      const manualBanners = (Array.isArray(settings.bannerImages) ? settings.bannerImages : [])
+        .filter(item => item && item.image && item.active !== false);
+
+      if (manualBanners.length) return manualBanners;
+
+      let recommendedIds = [];
+      try {
+        recommendedIds = JSON.parse(settings.recommendedIds || '[]');
+      } catch {
+        recommendedIds = [];
+      }
+
+      if (!Array.isArray(recommendedIds) || !recommendedIds.length) return [];
+
+      return products
+        .filter(product => recommendedIds.includes(Number(product.id)) && product.images?.[0])
+        .map(product => ({
+          image: product.images[0],
+          title: getLocalizedProductName(product),
+          active: true
+        }));
     }
 
     function renderBannerSlider() {
