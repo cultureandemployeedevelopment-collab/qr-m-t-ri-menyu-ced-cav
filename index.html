@@ -715,8 +715,8 @@
       GAS_URL: 'https://script.google.com/macros/s/AKfycbwPMJA52jhbfcYTWweDi5qDIHXHyxsbjdEC_eaEtW2Ui5e-ItZkI703o_hNfFfzNGI1HQ/exec',
       RECOMMENDED_SLIDE_INTERVAL: 3200,
       POLL_INTERVAL: 7000,
-      CACHE_KEY: 'premium_qr_menu_cache_v6',
-      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v6',
+      CACHE_KEY: 'premium_qr_menu_cache_v7',
+      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v7',
       POPUP_ONCE_KEY: 'menu_popup_seen_v1'
     };
 
@@ -975,9 +975,9 @@
       productsData = Array.isArray(productsData) ? productsData : [];
       settingsData = settingsData && typeof settingsData === 'object' ? settingsData : {};
 
-      // Use fallback if empty
-      if (!categoriesData.length) categoriesData = fallbackData.categories;
-      if (!productsData.length) productsData = fallbackData.products;
+      // Keep fallback settings for visual defaults only.
+      // Category/product fallback is intentionally disabled so menu data
+      // always comes from Google Sheets (or last cached live payload).
       if (!Object.keys(settingsData).length) settingsData = fallbackData.settings;
 
       // Normalize categories
@@ -1089,8 +1089,17 @@
           cache: 'no-store',
           headers: { 'Accept': 'application/json' }
         });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         
         const data = await res.json();
+
+        if (data && typeof data === 'object' && data.success === false) {
+          throw new Error(data.error || 'Google Sheets response returned success=false');
+        }
+
         const normalized = normalizeIncomingData(data);
         const currentData = { categories, products, settings };
 
