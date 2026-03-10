@@ -750,6 +750,37 @@
     // ============================================
     function safeText(v) { return v == null ? '' : String(v); }
 
+    function normalizeMediaUrl(url) {
+      const raw = safeText(url).trim();
+      if (!raw) return '';
+
+      const drivePatterns = [
+        /https?:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i,
+        /https?:\/\/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/i,
+        /https?:\/\/drive\.google\.com\/uc\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i,
+        /https?:\/\/docs\.google\.com\/uc\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i
+      ];
+
+      for (const pattern of drivePatterns) {
+        const match = raw.match(pattern);
+        if (match?.[1]) {
+          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w2000`;
+        }
+      }
+
+      if (/drive\.google\.com|docs\.google\.com/i.test(raw)) {
+        try {
+          const parsed = new URL(raw);
+          const id = parsed.searchParams.get('id');
+          if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+        } catch {
+          // parse mümkün olmazsa olduğu kimi saxla
+        }
+      }
+
+      return raw;
+    }
+
     function escapeHtml(value = '') {
       return String(value)
         .replaceAll('&', '&amp;')
@@ -934,33 +965,87 @@
       return [];
     }
 
+
+    function pickFirstValue(obj, keys, fallback = '') {
+      for (const key of keys) {
+        if (!key) continue;
+        const value = obj?.[key];
+        if (value !== undefined && value !== null && String(value).trim() !== '') {
+          return value;
+        }
+      }
+      return fallback;
+    }
+
+    function normalizeSettingsShape(rawSettings) {
+      let settings = rawSettings || {};
+
+      // Bəzi sheet qurulumlarında settings key-value siyahısı kimi gələ bilir
+      if (Array.isArray(settings)) {
+        const mapped = {};
+        settings.forEach((row) => {
+          const key = safeText(row?.key ?? row?.name ?? row?.field ?? row?.settingKey).trim();
+          if (!key) return;
+          mapped[key] = row?.value ?? row?.val ?? row?.settingValue ?? '';
+        });
+        settings = mapped;
+      }
+
+      if (!settings || typeof settings !== 'object') return {};
+
+      const resolved = {
+        ...settings,
+        nameAz: safeText(pickFirstValue(settings, ['nameAz', 'restaurantNameAz', 'restaurantName', 'titleAz', 'title'])),
+        nameEn: safeText(pickFirstValue(settings, ['nameEn', 'restaurantNameEn', 'restaurantName', 'titleEn', 'title'])),
+        logo: normalizeMediaUrl(pickFirstValue(settings, ['logo', 'logoUrl', 'brandLogo', 'headerLogo'])),
+        heroTitleAz: safeText(pickFirstValue(settings, ['heroTitleAz', 'heroTitle', 'coverTitleAz', 'mainTitleAz', 'mainTitle'])),
+        heroTitleEn: safeText(pickFirstValue(settings, ['heroTitleEn', 'coverTitleEn', 'mainTitleEn', 'mainTitle'])),
+        heroImage: normalizeMediaUrl(pickFirstValue(settings, ['heroImage', 'heroImageUrl', 'coverImage', 'coverPhoto', 'mainImage'])),
+        workWeekday: safeText(pickFirstValue(settings, ['workWeekday', 'workingHoursWeekday', 'weekdayHours', 'hoursWeekday'])),
+        workWeekend: safeText(pickFirstValue(settings, ['workWeekend', 'workingHoursWeekend', 'weekendHours', 'hoursWeekend'])),
+        addressAz: safeText(pickFirstValue(settings, ['addressAz', 'address', 'location', 'venueAddressAz'])),
+        addressEn: safeText(pickFirstValue(settings, ['addressEn', 'address', 'location', 'venueAddressEn'])),
+        phone: safeText(pickFirstValue(settings, ['phone', 'phoneNumber', 'contactPhone', 'tel'])),
+        whatsapp: safeText(pickFirstValue(settings, ['whatsapp', 'whatsappNumber', 'wa'])),
+        instagram: safeText(pickFirstValue(settings, ['instagram', 'instagramUrl', 'insta'])),
+        facebook: safeText(pickFirstValue(settings, ['facebook', 'facebookUrl', 'fb'])),
+        bannerEnabled: parseBoolean(pickFirstValue(settings, ['bannerEnabled', 'showBanner', 'showBanners'], settings.bannerEnabled), false),
+        bannerTitle: safeText(pickFirstValue(settings, ['bannerTitle', 'promoTitle', 'campaignTitle'])),
+        bannerInterval: parseNumber(pickFirstValue(settings, ['bannerInterval', 'bannerDuration', 'sliderInterval'], 3000), 3000),
+        popupEnabled: parseBoolean(pickFirstValue(settings, ['popupEnabled', 'showPopup'], settings.popupEnabled), false),
+        popupShowOnce: parseBoolean(pickFirstValue(settings, ['popupShowOnce', 'showPopupOnce'], settings.popupShowOnce), true),
+        popupTitle: safeText(pickFirstValue(settings, ['popupTitle', 'announcementTitle', 'modalTitle'])),
+        popupText: safeText(pickFirstValue(settings, ['popupText', 'announcementText', 'modalText'])),
+        popupLink: safeText(pickFirstValue(settings, ['popupLink', 'announcementLink', 'modalLink'])),
+        popupImage: normalizeMediaUrl(pickFirstValue(settings, ['popupImage', 'popupImageUrl', 'announcementImage', 'modalImage']))
+      };
+
+      return resolved;
+    }
+
     // ============================================
     // DATA NORMALIZASIYA - GOOGLE SHEETS UYĞUN
     // ============================================
     function normalizeIncomingData(data) {
       // Google Sheets-dən gələn cavabı emal et
       let source = data;
-      
-      // Əgər data.data varsa (Apps Script strukturu)
+
       if (data && typeof data === 'object' && data.data) {
         source = data.data;
       }
-      
-      // Əgər data.result varsa
+
       if (data && typeof data === 'object' && data.result) {
         source = data.result;
       }
 
-      let categoriesData = source.categories || [];
-      let productsData = source.products || [];
-      let settingsData = source.settings || {};
+      let categoriesData = source?.categories || source?.category || source?.menuCategories || [];
+      let productsData = source?.products || source?.items || source?.menuItems || [];
+      let settingsData = source?.settings || source?.config || source?.restaurant || {};
 
-      // Massiv olduğunu təmin et
       categoriesData = Array.isArray(categoriesData) ? categoriesData : [];
       productsData = Array.isArray(productsData) ? productsData : [];
-      settingsData = settingsData && typeof settingsData === 'object' ? settingsData : {};
+      settingsData = normalizeSettingsShape(settingsData);
 
-      // Kateqoriyaları normalizasiya et
       categoriesData = categoriesData.map((category, index) => ({
         id: parseNumber(category.id ?? category.categoryId ?? category.category_id, index + 1),
         nameAz: safeText(category.nameAz ?? category.nameAZ ?? category.azName ?? category.name ?? category.title),
@@ -970,9 +1055,7 @@
         active: parseBoolean(category.active ?? category.isActive ?? category.enabled ?? category.status, true)
       }));
 
-      // Məhsulları normalizasiya et
       productsData = productsData.map((product, index) => {
-        // Şəkilləri müxtəlif formatlardan oxu
         let images = [];
         if (product.images && Array.isArray(product.images)) {
           images = product.images;
@@ -985,17 +1068,18 @@
         } else if (product.gallery) {
           images = parseArrayMaybe(product.gallery);
         }
-        
-        // Tək şəkil varsa
-        const fallbackImage = safeText(product.image ?? product.photo);
+
+        const fallbackImage = safeText(product.image ?? product.photo ?? product.imageUrl);
         if (!images.length && fallbackImage) {
           images = [fallbackImage];
         }
 
+        images = images.map(normalizeMediaUrl).filter(Boolean);
+
         return {
           id: parseNumber(product.id ?? product.productId ?? product.product_id, index + 1),
           categoryId: parseNumber(product.categoryId ?? product.category_id ?? product.category, 0),
-          categoryName: safeText(product.categoryName),
+          categoryName: safeText(product.categoryName ?? product.category_name),
           nameAz: safeText(product.nameAz ?? product.nameAZ ?? product.azName ?? product.name ?? product.title),
           nameEn: safeText(product.nameEn ?? product.nameEN ?? product.enName ?? product.name ?? product.title),
           descAz: safeText(product.descAz ?? product.descriptionAz ?? product.azDescription ?? product.description),
@@ -1008,12 +1092,11 @@
           popular: parseBoolean(product.popular ?? product.isPopular, false),
           recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
           available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
-          images: images,
-          videoUrl: safeText(product.videoUrl)
+          images,
+          videoUrl: normalizeMediaUrl(product.videoUrl)
         };
       });
 
-      // Banner şəkillərini emal et
       if (settingsData.bannerImages && typeof settingsData.bannerImages === 'string') {
         try {
           settingsData.bannerImages = JSON.parse(settingsData.bannerImages);
@@ -1022,10 +1105,21 @@
         }
       }
       if (!Array.isArray(settingsData.bannerImages)) {
-        settingsData.bannerImages = [];
+        settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImagesJson || settingsData.banners || '[]');
       }
 
-      // recommendedIds string olmalıdır
+      settingsData.bannerImages = settingsData.bannerImages.map(item => {
+        if (typeof item === 'string') {
+          return { image: normalizeMediaUrl(item), title: '', active: true };
+        }
+        return {
+          ...item,
+          image: normalizeMediaUrl(item?.image ?? item?.url ?? item?.imageUrl),
+          title: safeText(item?.title ?? item?.name),
+          active: parseBoolean(item?.active ?? item?.enabled, true)
+        };
+      }).filter(item => item.image);
+
       if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
         try {
           settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
@@ -1097,28 +1191,33 @@
     // ============================================
     async function fetchMenuData(showLiveBadge = false) {
       try {
-        // CORS problemini həll etmək üçün JSONP istifadə et
         const url = `${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`;
-        
-        const res = await fetch(url, { 
+
+        const res = await fetch(url, {
           method: 'GET',
           cache: 'no-store',
-          headers: { 
+          headers: {
             'Accept': 'application/json'
           }
         });
-        
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
-        
-        const data = await res.json();
-        
+
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          const text = await res.text();
+          data = JSON.parse(text);
+        }
+
         // Cavabı yoxla
         if (!data.success && data.error) {
           throw new Error(data.error);
         }
-        
+
         const normalized = normalizeIncomingData(data);
         const currentData = { categories, products, settings };
 
@@ -1148,12 +1247,66 @@
           maybeShowPopup();
         }
       } catch (e) {
-        console.error('Fetch error:', e);
+        console.error('Fetch error, JSONP fallback işə salınır:', e);
+        try {
+          const data = await fetchMenuDataJsonp();
+          const normalized = normalizeIncomingData(data);
+          categories = normalized.categories;
+          products = normalized.products;
+          settings = normalized.settings;
+
+          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
+          currentCategory = active.length ? Number(active[0].id) : null;
+
+          setCachePayload(normalized);
+          renderAll();
+          preloadCriticalImages();
+          maybeShowPopup();
+          if (showLiveBadge) flashLiveBadge();
+          return;
+        } catch (jsonpError) {
+          console.error('JSONP fallback da uğursuz oldu:', jsonpError);
+        }
+
         // Xəta baş verərsə, keşdəki məlumatı istifadə et
         if (!isInitialFastRenderDone) {
           fastInitialRender();
         }
       }
+    }
+
+    function fetchMenuDataJsonp() {
+      return new Promise((resolve, reject) => {
+        const callbackName = `menuJsonpCb_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+        const script = document.createElement('script');
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error('JSONP timeout'));
+        }, 10000);
+
+        function cleanup() {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[callbackName] = (payload) => {
+          cleanup();
+          if (!payload) {
+            reject(new Error('JSONP cavabı boşdur'));
+            return;
+          }
+          resolve(payload);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('JSONP script yüklənmədi'));
+        };
+
+        script.src = `${CONFIG.GAS_URL}?action=getMenu&callback=${callbackName}&_=${Date.now()}`;
+        document.body.appendChild(script);
+      });
     }
 
     function startPolling() {
