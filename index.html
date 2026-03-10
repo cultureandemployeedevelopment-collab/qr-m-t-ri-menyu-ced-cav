@@ -1092,7 +1092,11 @@
           popular: parseBoolean(product.popular ?? product.isPopular, false),
           recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
           available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
+ codex/fix-image-upload-to-menu-site-8tz4mg
           images,
+
+          images: images,
+ main
           videoUrl: normalizeMediaUrl(product.videoUrl)
         };
       });
@@ -1108,6 +1112,7 @@
         settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImagesJson || settingsData.banners || '[]');
       }
 
+ codex/fix-image-upload-to-menu-site-8tz4mg
       settingsData.bannerImages = settingsData.bannerImages.map(item => {
         if (typeof item === 'string') {
           return { image: normalizeMediaUrl(item), title: '', active: true };
@@ -1120,6 +1125,17 @@
         };
       }).filter(item => item.image);
 
+
+      settingsData.logo = normalizeMediaUrl(settingsData.logo || settingsData.logoUrl);
+      settingsData.heroImage = normalizeMediaUrl(settingsData.heroImage);
+      settingsData.popupImage = normalizeMediaUrl(settingsData.popupImage);
+      settingsData.bannerImages = settingsData.bannerImages.map(item => ({
+        ...item,
+        image: normalizeMediaUrl(item?.image)
+      }));
+
+      // recommendedIds string olmalıdır
+ main
       if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
         try {
           settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
