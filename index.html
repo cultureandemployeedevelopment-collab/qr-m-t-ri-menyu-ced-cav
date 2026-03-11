@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gabala Restaurant - Digital Menu</title>
+    <title>Digital Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -87,17 +87,22 @@
         
         .back-to-top.visible { opacity: 1; }
         
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        .category-section { scroll-margin-top: 140px; }
+        
+        .main-categories {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: white;
         }
         
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .sub-categories {
+            position: sticky;
+            top: 56px;
+            z-index: 30;
+            background: white;
         }
-        
+
         .video-banner {
             position: relative;
             overflow: hidden;
@@ -117,36 +122,16 @@
             align-items: center;
             justify-content: center;
         }
-        
-        .category-section { scroll-margin-top: 140px; }
-        
-        .main-categories {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            background: white;
-        }
-        
-        .sub-categories {
-            position: sticky;
-            top: 56px;
-            z-index: 30;
-            background: white;
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
         }
 
-        .banner-slide {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .banner-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .gradient-overlay {
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
     </style>
 </head>
@@ -157,12 +142,10 @@
     <!-- Navigation Drawer -->
     <div id="drawer" class="drawer closed fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-50 shadow-2xl overflow-y-auto">
         <div class="p-4">
-            <!-- Close Button -->
             <button onclick="toggleDrawer()" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-[#d4c5a3] text-white">
                 <i class="fas fa-times text-lg"></i>
             </button>
             
-            <!-- Login Section -->
             <div class="mt-8 mb-6">
                 <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl mb-3 cursor-pointer hover:bg-gray-100 transition-colors">
                     <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
@@ -174,54 +157,13 @@
                 <p class="text-sm text-gray-500 px-2">Log in to simplify the ordering process and use additional features.</p>
             </div>
             
-            <!-- Contacts -->
             <div class="mb-6">
                 <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">Contacts</h3>
-                
-                <div class="space-y-4">
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-map-marker-alt text-gray-600"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-gray-800 text-sm leading-relaxed">Qafqaz Riverside Hotel, Qabala, Azerbaycan</p>
-                        </div>
-                        <button class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-external-link-alt"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-phone text-gray-600"></i>
-                        </div>
-                        <a href="tel:+994502906082" class="text-gray-800 text-sm flex-1">+994 50 290 60 82</a>
-                        <button class="text-gray-400 hover:text-gray-600" onclick="copyToClipboard('+994502906082')">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-envelope text-gray-600"></i>
-                        </div>
-                        <a href="mailto:marketing@ghg.az" class="text-gray-800 text-sm flex-1">marketing@ghg.az</a>
-                        <button class="text-gray-400 hover:text-gray-600" onclick="copyToClipboard('marketing@ghg.az')">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors" onclick="window.open('https://qafqazriverside.com', '_blank')">
-                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-globe text-gray-600"></i>
-                        </div>
-                        <span class="text-gray-800 text-sm flex-1">Visit our website</span>
-                        <i class="fas fa-external-link-alt text-gray-400"></i>
-                    </div>
+                <div class="space-y-4" id="contactInfo">
+                    <!-- Populated from settings -->
                 </div>
             </div>
             
-            <!-- Working Hours -->
             <div class="mb-6">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Working Hours</h3>
@@ -236,43 +178,22 @@
                     <span class="text-gray-800 text-sm" id="currentHours">07:00 - 24:00</span>
                     <span class="text-gray-500 text-sm" id="currentDay">Tue</span>
                 </div>
-                
                 <div id="scheduleDropdown" class="hidden mt-3 bg-gray-50 rounded-xl p-3">
                     <div class="space-y-2" id="scheduleList"></div>
                 </div>
             </div>
             
-            <!-- Social Networks -->
             <div class="mb-6">
                 <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">We are on social networks</h3>
-                <div class="flex gap-3">
-                    <button onclick="window.open('https://facebook.com', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                        <i class="fab fa-facebook-f text-blue-600"></i>
-                        <span class="text-sm font-medium">Facebook</span>
-                    </button>
-                    <button onclick="window.open('https://instagram.com', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                        <i class="fab fa-instagram text-pink-600"></i>
-                        <span class="text-sm font-medium">Instagram</span>
-                    </button>
+                <div class="flex gap-3" id="socialLinks">
+                    <!-- Populated from settings -->
                 </div>
             </div>
             
-            <!-- Map -->
             <div class="mb-6">
                 <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">On the map</h3>
-                <div class="relative rounded-xl overflow-hidden bg-gray-100 h-48">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.8!2d47.8456!3d40.9824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40388b3c5d8e0d9f%3A0x7c2c5d5e5e5e5e5e!2sQafqaz%20Riverside%20Resort%20Hotel!5e0!3m2!1sen!2saz!4v1234567890"
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy"
-                        class="grayscale-[30%]"
-                    ></iframe>
-                    <div class="absolute top-2 left-2 bg-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-md flex items-center gap-1 cursor-pointer hover:bg-gray-50">
-                        Open in Maps <i class="fas fa-external-link-alt text-[10px]"></i>
-                    </div>
+                <div class="relative rounded-xl overflow-hidden bg-gray-100 h-48" id="mapContainer">
+                    <!-- Map populated from settings -->
                 </div>
                 <button onclick="getDirections()" class="w-full mt-3 p-3 border border-gray-200 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
                     <i class="fas fa-route text-gray-600"></i>
@@ -280,7 +201,6 @@
                 </button>
             </div>
             
-            <!-- Allergens -->
             <div class="mb-6">
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                     <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -291,17 +211,15 @@
                 </div>
             </div>
             
-            <!-- VAT Info -->
             <div class="p-4 bg-gray-50 rounded-xl mb-4">
                 <div class="flex items-center gap-2 mb-2">
                     <i class="fas fa-info-circle text-gray-400"></i>
                     <span class="text-xs text-gray-500 font-medium uppercase tracking-wider">About the place</span>
                 </div>
-                <p class="text-sm text-gray-700">Prices are in AZN and 18% VAT</p>
+                <p class="text-sm text-gray-700" id="vatInfo">Prices are in AZN and 18% VAT</p>
             </div>
         </div>
         
-        <!-- Footer -->
         <div class="p-4 border-t border-gray-100">
             <p class="text-center text-xs text-gray-400">
                 Powered by <span class="text-[#d4c5a3] font-semibold">GHG/CED</span>
@@ -316,13 +234,10 @@
         <div class="fixed top-0 left-0 right-0 z-30 max-w-md mx-auto">
             <div class="bg-gradient-to-b from-black/60 to-transparent pt-2 pb-8 px-4">
                 <div class="flex items-center justify-between">
-                    <!-- Logo -->
                     <div class="bg-white rounded-lg px-3 py-2 shadow-lg">
-                        <div class="text-xs font-bold tracking-wider text-gray-800">QAFAQAZ</div>
-                        <div class="text-[8px] text-gray-500 uppercase tracking-widest">Riverside Hotel</div>
+                        <div class="text-xs font-bold tracking-wider text-gray-800" id="logoText">MENU</div>
                     </div>
                     
-                    <!-- Right Icons -->
                     <div class="flex items-center gap-2">
                         <button class="nav-icon-btn bg-white rounded-lg px-3 py-2 shadow-lg flex items-center gap-1">
                             <span class="text-sm font-medium">EN</span>
@@ -342,13 +257,13 @@
             </div>
         </div>
 
-        <!-- Hero Slider Section (Admin Banner Management) -->
+        <!-- Hero Slider Section -->
         <div class="relative">
             <div id="heroSlider" class="hero-slider flex overflow-x-auto hide-scrollbar h-[45vh] relative">
-                <!-- Slides populated by JS from admin -->
+                <!-- Loading skeleton -->
+                <div class="hero-slide min-w-full h-full skeleton"></div>
             </div>
             
-            <!-- Slider Controls -->
             <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white hover:bg-black/50 transition-colors z-10">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -356,7 +271,6 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
             
-            <!-- Slide Info Overlay -->
             <div class="absolute bottom-4 left-4 right-4 flex items-end justify-between z-10">
                 <div class="bg-black/50 backdrop-blur-md rounded-lg px-4 py-2 text-white max-w-[70%]">
                     <h3 id="slideTitle" class="font-semibold text-sm truncate"></h3>
@@ -373,7 +287,6 @@
                 </div>
             </div>
             
-            <!-- Slide Indicators -->
             <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
                 <div id="slideIndicators" class="flex gap-1.5"></div>
             </div>
@@ -381,8 +294,8 @@
 
         <!-- Restaurant Info -->
         <div class="px-4 pt-6 pb-2 bg-white">
-            <h1 class="text-2xl font-bold text-gray-900 mb-1">Gabala restaurant</h1>
-            <p class="text-gray-500 text-sm mb-4">Qafqaz Riverside Hotel</p>
+            <h1 class="text-2xl font-bold text-gray-900 mb-1" id="restaurantName">Loading...</h1>
+            <p class="text-gray-500 text-sm mb-4" id="hotelName">Please wait</p>
             
             <div class="flex items-center justify-center gap-4 mb-6">
                 <div class="h-px bg-gray-200 flex-1"></div>
@@ -391,7 +304,7 @@
             </div>
         </div>
 
-        <!-- Video Advertisement Banner (Admin Controlled) -->
+        <!-- Video Advertisement Banner -->
         <div id="videoBannerContainer" class="px-4 mb-4 hidden">
             <div class="video-banner rounded-2xl h-48 bg-gray-900 relative overflow-hidden group cursor-pointer" onclick="playVideo(this)">
                 <video id="adVideo" loop muted playsinline poster="">
@@ -412,16 +325,49 @@
 
         <!-- Main Categories -->
         <div class="main-categories px-4 py-3 border-b border-gray-100">
-            <div id="mainCategories" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1"></div>
+            <div id="mainCategories" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+                <div class="skeleton w-24 h-10 rounded-full"></div>
+                <div class="skeleton w-24 h-10 rounded-full"></div>
+                <div class="skeleton w-24 h-10 rounded-full"></div>
+            </div>
         </div>
 
         <!-- Sub Categories -->
         <div class="sub-categories px-4 py-2 border-b border-gray-100 bg-white">
-            <div id="subCategories" class="flex gap-2 overflow-x-auto hide-scrollbar"></div>
+            <div id="subCategories" class="flex gap-2 overflow-x-auto hide-scrollbar">
+                <div class="skeleton w-20 h-8 rounded-full"></div>
+                <div class="skeleton w-20 h-8 rounded-full"></div>
+            </div>
         </div>
 
         <!-- Menu Content -->
-        <div id="menuContent" class="px-4 pb-24 pt-4 space-y-8"></div>
+        <div id="menuContent" class="px-4 pb-24 pt-4 space-y-8">
+            <div class="space-y-4">
+                <div class="skeleton h-6 w-32 rounded"></div>
+                <div class="menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm">
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg skeleton"></div>
+                    <div class="flex-1 space-y-2">
+                        <div class="skeleton h-4 w-3/4 rounded"></div>
+                        <div class="skeleton h-3 w-1/2 rounded"></div>
+                        <div class="flex justify-between items-end mt-4">
+                            <div class="skeleton h-5 w-16 rounded"></div>
+                            <div class="skeleton w-10 h-10 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm">
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg skeleton"></div>
+                    <div class="flex-1 space-y-2">
+                        <div class="skeleton h-4 w-3/4 rounded"></div>
+                        <div class="skeleton h-3 w-1/2 rounded"></div>
+                        <div class="flex justify-between items-end mt-4">
+                            <div class="skeleton h-5 w-16 rounded"></div>
+                            <div class="skeleton w-10 h-10 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Floating Action Button -->
         <button onclick="scrollToTop()" id="backToTop" class="back-to-top fixed bottom-20 right-6 w-12 h-12 bg-[#d4c5a3] text-white rounded-full shadow-lg flex items-center justify-center z-30 hover:bg-[#c4b593] transition-colors">
@@ -457,26 +403,20 @@
 
     <script>
         // ==========================================
-        // APP CONFIGURATION
+        // CONFIGURATION - BUNU DƏYİŞDİRİN
         // ==========================================
-        const APP_CONFIG = {
-            // Google Apps Script Web App URL - bunu öz deployment URL-inizlə əvəz edin
+        const CONFIG = {
+            // Google Apps Script Web App URL-nizi bura yazın
             GAS_URL: 'https://script.google.com/macros/s/AKfycbxy5SCDM5C7hoyxSZtFbi5i8gO9_HCLATm0OkK-K6nCcDqeBJNUGZlyHVCmtFJuK75nVg/exec',
             
-            // Fallback data (offline mode üçün)
-            FALLBACK_MODE: true,
-            
-            SHEET_NAMES: {
-                CATEGORIES: 'CATEGORIES',
-                PRODUCTS: 'PRODUCTS',
-                SETTINGS: 'SETTINGS'
-            }
+            // Fallback mode - true olarsa Google Sheets işləməsə də işləyər
+            FALLBACK_MODE: false
         };
 
         // ==========================================
-        // STATE MANAGEMENT
+        // STATE
         // ==========================================
-        let appState = {
+        const state = {
             categories: [],
             products: [],
             settings: {},
@@ -485,164 +425,58 @@
             currentSlide: 0,
             favorites: new Set(),
             touchStartX: 0,
-            touchEndX: 0,
-            isLoading: false
-        };
-
-        // ==========================================
-        // FALLBACK DATA (Admin paneldən əlavə edilən məlumatlar)
-        // ==========================================
-        const fallbackData = {
-            categories: [
-                {
-                    id: 'beverage',
-                    nameAz: 'İçkilər',
-                    nameEn: 'Beverage menu',
-                    icon: '🍹',
-                    sortOrder: 1,
-                    active: true,
-                    subcategories: ['Soft Drinks', 'Fresh Juices', 'Drinks by bottle', 'Coffee', 'Tea', 'Vermouth', 'Liquor', 'Cocktails', 'Mocktails']
-                },
-                {
-                    id: 'food',
-                    nameAz: 'Yeməklər',
-                    nameEn: 'Food menu',
-                    icon: '🍽️',
-                    sortOrder: 2,
-                    active: true,
-                    subcategories: ['Starters', 'Salads', 'Soups', 'Main Courses', 'Desserts', 'Breakfast']
-                },
-                {
-                    id: 'wine',
-                    nameAz: 'Şərablar',
-                    nameEn: 'Wine list',
-                    icon: '🍷',
-                    sortOrder: 3,
-                    active: true,
-                    subcategories: ['Red Wine', 'White Wine', 'Rose', 'Champagne', 'Sparkling']
-                },
-                {
-                    id: 'cigarettes',
-                    nameAz: 'Siqaretlər',
-                    nameEn: 'Cigarettes',
-                    icon: '🚬',
-                    sortOrder: 4,
-                    active: true,
-                    subcategories: ['Cigarettes', 'Heated Tobacco', 'Accessories']
-                }
-            ],
-            products: [
-                // Soft Drinks
-                { id: 1, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Evian still su', nameEn: 'Evian still water', price: 22, volume: '0.75ml', time: '3min', imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80', likes: 45, popular: true },
-                { id: 2, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Perrier qazlı su', nameEn: 'Perrier sparkling water', price: 22, volume: '0.75ml', time: '3min', imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80', likes: 38 },
-                { id: 3, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Borjomi', nameEn: 'Borjomi', price: 6, volume: '0.5ml', time: '3min', imageUrl: 'https://images.unsplash.com/photo-1560023907-5f339617ea30?w=400&q=80', likes: 52, vat: true },
-                { id: 4, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Coca Cola', nameEn: 'Coca Cola', price: 4, volume: '0.33ml', time: '2min', imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80', likes: 89 },
-                { id: 5, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Fanta Orange', nameEn: 'Fanta Orange', price: 4, volume: '0.33ml', time: '2min', imageUrl: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=400&q=80', likes: 34 },
-                
-                // Cocktails
-                { id: 6, categoryId: 'beverage', categoryName: 'Cocktails', nameAz: 'Mojito', nameEn: 'Mojito', price: 18, volume: '300ml', time: '5min', imageUrl: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&q=80', likes: 127, popular: true },
-                { id: 7, categoryId: 'beverage', categoryName: 'Cocktails', nameAz: 'Margarita', nameEn: 'Margarita', price: 20, volume: '250ml', time: '5min', imageUrl: 'https://images.unsplash.com/photo-1556855810-2b7d2b9c5b8f?w=400&q=80', likes: 98 },
-                
-                // Starters
-                { id: 8, categoryId: 'food', categoryName: 'Starters', nameAz: 'Kartof fri', nameEn: 'French fries', price: 6, volume: '200g', time: '10min', imageUrl: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80', likes: 83, popular: true, featured: true },
-                { id: 9, categoryId: 'food', categoryName: 'Starters', nameAz: 'Soğan halqaları', nameEn: 'Onion rings', price: 8, volume: '150g', time: '12min', imageUrl: 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=400&q=80', likes: 56 },
-                
-                // Main Courses
-                { id: 10, categoryId: 'food', categoryName: 'Main Courses', nameAz: 'Quzu lüləsi', nameEn: 'Lamb lula', price: 12, volume: '300g', time: '20min', imageUrl: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400&q=80', likes: 52, featured: true },
-                { id: 11, categoryId: 'food', categoryName: 'Main Courses', nameAz: 'Penne Arrabbiata', nameEn: 'Penne Arrabbiata', price: 17, volume: '350g', time: '15min', imageUrl: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&q=80', likes: 41, featured: true },
-                { id: 12, categoryId: 'food', categoryName: 'Main Courses', nameAz: 'Qızardılmış somon', nameEn: 'Grilled Salmon', price: 28, volume: '250g', time: '25min', imageUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80', likes: 76 },
-                
-                // Cigarettes
-                { id: 13, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Kent Nano White', nameEn: 'Kent Nano White', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 23, vat: true },
-                { id: 14, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Kent Navy Blue', nameEn: 'Kent Navy Blue', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 19, vat: true },
-                { id: 15, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Sobranie White', nameEn: 'Sobranie White', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 31, vat: true },
-                { id: 16, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Kent Neo Sticks', nameEn: 'Kent Neo Sticks', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 15, vat: true }
-            ],
-            settings: {
-                bannerImages: [
-                    { id: 1, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80', title: 'Qafqaz Riverside Hotel', price: '', likes: '' },
-                    { id: 2, image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80', title: 'French fries', price: '6 AZN', likes: '83' },
-                    { id: 3, image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=800&q=80', title: 'Lamb lula', price: '12 AZN', likes: '52' },
-                    { id: 4, image: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=800&q=80', title: 'Penne Arrabbiata', price: '17 AZN', likes: '41' }
-                ],
-                videoAd: {
-                    enabled: true,
-                    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-preparing-a-salad-with-oil-42913-large.mp4',
-                    posterUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
-                    title: 'Yeni Təklif!',
-                    subtitle: 'Bu həftə xüsusi endirimlər'
-                },
-                restaurantName: 'Gabala restaurant',
-                hotelName: 'Qafqaz Riverside Hotel',
-                currency: 'AZN',
-                vatRate: 18
-            }
+            touchEndX: 0
         };
 
         // ==========================================
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            loadFavorites();
             initApp();
         });
 
         async function initApp() {
-            showLoading(true);
-            
             try {
                 // Try to fetch from Google Sheets
-                if (!APP_CONFIG.FALLBACK_MODE) {
-                    await fetchDataFromSheets();
+                const data = await fetchFromSheets();
+                
+                if (data && data.success) {
+                    state.categories = data.data.categories || [];
+                    state.products = data.data.products || [];
+                    state.settings = data.data.settings || {};
                 } else {
-                    // Use fallback data
-                    appState.categories = fallbackData.categories;
-                    appState.products = fallbackData.products;
-                    appState.settings = fallbackData.settings;
+                    throw new Error('No data received');
                 }
-                
-                // Initialize UI
-                initHeroSlider();
-                initCategories();
-                initSchedule();
-                loadMenu();
-                initVideoBanner();
-                setupScrollListener();
-                setupTouchHandlers();
-                
             } catch (error) {
-                console.error('App initialization error:', error);
-                showToast('Xəta baş verdi. Offline mod işləyir.');
+                console.error('Failed to load from sheets:', error);
+                showToast('Failed to load menu. Please check connection.');
                 
-                // Fallback to local data
-                appState.categories = fallbackData.categories;
-                appState.products = fallbackData.products;
-                appState.settings = fallbackData.settings;
-                
-                initHeroSlider();
-                initCategories();
-                initSchedule();
-                loadMenu();
-                initVideoBanner();
+                if (CONFIG.FALLBACK_MODE) {
+                    // Use empty state - admin will add data
+                    state.categories = [];
+                    state.products = [];
+                    state.settings = {};
+                }
             } finally {
-                showLoading(false);
+                renderApp();
+                setupEventListeners();
             }
         }
 
         // ==========================================
-        // DATA FETCHING
+        // API FUNCTIONS
         // ==========================================
-        async function fetchDataFromSheets() {
+        async function fetchFromSheets() {
             try {
-                const response = await fetch(`${APP_CONFIG.GAS_URL}?action=getMenu`);
-                const data = await response.json();
+                const response = await fetch(`${CONFIG.GAS_URL}?action=getMenu`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
                 
-                if (data.success) {
-                    appState.categories = data.data.categories || [];
-                    appState.products = data.data.products || [];
-                    appState.settings = data.data.settings || {};
-                } else {
-                    throw new Error(data.error || 'Failed to fetch data');
-                }
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
             } catch (error) {
                 console.error('Fetch error:', error);
                 throw error;
@@ -650,189 +484,209 @@
         }
 
         // ==========================================
-        // HERO SLIDER (Admin Banner Management)
+        // RENDER FUNCTIONS
         // ==========================================
-        function initHeroSlider() {
+        function renderApp() {
+            renderSettings();
+            renderHeroSlider();
+            renderCategories();
+            renderMenu();
+            initSchedule();
+        }
+
+        function renderSettings() {
+            const settings = state.settings;
+            
+            // Restaurant info
+            if (settings.restaurantName) {
+                document.getElementById('restaurantName').textContent = settings.restaurantName;
+            }
+            if (settings.hotelName) {
+                document.getElementById('hotelName').textContent = settings.hotelName;
+            }
+            if (settings.logoText) {
+                document.getElementById('logoText').textContent = settings.logoText;
+            }
+            
+            // VAT info
+            if (settings.vatInfo) {
+                document.getElementById('vatInfo').textContent = settings.vatInfo;
+            }
+            
+            // Contact info
+            if (settings.contacts) {
+                const contactContainer = document.getElementById('contactInfo');
+                contactContainer.innerHTML = '';
+                
+                if (settings.contacts.address) {
+                    contactContainer.innerHTML += `
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-gray-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-800 text-sm leading-relaxed">${settings.contacts.address}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (settings.contacts.phone) {
+                    contactContainer.innerHTML += `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone text-gray-600"></i>
+                            </div>
+                            <a href="tel:${settings.contacts.phone}" class="text-gray-800 text-sm flex-1">${settings.contacts.phone}</a>
+                        </div>
+                    `;
+                }
+                
+                if (settings.contacts.email) {
+                    contactContainer.innerHTML += `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-envelope text-gray-600"></i>
+                            </div>
+                            <a href="mailto:${settings.contacts.email}" class="text-gray-800 text-sm flex-1">${settings.contacts.email}</a>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Social links
+            if (settings.social) {
+                const socialContainer = document.getElementById('socialLinks');
+                socialContainer.innerHTML = '';
+                
+                if (settings.social.facebook) {
+                    socialContainer.innerHTML += `
+                        <button onclick="window.open('${settings.social.facebook}', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                            <i class="fab fa-facebook-f text-blue-600"></i>
+                            <span class="text-sm font-medium">Facebook</span>
+                        </button>
+                    `;
+                }
+                
+                if (settings.social.instagram) {
+                    socialContainer.innerHTML += `
+                        <button onclick="window.open('${settings.social.instagram}', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                            <i class="fab fa-instagram text-pink-600"></i>
+                            <span class="text-sm font-medium">Instagram</span>
+                        </button>
+                    `;
+                }
+            }
+            
+            // Map
+            if (settings.mapEmbedUrl) {
+                document.getElementById('mapContainer').innerHTML = `
+                    <iframe 
+                        src="${settings.mapEmbedUrl}"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                    ></iframe>
+                `;
+            }
+            
+            // Video banner
+            if (settings.videoAd && settings.videoAd.enabled) {
+                const container = document.getElementById('videoBannerContainer');
+                const video = document.getElementById('adVideo');
+                const source = video.querySelector('source');
+                
+                source.src = settings.videoAd.videoUrl;
+                video.poster = settings.videoAd.posterUrl || '';
+                document.getElementById('adTitle').textContent = settings.videoAd.title || '';
+                document.getElementById('adSubtitle').textContent = settings.videoAd.subtitle || '';
+                
+                container.classList.remove('hidden');
+                video.load();
+            }
+        }
+
+        function renderHeroSlider() {
             const slider = document.getElementById('heroSlider');
             const indicators = document.getElementById('slideIndicators');
-            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
-            
-            if (!banners || banners.length === 0) {
-                // Default banner if none set
-                banners.push({
-                    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
-                    title: appState.settings.restaurantName || 'Gabala Restaurant',
-                    price: '',
-                    likes: ''
-                });
-            }
+            const banners = state.settings.bannerImages || [];
             
             slider.innerHTML = '';
             indicators.innerHTML = '';
             
+            if (banners.length === 0) {
+                // Default placeholder
+                slider.innerHTML = '<div class="hero-slide min-w-full h-full bg-gray-200 flex items-center justify-center"><span class="text-gray-400">No banner images</span></div>';
+                document.getElementById('totalSlides').textContent = '0';
+                return;
+            }
+            
             banners.forEach((slide, index) => {
-                // Create slide
+                if (!slide.active) return;
+                
                 const slideDiv = document.createElement('div');
                 slideDiv.className = 'hero-slide min-w-full h-full relative';
                 slideDiv.innerHTML = `
-                    <img src="${slide.image}" class="w-full h-full object-cover" alt="${slide.title}" loading="eager">
+                    <img src="${slide.image}" class="w-full h-full object-cover" alt="${slide.title}" loading="${index === 0 ? 'eager' : 'lazy'}" onerror="this.parentElement.style.display='none'">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 `;
                 slider.appendChild(slideDiv);
                 
-                // Create indicator
                 const indicator = document.createElement('div');
                 indicator.className = `slide-indicator w-2 h-2 rounded-full bg-white/50 cursor-pointer ${index === 0 ? 'active' : ''}`;
                 indicator.onclick = () => goToSlide(index);
                 indicators.appendChild(indicator);
             });
             
-            document.getElementById('totalSlides').textContent = banners.length;
+            document.getElementById('totalSlides').textContent = banners.filter(b => b.active).length;
             updateSlideInfo();
             
             // Auto slide
             setInterval(() => {
-                nextSlide();
+                if (banners.filter(b => b.active).length > 1) {
+                    nextSlide();
+                }
             }, 5000);
         }
 
-        function updateSlideInfo() {
-            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
-            const slide = banners[appState.currentSlide];
-            
-            if (slide) {
-                document.getElementById('slideTitle').textContent = slide.title || '';
-                document.getElementById('slidePrice').textContent = slide.price || '';
-                document.getElementById('slideLikes').textContent = slide.likes || '';
-            }
-            
-            document.getElementById('currentSlide').textContent = appState.currentSlide + 1;
-            
-            // Update indicators
-            document.querySelectorAll('.slide-indicator').forEach((ind, idx) => {
-                ind.classList.toggle('active', idx === appState.currentSlide);
-            });
-        }
-
-        function nextSlide() {
-            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
-            appState.currentSlide = (appState.currentSlide + 1) % banners.length;
-            document.getElementById('heroSlider').scrollTo({ 
-                left: appState.currentSlide * window.innerWidth, 
-                behavior: 'smooth' 
-            });
-            updateSlideInfo();
-        }
-
-        function prevSlide() {
-            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
-            appState.currentSlide = (appState.currentSlide - 1 + banners.length) % banners.length;
-            document.getElementById('heroSlider').scrollTo({ 
-                left: appState.currentSlide * window.innerWidth, 
-                behavior: 'smooth' 
-            });
-            updateSlideInfo();
-        }
-
-        function goToSlide(index) {
-            appState.currentSlide = index;
-            document.getElementById('heroSlider').scrollTo({ 
-                left: appState.currentSlide * window.innerWidth, 
-                behavior: 'smooth' 
-            });
-            updateSlideInfo();
-        }
-
-        // ==========================================
-        // VIDEO BANNER (Admin Controlled)
-        // ==========================================
-        function initVideoBanner() {
-            const videoAd = appState.settings.videoAd || fallbackData.settings.videoAd;
-            
-            if (!videoAd || !videoAd.enabled) {
-                document.getElementById('videoBannerContainer').classList.add('hidden');
-                return;
-            }
-            
-            const container = document.getElementById('videoBannerContainer');
-            const video = document.getElementById('adVideo');
-            const source = video.querySelector('source');
-            
-            source.src = videoAd.videoUrl;
-            video.poster = videoAd.posterUrl;
-            document.getElementById('adTitle').textContent = videoAd.title;
-            document.getElementById('adSubtitle').textContent = videoAd.subtitle;
-            
-            container.classList.remove('hidden');
-            video.load();
-        }
-
-        function playVideo(container) {
-            const video = container.querySelector('video');
-            const overlay = container.querySelector('.play-overlay');
-            
-            if (video.paused) {
-                video.play();
-                overlay.style.opacity = '0';
-            } else {
-                video.pause();
-                overlay.style.opacity = '1';
-            }
-        }
-
-        // ==========================================
-        // CATEGORIES
-        // ==========================================
-        function initCategories() {
+        function renderCategories() {
             const mainContainer = document.getElementById('mainCategories');
             mainContainer.innerHTML = '';
             
-            const categories = appState.categories.filter(c => c.active !== false);
+            const activeCategories = state.categories.filter(c => c.active !== false);
             
-            if (categories.length === 0) return;
-            
-            // Set first category as default
-            if (!appState.currentCategory) {
-                appState.currentCategory = categories[0].id;
+            if (activeCategories.length === 0) {
+                mainContainer.innerHTML = '<div class="text-gray-400 text-sm py-2">No categories available</div>';
+                return;
             }
             
-            categories.forEach((cat, index) => {
+            // Set first category as default
+            if (!state.currentCategory) {
+                state.currentCategory = activeCategories[0].id;
+            }
+            
+            activeCategories.forEach((cat) => {
                 const btn = document.createElement('button');
-                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 ${cat.id === appState.currentCategory ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
-                btn.innerHTML = `<span>${cat.nameEn || cat.nameAz}</span>`;
+                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium ${cat.id === state.currentCategory ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
+                btn.textContent = cat.nameEn || cat.nameAz || cat.name;
                 btn.onclick = () => switchCategory(cat.id);
                 mainContainer.appendChild(btn);
             });
             
-            updateSubcategories();
+            renderSubcategories();
         }
 
-        function switchCategory(catId) {
-            appState.currentCategory = catId;
-            
-            // Update main category buttons
-            document.querySelectorAll('.main-categories .category-tab').forEach((btn, idx) => {
-                const categories = appState.categories.filter(c => c.active !== false);
-                const cat = categories[idx];
-                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 ${cat.id === catId ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
-            });
-            
-            // Update subcategories
-            updateSubcategories();
-            
-            // Load first subcategory
-            const cat = appState.categories.find(c => c.id === catId);
-            if (cat && cat.subcategories && cat.subcategories.length > 0) {
-                switchSubcategory(cat.subcategories[0]);
-            }
-        }
-
-        function updateSubcategories() {
+        function renderSubcategories() {
             const container = document.getElementById('subCategories');
             container.innerHTML = '';
             
-            const cat = appState.categories.find(c => c.id === appState.currentCategory);
-            if (!cat || !cat.subcategories) return;
+            const cat = state.categories.find(c => c.id === state.currentCategory);
+            if (!cat || !cat.subcategories || cat.subcategories.length === 0) {
+                container.innerHTML = '<div class="text-gray-400 text-xs py-2">No subcategories</div>';
+                return;
+            }
             
             cat.subcategories.forEach((sub, idx) => {
                 const btn = document.createElement('button');
@@ -841,34 +695,23 @@
                 btn.onclick = () => switchSubcategory(sub);
                 container.appendChild(btn);
             });
+            
+            // Load first subcategory
+            if (cat.subcategories.length > 0) {
+                switchSubcategory(cat.subcategories[0]);
+            }
         }
 
-        function switchSubcategory(subName) {
-            appState.currentSubcategory = subName;
-            
-            // Update subcategory buttons
-            document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
-                btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === subName ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
-            });
-            
-            loadMenu();
-            scrollToSubcategory(subName);
-        }
-
-        // ==========================================
-        // MENU LOADING
-        // ==========================================
-        function loadMenu() {
+        function renderMenu() {
             const container = document.getElementById('menuContent');
             container.innerHTML = '';
             
-            const cat = appState.categories.find(c => c.id === appState.currentCategory);
+            const cat = state.categories.find(c => c.id === state.currentCategory);
             if (!cat || !cat.subcategories) return;
             
-            // Group items by subcategory for continuous scroll
             cat.subcategories.forEach((subName, index) => {
-                const items = appState.products.filter(p => 
-                    p.categoryId === appState.currentCategory && 
+                const items = state.products.filter(p => 
+                    p.categoryId === state.currentCategory && 
                     p.categoryName === subName &&
                     p.available !== false
                 );
@@ -885,31 +728,17 @@
                 if (items.length === 0) {
                     const empty = document.createElement('div');
                     empty.className = 'text-gray-400 text-sm py-8 text-center';
-                    empty.textContent = 'Məhsul yoxdur / No items available';
+                    empty.textContent = 'No items available';
                     section.appendChild(empty);
                 } else {
                     const grid = document.createElement('div');
                     grid.className = 'space-y-4';
                     
                     items.forEach(item => {
-                        const card = createMenuCard(item);
-                        grid.appendChild(card);
+                        grid.appendChild(createMenuCard(item));
                     });
                     
                     section.appendChild(grid);
-                }
-                
-                // Add advertisement banner between sections (except last)
-                if (index < cat.subcategories.length - 1 && index % 2 === 1) {
-                    const adBanner = document.createElement('div');
-                    adBanner.className = 'my-6 rounded-xl overflow-hidden bg-gradient-to-r from-[#d4c5a3] to-[#b8a88a] p-4 text-white relative';
-                    adBanner.innerHTML = `
-                        <div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">REKLAM</div>
-                        <h4 class="font-bold text-lg mb-1">Xüsusi Təklif!</h4>
-                        <p class="text-sm opacity-90">Bu kateqoriyada 10% endirim</p>
-                        <button class="mt-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-medium">Ətraflı</button>
-                    `;
-                    section.appendChild(adBanner);
                 }
                 
                 container.appendChild(section);
@@ -920,17 +749,17 @@
             const card = document.createElement('div');
             card.className = 'menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm';
             
-            const isLiked = appState.favorites.has(item.id);
-            const imageUrl = item.imageUrl || (item.images && item.images[0]) || 'https://via.placeholder.com/400x400?text=No+Image';
+            const isLiked = state.favorites.has(item.id);
+            const imageUrl = item.imageUrl || (item.images && item.images[0]) || '';
             
             card.innerHTML = `
                 <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                    <img src="${imageUrl}" class="item-image" alt="${item.nameEn || item.nameAz}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
+                    ${imageUrl ? `<img src="${imageUrl}" class="item-image" alt="${item.nameEn || item.nameAz}" loading="lazy" onerror="this.style.display='none'">` : '<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fas fa-image"></i></div>'}
                 </div>
                 <div class="flex-1 flex flex-col justify-between py-1">
                     <div>
-                        <h3 class="font-semibold text-gray-900 text-base leading-tight mb-1">${item.nameEn || item.nameAz}</h3>
-                        ${item.descEn || item.descAz ? `<p class="text-xs text-gray-500 mb-1 line-clamp-2">${item.descEn || item.descAz}</p>` : ''}
+                        <h3 class="font-semibold text-gray-900 text-base leading-tight mb-1">${item.nameEn || item.nameAz || 'Unnamed'}</h3>
+                        ${(item.descEn || item.descAz) ? `<p class="text-xs text-gray-500 mb-1 line-clamp-2">${item.descEn || item.descAz}</p>` : ''}
                         <div class="flex items-center gap-3 text-xs text-gray-500">
                             ${item.volume ? `<span class="flex items-center gap-1"><i class="fas fa-flask text-[10px]"></i> ${item.volume}</span>` : ''}
                             ${item.time ? `<span class="flex items-center gap-1"><i class="fas fa-clock text-[10px]"></i> ${item.time}</span>` : ''}
@@ -938,8 +767,8 @@
                     </div>
                     <div class="flex items-end justify-between">
                         <div>
-                            <span class="price-tag font-bold text-lg">${item.price} ${appState.settings.currency || 'AZN'}</span>
-                            ${item.vat ? '<span class="text-xs text-gray-400 ml-1">18% VAT</span>' : ''}
+                            <span class="price-tag font-bold text-lg">${item.price || 0} ${state.settings.currency || 'AZN'}</span>
+                            ${item.vat ? `<span class="text-xs text-gray-400 ml-1">${state.settings.vatRate || 18}% VAT</span>` : ''}
                         </div>
                         <button onclick="toggleLike(${item.id}, this)" class="heart-btn w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center ${isLiked ? 'liked' : 'text-gray-400'}">
                             <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
@@ -953,33 +782,51 @@
         }
 
         // ==========================================
-        // FAVORITES
+        // INTERACTION FUNCTIONS
         // ==========================================
+        function switchCategory(catId) {
+            state.currentCategory = catId;
+            
+            document.querySelectorAll('.main-categories .category-tab').forEach((btn) => {
+                const cat = state.categories.find(c => c.id === catId);
+                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium ${btn.textContent === (cat?.nameEn || cat?.nameAz) ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
+            });
+            
+            renderSubcategories();
+        }
+
+        function switchSubcategory(subName) {
+            state.currentSubcategory = subName;
+            
+            document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
+                btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === subName ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
+            });
+            
+            scrollToSubcategory(subName);
+        }
+
         function toggleLike(itemId, btn) {
-            if (appState.favorites.has(itemId)) {
-                appState.favorites.delete(itemId);
+            if (state.favorites.has(itemId)) {
+                state.favorites.delete(itemId);
                 btn.classList.remove('liked');
                 btn.classList.add('text-gray-400');
                 btn.querySelector('i').classList.replace('fas', 'far');
             } else {
-                appState.favorites.add(itemId);
+                state.favorites.add(itemId);
                 btn.classList.add('liked');
                 btn.classList.remove('text-gray-400');
                 btn.querySelector('i').classList.replace('far', 'fas');
                 
-                // Animation
                 btn.style.transform = 'scale(1.2)';
                 setTimeout(() => btn.style.transform = 'scale(1)', 200);
             }
             
             updateFavCount();
-            
-            // Save to localStorage
-            localStorage.setItem('favorites', JSON.stringify([...appState.favorites]));
+            localStorage.setItem('favorites', JSON.stringify([...state.favorites]));
         }
 
         function updateFavCount() {
-            const count = appState.favorites.size;
+            const count = state.favorites.size;
             const badge = document.getElementById('favCount');
             if (count > 0) {
                 badge.textContent = count;
@@ -989,50 +836,68 @@
             }
         }
 
-        // Load favorites from localStorage
         function loadFavorites() {
             const saved = localStorage.getItem('favorites');
             if (saved) {
-                appState.favorites = new Set(JSON.parse(saved));
-                updateFavCount();
+                state.favorites = new Set(JSON.parse(saved));
             }
         }
 
         // ==========================================
-        // SCHEDULE
+        // SLIDER FUNCTIONS
         // ==========================================
-        function initSchedule() {
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const scheduleList = document.getElementById('scheduleList');
-            const today = new Date().getDay();
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const currentDayName = dayNames[today];
+        function updateSlideInfo() {
+            const banners = (state.settings.bannerImages || []).filter(b => b.active);
+            const slide = banners[state.currentSlide];
             
-            scheduleList.innerHTML = '';
+            if (slide) {
+                document.getElementById('slideTitle').textContent = slide.title || '';
+                document.getElementById('slidePrice').textContent = slide.price || '';
+                document.getElementById('slideLikes').textContent = slide.likes || '';
+            }
             
-            days.forEach(day => {
-                const isToday = day === currentDayName;
-                const div = document.createElement('div');
-                div.className = `flex justify-between items-center p-2 rounded-lg ${isToday ? 'bg-[#d4c5a3] text-white' : 'hover:bg-gray-100'}`;
-                div.innerHTML = `
-                    <span class="font-medium text-sm">${day}</span>
-                    <span class="text-sm ${isToday ? 'text-white' : 'text-gray-600'}">07:00 - 24:00</span>
-                `;
-                scheduleList.appendChild(div);
+            document.getElementById('currentSlide').textContent = banners.length > 0 ? state.currentSlide + 1 : 0;
+            
+            document.querySelectorAll('.slide-indicator').forEach((ind, idx) => {
+                ind.classList.toggle('active', idx === state.currentSlide);
             });
-            
-            document.getElementById('currentDay').textContent = currentDayName.slice(0, 3);
         }
 
-        function toggleSchedule() {
-            const dropdown = document.getElementById('scheduleDropdown');
-            const arrow = document.getElementById('scheduleArrow');
-            dropdown.classList.toggle('hidden');
-            arrow.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        function nextSlide() {
+            const banners = (state.settings.bannerImages || []).filter(b => b.active);
+            if (banners.length <= 1) return;
+            
+            state.currentSlide = (state.currentSlide + 1) % banners.length;
+            document.getElementById('heroSlider').scrollTo({ 
+                left: state.currentSlide * window.innerWidth, 
+                behavior: 'smooth' 
+            });
+            updateSlideInfo();
+        }
+
+        function prevSlide() {
+            const banners = (state.settings.bannerImages || []).filter(b => b.active);
+            if (banners.length <= 1) return;
+            
+            state.currentSlide = (state.currentSlide - 1 + banners.length) % banners.length;
+            document.getElementById('heroSlider').scrollTo({ 
+                left: state.currentSlide * window.innerWidth, 
+                behavior: 'smooth' 
+            });
+            updateSlideInfo();
+        }
+
+        function goToSlide(index) {
+            state.currentSlide = index;
+            document.getElementById('heroSlider').scrollTo({ 
+                left: state.currentSlide * window.innerWidth, 
+                behavior: 'smooth' 
+            });
+            updateSlideInfo();
         }
 
         // ==========================================
-        // DRAWER
+        // DRAWER & UTILITIES
         // ==========================================
         function toggleDrawer() {
             const drawer = document.getElementById('drawer');
@@ -1053,13 +918,60 @@
             }
         }
 
-        // ==========================================
-        // UTILITIES
-        // ==========================================
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Copied to clipboard');
+        function initSchedule() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const scheduleList = document.getElementById('scheduleList');
+            const today = new Date().getDay();
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const currentDayName = dayNames[today];
+            
+            scheduleList.innerHTML = '';
+            
+            // Use settings schedule if available
+            const schedule = state.settings.workingHours || {};
+            
+            days.forEach(day => {
+                const isToday = day === currentDayName;
+                const hours = schedule[day] || '07:00 - 24:00';
+                
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-2 rounded-lg ${isToday ? 'bg-[#d4c5a3] text-white' : 'hover:bg-gray-100'}`;
+                div.innerHTML = `
+                    <span class="font-medium text-sm">${day}</span>
+                    <span class="text-sm ${isToday ? 'text-white' : 'text-gray-600'}">${hours}</span>
+                `;
+                scheduleList.appendChild(div);
             });
+            
+            document.getElementById('currentDay').textContent = currentDayName.slice(0, 3);
+            if (schedule[currentDayName]) {
+                document.getElementById('currentHours').textContent = schedule[currentDayName];
+            }
+        }
+
+        function toggleSchedule() {
+            const dropdown = document.getElementById('scheduleDropdown');
+            const arrow = document.getElementById('scheduleArrow');
+            dropdown.classList.toggle('hidden');
+            arrow.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function playVideo(container) {
+            const video = container.querySelector('video');
+            const overlay = container.querySelector('.play-overlay');
+            
+            if (video.paused) {
+                video.play();
+                overlay.style.opacity = '0';
+            } else {
+                video.pause();
+                overlay.style.opacity = '1';
+            }
+        }
+
+        function getDirections() {
+            const address = state.settings.contacts?.address || 'Qafqaz Riverside Resort Hotel Qabala';
+            window.open(`https://maps.google.com/?q=${encodeURIComponent(address)}`, '_blank');
         }
 
         function showToast(message) {
@@ -1069,148 +981,6 @@
             setTimeout(() => {
                 toast.style.opacity = '0';
             }, 2000);
-        }
-
-        function getDirections() {
-            window.open('https://maps.google.com/?q=Qafqaz+Riverside+Resort+Hotel+Qabala', '_blank');
-        }
-
-        function showLoading(show) {
-            appState.isLoading = show;
-            // You can add a loading spinner here if needed
-        }
-
-        function showTab(tab) {
-            if (tab === 'favorites') {
-                showFavorites();
-            } else if (tab === 'home') {
-                // Reset to home
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (tab === 'search') {
-                // Implement search functionality
-                const searchTerm = prompt('Axtarış:');
-                if (searchTerm) {
-                    searchProducts(searchTerm);
-                }
-            }
-        }
-
-        function showFavorites() {
-            const container = document.getElementById('menuContent');
-            container.innerHTML = '';
-            
-            const favProducts = appState.products.filter(p => appState.favorites.has(p.id));
-            
-            const section = document.createElement('div');
-            section.className = 'category-section';
-            
-            const title = document.createElement('h2');
-            title.className = 'text-xl font-bold text-gray-900 mb-4';
-            title.textContent = 'Seçilmişlər / Favorites';
-            section.appendChild(title);
-            
-            if (favProducts.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'text-gray-400 text-sm py-8 text-center';
-                empty.textContent = 'Seçilmiş məhsul yoxdur / No favorites yet';
-                section.appendChild(empty);
-            } else {
-                const grid = document.createElement('div');
-                grid.className = 'space-y-4';
-                
-                favProducts.forEach(item => {
-                    const card = createMenuCard(item);
-                    grid.appendChild(card);
-                });
-                
-                section.appendChild(grid);
-            }
-            
-            container.appendChild(section);
-        }
-
-        function searchProducts(term) {
-            const container = document.getElementById('menuContent');
-            container.innerHTML = '';
-            
-            const searchLower = term.toLowerCase();
-            const results = appState.products.filter(p => 
-                (p.nameEn && p.nameEn.toLowerCase().includes(searchLower)) ||
-                (p.nameAz && p.nameAz.toLowerCase().includes(searchLower)) ||
-                (p.descEn && p.descEn.toLowerCase().includes(searchLower)) ||
-                (p.descAz && p.descAz.toLowerCase().includes(searchLower))
-            );
-            
-            const section = document.createElement('div');
-            section.className = 'category-section';
-            
-            const title = document.createElement('h2');
-            title.className = 'text-xl font-bold text-gray-900 mb-4';
-            title.textContent = `Axtarış nəticələri: "${term}"`;
-            section.appendChild(title);
-            
-            if (results.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'text-gray-400 text-sm py-8 text-center';
-                empty.textContent = 'Məhsul tapılmadı / No products found';
-                section.appendChild(empty);
-            } else {
-                const grid = document.createElement('div');
-                grid.className = 'space-y-4';
-                
-                results.forEach(item => {
-                    const card = createMenuCard(item);
-                    grid.appendChild(card);
-                });
-                
-                section.appendChild(grid);
-            }
-            
-            container.appendChild(section);
-        }
-
-        // ==========================================
-        // SCROLL HANDLING
-        // ==========================================
-        function setupScrollListener() {
-            let lastScroll = 0;
-            const backToTop = document.getElementById('backToTop');
-            
-            window.addEventListener('scroll', () => {
-                const currentScroll = window.pageYOffset;
-                
-                // Back to top button
-                if (currentScroll > 500) {
-                    backToTop.classList.add('visible');
-                } else {
-                    backToTop.classList.remove('visible');
-                }
-                
-                // Update active subcategory based on scroll position
-                updateActiveSubcategoryOnScroll();
-                
-                lastScroll = currentScroll;
-            }, { passive: true });
-        }
-
-        function updateActiveSubcategoryOnScroll() {
-            const sections = document.querySelectorAll('.category-section');
-            const scrollPos = window.scrollY + 200;
-            
-            sections.forEach(section => {
-                const top = section.offsetTop;
-                const height = section.offsetHeight;
-                const id = section.id.replace('section-', '').replace(/-/g, ' ');
-                
-                if (scrollPos >= top && scrollPos < top + height) {
-                    // Update subcategory buttons
-                    document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
-                        btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === id ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
-                    });
-                    
-                    appState.currentSubcategory = id;
-                }
-            });
         }
 
         function scrollToTop() {
@@ -1224,54 +994,151 @@
             }
         }
 
+        function showTab(tab) {
+            if (tab === 'favorites') {
+                showFavorites();
+            } else if (tab === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (tab === 'search') {
+                const searchTerm = prompt('Search:');
+                if (searchTerm) searchProducts(searchTerm);
+            }
+        }
+
+        function showFavorites() {
+            const container = document.getElementById('menuContent');
+            container.innerHTML = '';
+            
+            const favProducts = state.products.filter(p => state.favorites.has(p.id));
+            
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            
+            const title = document.createElement('h2');
+            title.className = 'text-xl font-bold text-gray-900 mb-4';
+            title.textContent = 'Favorites';
+            section.appendChild(title);
+            
+            if (favProducts.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-gray-400 text-sm py-8 text-center';
+                empty.textContent = 'No favorites yet';
+                section.appendChild(empty);
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'space-y-4';
+                favProducts.forEach(item => grid.appendChild(createMenuCard(item)));
+                section.appendChild(grid);
+            }
+            
+            container.appendChild(section);
+        }
+
+        function searchProducts(term) {
+            const container = document.getElementById('menuContent');
+            container.innerHTML = '';
+            
+            const searchLower = term.toLowerCase();
+            const results = state.products.filter(p => 
+                (p.nameEn && p.nameEn.toLowerCase().includes(searchLower)) ||
+                (p.nameAz && p.nameAz.toLowerCase().includes(searchLower))
+            );
+            
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            
+            const title = document.createElement('h2');
+            title.className = 'text-xl font-bold text-gray-900 mb-4';
+            title.textContent = `Search: "${term}"`;
+            section.appendChild(title);
+            
+            if (results.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-gray-400 text-sm py-8 text-center';
+                empty.textContent = 'No products found';
+                section.appendChild(empty);
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'space-y-4';
+                results.forEach(item => grid.appendChild(createMenuCard(item)));
+                section.appendChild(grid);
+            }
+            
+            container.appendChild(section);
+        }
+
         // ==========================================
-        // TOUCH HANDLERS FOR SWIPE NAVIGATION
+        // EVENT LISTENERS
         // ==========================================
-        function setupTouchHandlers() {
+        function setupEventListeners() {
+            // Scroll listener
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                const backToTop = document.getElementById('backToTop');
+                
+                if (currentScroll > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+                
+                // Update active subcategory on scroll
+                const sections = document.querySelectorAll('.category-section');
+                const scrollPos = window.scrollY + 200;
+                
+                sections.forEach(section => {
+                    const top = section.offsetTop;
+                    const height = section.offsetHeight;
+                    const id = section.id.replace('section-', '').replace(/-/g, ' ');
+                    
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
+                            btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === id ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
+                        });
+                        state.currentSubcategory = id;
+                    }
+                });
+                
+                lastScroll = currentScroll;
+            }, { passive: true });
+
+            // Touch handlers for swipe
             const menuContent = document.getElementById('menuContent');
             
             menuContent.addEventListener('touchstart', (e) => {
-                appState.touchStartX = e.changedTouches[0].screenX;
+                state.touchStartX = e.changedTouches[0].screenX;
             }, { passive: true });
             
             menuContent.addEventListener('touchend', (e) => {
-                appState.touchEndX = e.changedTouches[0].screenX;
+                state.touchEndX = e.changedTouches[0].screenX;
                 handleSwipe();
             }, { passive: true });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') prevSlide();
+                if (e.key === 'ArrowRight') nextSlide();
+            });
         }
 
         function handleSwipe() {
             const swipeThreshold = 100;
-            const diff = appState.touchStartX - appState.touchEndX;
+            const diff = state.touchStartX - state.touchEndX;
             
             if (Math.abs(diff) > swipeThreshold) {
-                const cat = appState.categories.find(c => c.id === appState.currentCategory);
+                const cat = state.categories.find(c => c.id === state.currentCategory);
                 if (!cat || !cat.subcategories) return;
                 
-                const currentIndex = cat.subcategories.indexOf(appState.currentSubcategory);
+                const currentIndex = cat.subcategories.indexOf(state.currentSubcategory);
                 
                 if (diff > 0 && currentIndex < cat.subcategories.length - 1) {
-                    // Swipe left - next category
                     switchSubcategory(cat.subcategories[currentIndex + 1]);
                 } else if (diff < 0 && currentIndex > 0) {
-                    // Swipe right - previous category
                     switchSubcategory(cat.subcategories[currentIndex - 1]);
                 }
             }
         }
-
-        // ==========================================
-        // KEYBOARD NAVIGATION
-        // ==========================================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') prevSlide();
-            if (e.key === 'ArrowRight') nextSlide();
-        });
-
-        // ==========================================
-        // LOAD FAVORITES ON START
-        // ==========================================
-        loadFavorites();
     </script>
 </body>
 </html>
