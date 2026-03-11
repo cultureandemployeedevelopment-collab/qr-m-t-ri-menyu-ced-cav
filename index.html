@@ -1,2052 +1,1277 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Premium QR Menu</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-
-  <style>
-    :root {
-      --bg: #f8f8f5;
-      --card: #ffffff;
-      --text: #1d2939;
-      --muted: #667085;
-      --line: #e6e8ec;
-      --brand: #0f766e;
-      --brand-2: #14b8a6;
-      --gold: #b35b00;
-      --shadow: 0 10px 28px rgba(16, 24, 40, 0.07);
-      --radius: 24px;
-      --header-h: 72px;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      padding-bottom: 82px;
-    }
-
-    @media (min-width: 1024px) {
-      body { padding-bottom: 0; }
-    }
-
-    .glass {
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(14px);
-    }
-
-    .shadow-premium { box-shadow: var(--shadow); }
-
-    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #cfd4dc; border-radius: 999px; }
-    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-
-    .category-pill {
-      border: 1px solid var(--line);
-      background: white;
-      border-radius: 999px;
-      padding: 9px 13px;
-      white-space: nowrap;
-      transition: .18s ease;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .category-pill:hover { border-color: #99f6e4; }
-
-    .category-pill.active {
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 8px 18px rgba(20, 184, 166, .24);
-    }
-
-    .sidebar-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-radius: 18px;
-      padding: 12px 14px;
-      transition: .18s ease;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .sidebar-link:hover { background: #f0f7f6; }
-
-    .sidebar-link.active {
-      background: #dff2ec;
-      color: #0f766e;
-      font-weight: 800;
-    }
-
-    .hero {
-      position: relative;
-      min-height: 460px;
-      border-radius: 28px;
-      overflow: hidden;
-      background: #d4d7dd;
-      border: 1px solid var(--line);
-    }
-
-    .hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 28%, rgba(0,0,0,.03) 55%, rgba(0,0,0,0) 100%);
-    }
-
-    .hero-copy {
-      position: absolute;
-      left: 24px;
-      right: 24px;
-      bottom: 18px;
-      color: white;
-      z-index: 2;
-    }
-
-    .banner-slider-wrap {
-      position: relative;
-      overflow: hidden;
-      border-radius: 24px;
-      border: 1px solid var(--line);
-      background: #fff;
-      box-shadow: var(--shadow);
-    }
-
-    .banner-track {
-      display: flex;
-      transition: transform .45s ease;
-      width: 100%;
-    }
-
-    .banner-slide {
-      min-width: 100%;
-      position: relative;
-      height: 210px;
-      background: #eef2f6;
-    }
-
-    .banner-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .banner-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.42), rgba(0,0,0,.06));
-    }
-
-    .banner-caption {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 14px;
-      color: white;
-      font-size: 18px;
-      font-weight: 800;
-      z-index: 2;
-    }
-
-    .banner-dots {
-      position: absolute;
-      right: 14px;
-      bottom: 14px;
-      display: flex;
-      gap: 7px;
-      z-index: 3;
-    }
-
-    .banner-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.45);
-      border: none;
-      cursor: pointer;
-    }
-
-    .banner-dot.active {
-      background: white;
-    }
-
-    .ai-search-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: white;
-      min-height: 52px;
-      padding: 0 10px 0 14px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .ai-search-wrap::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(120deg, rgba(20,184,166,.12), rgba(124,58,237,.12), rgba(20,184,166,.12));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    .ai-badge {
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #081a32, #112a4b);
-      color: white;
-      box-shadow: 0 8px 18px rgba(11, 26, 49, 0.2);
-      cursor: pointer;
-      user-select: none;
-      font-size: 11px;
-      font-weight: 700;
-      border: none;
-      max-width: 120px;
-      white-space: nowrap;
-    }
-
-    .recommended-track {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 4px;
-    }
-
-    .recommended-card {
-      min-width: 200px;
-      max-width: 200px;
-      border-radius: 22px;
-      overflow: hidden;
-      background: white;
-      border: 1px solid var(--line);
-      scroll-snap-align: start;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: .18s ease;
-    }
-
-    .recommended-card:hover { transform: translateY(-3px); }
-
-    .recommended-card img {
-      width: 100%;
-      height: 125px;
-      object-fit: cover;
-      display: block;
-      background: #eef2f6;
-    }
-
-    .food-card {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform .18s ease, box-shadow .18s ease;
-      cursor: pointer;
-    }
-
-    .food-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 34px rgba(17, 24, 39, 0.11);
-    }
-
-    .food-card-image {
-      overflow: hidden;
-      height: 165px;
-      background: #eef2f6;
-    }
-
-    .food-card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .35s ease;
-      display: block;
-      background: #eef2f6;
-    }
-
-    .food-card:hover .food-card-image img { transform: scale(1.04); }
-
-    .detail-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(7, 12, 22, .6);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-    }
-
-    .detail-modal.active { display: flex; }
-
-    .detail-card {
-      width: 100%;
-      max-width: 690px;
-      background: white;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 28px 60px rgba(0,0,0,.24);
-      animation: modalRise .2s ease;
-      position: relative;
-    }
-
-    @keyframes modalRise {
-      from { opacity: 0; transform: scale(.97) translateY(14px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .detail-cover {
-      width: 100%;
-      height: 310px;
-      object-fit: cover;
-      display: block;
-      background: #eef2f6;
-    }
-
-    .detail-close {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 52px;
-      height: 52px;
-      border-radius: 999px;
-      border: none;
-      background: rgba(183,121,31,.93);
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .mobile-bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255,255,255,.94);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid var(--line);
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-around;
-      z-index: 70;
-    }
-
-    @media (min-width: 1024px) {
-      .mobile-bottom-bar { display: none; }
-    }
-
-    .hide-desktop { display: block; }
-    @media (min-width: 1024px) {
-      .hide-desktop { display: none; }
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .skeleton {
-      position: relative;
-      overflow: hidden;
-      background: #eef2f6;
-    }
-
-    .skeleton::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      transform: translateX(-100%);
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.75), transparent);
-      animation: shimmer 1.1s infinite;
-    }
-
-    @keyframes shimmer {
-      100% { transform: translateX(100%); }
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: #ecfdf5;
-      color: #047857;
-      font-size: 11px;
-      font-weight: 800;
-      border: 1px solid #a7f3d0;
-    }
-
-    .popup-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.58);
-      backdrop-filter: blur(8px);
-      z-index: 120;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-    }
-
-    .popup-modal.active {
-      display: flex;
-    }
-
-    .popup-card {
-      width: 100%;
-      max-width: 560px;
-      background: white;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0,0,0,.28);
-      position: relative;
-      animation: modalRise .22s ease;
-    }
-
-    .popup-image {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      display: block;
-      background: #eef2f6;
-    }
-
-    .popup-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 999px;
-      background: rgba(0,0,0,.55);
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    @media (max-width: 1023px) {
-      .hero { min-height: 340px; }
-      .banner-slide { height: 180px; }
-    }
-
-    @media (max-width: 767px) {
-      .hero {
-        min-height: 245px;
-        border-radius: 22px;
-      }
-
-      .hero-copy {
-        left: 16px;
-        right: 16px;
-        bottom: 12px;
-      }
-
-      .detail-cover { height: 220px; }
-
-      .recommended-card {
-        min-width: 165px;
-        max-width: 165px;
-      }
-
-      .recommended-card img { height: 105px; }
-
-      .food-card-image { height: 145px; }
-
-      .ai-search-wrap {
-        min-height: 48px;
-        padding: 0 8px 0 12px;
-        gap: 6px;
-      }
-
-      .ai-badge {
-        padding: 6px 8px;
-        font-size: 10px;
-        max-width: 86px;
-      }
-
-      .ai-badge span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .category-pill {
-        font-size: 11px;
-        padding: 8px 11px;
-      }
-
-      .popup-image {
-        height: 210px;
-      }
-
-      .banner-slide {
-        height: 150px;
-      }
-
-      .banner-caption {
-        font-size: 15px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gabala Restaurant - Digital Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            overflow-x: hidden;
+            background-color: #f5f5f5;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .hero-slider {
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+        
+        .hero-slide { scroll-snap-align: start; }
+        
+        .menu-item-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .menu-item-card:active { transform: scale(0.98); }
+        
+        .category-tab {
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .category-tab.active {
+            background-color: #d4c5a3;
+            color: #2c2c2c;
+        }
+        
+        .heart-btn { transition: transform 0.2s ease; }
+        .heart-btn:active { transform: scale(1.2); }
+        .heart-btn.liked { color: #ef4444; }
+        .heart-btn.liked i { font-weight: 900; }
+        
+        .slide-indicator { transition: all 0.3s ease; }
+        .slide-indicator.active { background-color: white; width: 24px; }
+        
+        .drawer {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .drawer.open { transform: translateX(0); }
+        .drawer.closed { transform: translateX(-100%); }
+        
+        .overlay {
+            transition: opacity 0.3s ease;
+        }
+        
+        .overlay.show { opacity: 1; pointer-events: auto; }
+        .overlay.hide { opacity: 0; pointer-events: none; }
+        
+        .item-image {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .price-tag { color: #b8a88a; }
+        
+        .nav-icon-btn { transition: all 0.2s ease; }
+        .nav-icon-btn:active {
+            transform: scale(0.95);
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .back-to-top {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .back-to-top.visible { opacity: 1; }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .video-banner {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-banner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .category-section { scroll-margin-top: 140px; }
+        
+        .main-categories {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: white;
+        }
+        
+        .sub-categories {
+            position: sticky;
+            top: 56px;
+            z-index: 30;
+            background: white;
+        }
+
+        .banner-slide {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .gradient-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
+        }
+    </style>
 </head>
-<body>
-  <header class="sticky top-0 z-40 glass border-b border-gray-100" style="height: var(--header-h);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <div id="header-logo" class="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
-          <i class="fas fa-utensils text-gray-400"></i>
-        </div>
-        <div class="min-w-0">
-          <h1 id="restaurant-name" class="font-extrabold text-base sm:text-lg text-gray-900 truncate">Yüklənir...</h1>
-          <p id="restaurant-subtitle" class="text-[11px] sm:text-xs text-gray-500 truncate">QR Menu</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <div id="live-badge" class="status-pill hidden">
-          <i class="fas fa-bolt"></i>
-          <span>Canlı yeniləndi</span>
-        </div>
-
-        <button onclick="toggleLanguage()" class="h-10 sm:h-11 px-3 sm:px-4 border border-gray-200 rounded-2xl bg-white shadow-premium flex items-center gap-2 font-bold text-xs sm:text-sm">
-          <span id="current-lang">AZ</span>
-          <i class="fas fa-chevron-down text-[10px] sm:text-xs text-gray-400"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
-    <section id="hero-section" class="mb-5 sm:mb-6"></section>
-
-    <section id="banner-section" class="mb-5 sm:mb-6 hidden"></section>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
-      <aside class="hidden lg:block lg:col-span-3">
-        <div class="sticky top-24 space-y-4">
-          <div class="sidebar-link" onclick="filterPopular()">
-            <i class="fas fa-star text-amber-500 text-base"></i>
-            <span data-az="Populyar" data-en="Popular">Populyar</span>
-          </div>
-
-          <div class="sidebar-link" onclick="showFavoritesOnly()">
-            <i class="fas fa-heart text-red-500 text-base"></i>
-            <span data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
-          </div>
-
-          <p class="text-[11px] text-gray-400 uppercase tracking-wider font-extrabold px-4 pt-2" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</p>
-          <nav id="categories-list" class="space-y-2 custom-scroll max-h-[70vh] overflow-y-auto"></nav>
-        </div>
-      </aside>
-
-      <main class="lg:col-span-6 space-y-5 sm:space-y-6">
-        <div class="hide-desktop overflow-x-auto custom-scroll">
-          <div id="mobile-category-slider" class="flex gap-2 min-w-max"></div>
-        </div>
-
-        <section id="recommended-section" class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-5 shadow-premium"></section>
-
-        <section class="bg-white rounded-[24px] sm:rounded-[28px] border border-gray-200 p-4 sm:p-6 shadow-premium">
-          <div class="mb-4 sm:mb-5">
-            <h2 id="current-category" class="text-[24px] sm:text-[28px] md:text-[32px] font-extrabold text-gray-900 leading-tight">Menu</h2>
-            <p id="current-subcategory" class="text-xs sm:text-sm text-gray-400 mt-1">All products</p>
-          </div>
-
-          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"></div>
-        </section>
-
-        <footer class="text-center text-xs sm:text-sm text-gray-500 pb-6 pt-1 px-2">
-          Korporativ Mədəniyyət və İşçilərin İnkişafı Komandası tərəfindən hazırlanıb.
-        </footer>
-      </main>
-
-      <aside class="hidden lg:block lg:col-span-3">
-        <div class="sticky top-24 space-y-4">
-          <div id="smart-search-box" class="ai-search-wrap">
-            <i class="fas fa-magnifying-glass text-gray-400 text-base"></i>
-            <input id="search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 min-w-0 outline-none bg-transparent text-sm" />
-            <button type="button" class="ai-badge" onclick="focusSearch()" aria-label="Ağıllı axtarış">
-              <i class="fas fa-wand-magic-sparkles text-emerald-400 text-[10px]"></i>
-              <span id="smart-search-label">Ağıllı Axtarış</span>
+<body class="bg-gray-50">
+    <!-- Overlay for drawer -->
+    <div id="overlay" class="overlay hide fixed inset-0 bg-black/50 z-40" onclick="toggleDrawer()"></div>
+    
+    <!-- Navigation Drawer -->
+    <div id="drawer" class="drawer closed fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-50 shadow-2xl overflow-y-auto">
+        <div class="p-4">
+            <!-- Close Button -->
+            <button onclick="toggleDrawer()" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-[#d4c5a3] text-white">
+                <i class="fas fa-times text-lg"></i>
             </button>
-          </div>
-
-          <div class="bg-white rounded-[28px] border border-gray-200 p-5 sm:p-6 shadow-premium">
-            <h3 class="font-extrabold text-[17px] sm:text-[18px] mb-5" data-az="Məkan məlumatı" data-en="Venue information">Məkan məlumatı</h3>
-
-            <div class="space-y-5">
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
-                  <i class="far fa-clock"></i>
+            
+            <!-- Login Section -->
+            <div class="mt-8 mb-6">
+                <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl mb-3 cursor-pointer hover:bg-gray-100 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600"></i>
+                    </div>
+                    <span class="font-medium text-gray-800 flex-1">Log in</span>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
                 </div>
-                <div>
-                  <p class="text-gray-400 text-xs sm:text-sm" data-az="İş saatları" data-en="Working hours">İş saatları</p>
-                  <p id="working-hours" class="font-semibold text-[15px] sm:text-[17px]">07:00 - 24:00</p>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
-                  <i class="fas fa-location-dot"></i>
-                </div>
-                <div>
-                  <p class="text-gray-400 text-xs sm:text-sm" data-az="Ünvan" data-en="Address">Ünvan</p>
-                  <p id="venue-address" class="font-semibold text-[14px] sm:text-[15px] leading-snug">Address not set</p>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] bg-gray-100 flex items-center justify-center text-base sm:text-lg text-gray-600">
-                  <i class="fas fa-phone"></i>
-                </div>
-                <div>
-                  <p class="text-gray-400 text-xs sm:text-sm" data-az="Telefon" data-en="Phone">Telefon</p>
-                  <p id="venue-phone" class="font-semibold text-[14px] sm:text-[15px] leading-snug">-</p>
-                </div>
-              </div>
+                <p class="text-sm text-gray-500 px-2">Log in to simplify the ordering process and use additional features.</p>
             </div>
-          </div>
-
-          <div id="social-links" class="flex gap-3"></div>
+            
+            <!-- Contacts -->
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">Contacts</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-marker-alt text-gray-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-800 text-sm leading-relaxed">Qafqaz Riverside Hotel, Qabala, Azerbaycan</p>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone text-gray-600"></i>
+                        </div>
+                        <a href="tel:+994502906082" class="text-gray-800 text-sm flex-1">+994 50 290 60 82</a>
+                        <button class="text-gray-400 hover:text-gray-600" onclick="copyToClipboard('+994502906082')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-gray-600"></i>
+                        </div>
+                        <a href="mailto:marketing@ghg.az" class="text-gray-800 text-sm flex-1">marketing@ghg.az</a>
+                        <button class="text-gray-400 hover:text-gray-600" onclick="copyToClipboard('marketing@ghg.az')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors" onclick="window.open('https://qafqazriverside.com', '_blank')">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-globe text-gray-600"></i>
+                        </div>
+                        <span class="text-gray-800 text-sm flex-1">Visit our website</span>
+                        <i class="fas fa-external-link-alt text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Working Hours -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Working Hours</h3>
+                    <button onclick="toggleSchedule()" class="text-sm text-[#b8a88a] font-medium flex items-center gap-1">
+                        Schedule <i id="scheduleArrow" class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-clock text-gray-600"></i>
+                    </div>
+                    <span class="text-gray-800 text-sm" id="currentHours">07:00 - 24:00</span>
+                    <span class="text-gray-500 text-sm" id="currentDay">Tue</span>
+                </div>
+                
+                <div id="scheduleDropdown" class="hidden mt-3 bg-gray-50 rounded-xl p-3">
+                    <div class="space-y-2" id="scheduleList"></div>
+                </div>
+            </div>
+            
+            <!-- Social Networks -->
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">We are on social networks</h3>
+                <div class="flex gap-3">
+                    <button onclick="window.open('https://facebook.com', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                        <i class="fab fa-facebook-f text-blue-600"></i>
+                        <span class="text-sm font-medium">Facebook</span>
+                    </button>
+                    <button onclick="window.open('https://instagram.com', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                        <i class="fab fa-instagram text-pink-600"></i>
+                        <span class="text-sm font-medium">Instagram</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Map -->
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">On the map</h3>
+                <div class="relative rounded-xl overflow-hidden bg-gray-100 h-48">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.8!2d47.8456!3d40.9824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40388b3c5d8e0d9f%3A0x7c2c5d5e5e5e5e5e!2sQafqaz%20Riverside%20Resort%20Hotel!5e0!3m2!1sen!2saz!4v1234567890"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        class="grayscale-[30%]"
+                    ></iframe>
+                    <div class="absolute top-2 left-2 bg-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-md flex items-center gap-1 cursor-pointer hover:bg-gray-50">
+                        Open in Maps <i class="fas fa-external-link-alt text-[10px]"></i>
+                    </div>
+                </div>
+                <button onclick="getDirections()" class="w-full mt-3 p-3 border border-gray-200 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-route text-gray-600"></i>
+                    <span class="text-sm font-medium">Get directions</span>
+                </button>
+            </div>
+            
+            <!-- Allergens -->
+            <div class="mb-6">
+                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-amber-600"></i>
+                    </div>
+                    <span class="text-gray-800 text-sm flex-1 font-medium">List of allergens</span>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- VAT Info -->
+            <div class="p-4 bg-gray-50 rounded-xl mb-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-info-circle text-gray-400"></i>
+                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wider">About the place</span>
+                </div>
+                <p class="text-sm text-gray-700">Prices are in AZN and 18% VAT</p>
+            </div>
         </div>
-      </aside>
+        
+        <!-- Footer -->
+        <div class="p-4 border-t border-gray-100">
+            <p class="text-center text-xs text-gray-400">
+                Powered by <span class="text-[#d4c5a3] font-semibold">GHG/CED</span>
+            </p>
+        </div>
     </div>
-  </div>
 
-  <div class="mobile-bottom-bar">
-    <button onclick="showMobileCategories()" class="flex flex-col items-center gap-1 text-gray-600">
-      <i class="fas fa-list text-lg"></i>
-      <span class="text-[11px] font-semibold" data-az="Kateqoriya" data-en="Categories">Kateqoriya</span>
-    </button>
+    <!-- Main Content -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative">
+        
+        <!-- Top Navigation -->
+        <div class="fixed top-0 left-0 right-0 z-30 max-w-md mx-auto">
+            <div class="bg-gradient-to-b from-black/60 to-transparent pt-2 pb-8 px-4">
+                <div class="flex items-center justify-between">
+                    <!-- Logo -->
+                    <div class="bg-white rounded-lg px-3 py-2 shadow-lg">
+                        <div class="text-xs font-bold tracking-wider text-gray-800">QAFAQAZ</div>
+                        <div class="text-[8px] text-gray-500 uppercase tracking-widest">Riverside Hotel</div>
+                    </div>
+                    
+                    <!-- Right Icons -->
+                    <div class="flex items-center gap-2">
+                        <button class="nav-icon-btn bg-white rounded-lg px-3 py-2 shadow-lg flex items-center gap-1">
+                            <span class="text-sm font-medium">EN</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <button class="nav-icon-btn bg-white rounded-lg w-10 h-10 shadow-lg flex items-center justify-center">
+                            <i class="fas fa-search text-gray-700"></i>
+                        </button>
+                        <button onclick="toggleDrawer()" class="nav-icon-btn bg-white rounded-lg w-10 h-10 shadow-lg flex items-center justify-center">
+                            <i class="fas fa-user text-gray-700"></i>
+                        </button>
+                        <button onclick="toggleDrawer()" class="nav-icon-btn bg-white rounded-lg w-10 h-10 shadow-lg flex items-center justify-center">
+                            <i class="fas fa-bars text-gray-700"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <button onclick="showMobileSearch()" class="flex flex-col items-center gap-1 text-gray-600">
-      <i class="fas fa-wand-magic-sparkles text-lg"></i>
-      <span class="text-[11px] font-semibold" data-az="Axtarış" data-en="Search">Axtarış</span>
-    </button>
+        <!-- Hero Slider Section (Admin Banner Management) -->
+        <div class="relative">
+            <div id="heroSlider" class="hero-slider flex overflow-x-auto hide-scrollbar h-[45vh] relative">
+                <!-- Slides populated by JS from admin -->
+            </div>
+            
+            <!-- Slider Controls -->
+            <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white hover:bg-black/50 transition-colors z-10">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white hover:bg-black/50 transition-colors z-10">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <!-- Slide Info Overlay -->
+            <div class="absolute bottom-4 left-4 right-4 flex items-end justify-between z-10">
+                <div class="bg-black/50 backdrop-blur-md rounded-lg px-4 py-2 text-white max-w-[70%]">
+                    <h3 id="slideTitle" class="font-semibold text-sm truncate"></h3>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span id="slidePrice" class="text-[#d4c5a3] font-bold"></span>
+                        <span class="flex items-center gap-1 text-xs">
+                            <i class="fas fa-heart text-white/80"></i>
+                            <span id="slideLikes"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="bg-black/50 backdrop-blur-md rounded-lg px-3 py-1.5 text-white text-sm">
+                    <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
+                </div>
+            </div>
+            
+            <!-- Slide Indicators -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                <div id="slideIndicators" class="flex gap-1.5"></div>
+            </div>
+        </div>
 
-    <button onclick="showFavoritesOnly()" class="flex flex-col items-center gap-1 text-gray-600">
-      <i class="fas fa-heart text-lg"></i>
-      <span class="text-[11px] font-semibold" data-az="Seçilənlər" data-en="Favorites">Seçilənlər</span>
-    </button>
-  </div>
+        <!-- Restaurant Info -->
+        <div class="px-4 pt-6 pb-2 bg-white">
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">Gabala restaurant</h1>
+            <p class="text-gray-500 text-sm mb-4">Qafqaz Riverside Hotel</p>
+            
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <div class="h-px bg-gray-200 flex-1"></div>
+                <span class="text-gray-400 text-xs font-medium uppercase tracking-widest">Digital Menu</span>
+                <div class="h-px bg-gray-200 flex-1"></div>
+            </div>
+        </div>
 
-  <div id="mobile-categories-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-categories-modal')">
-    <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[28px] p-6 max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between mb-5">
-        <h3 class="font-extrabold text-lg sm:text-xl" data-az="Kateqoriyalar" data-en="Categories">Kateqoriyalar</h3>
-        <button onclick="closeMobileModal(null, 'mobile-categories-modal')" class="w-10 h-10 rounded-full bg-gray-100">
-          <i class="fas fa-times"></i>
+        <!-- Video Advertisement Banner (Admin Controlled) -->
+        <div id="videoBannerContainer" class="px-4 mb-4 hidden">
+            <div class="video-banner rounded-2xl h-48 bg-gray-900 relative overflow-hidden group cursor-pointer" onclick="playVideo(this)">
+                <video id="adVideo" loop muted playsinline poster="">
+                    <source src="" type="video/mp4">
+                </video>
+                <div class="play-overlay group-hover:bg-black/40 transition-colors">
+                    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-play text-white text-2xl ml-1"></i>
+                    </div>
+                </div>
+                <div class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">REKLAM</div>
+                <div class="absolute bottom-3 left-3 right-3">
+                    <h4 id="adTitle" class="text-white font-bold text-lg drop-shadow-lg"></h4>
+                    <p id="adSubtitle" class="text-white/90 text-sm drop-shadow-md"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Categories -->
+        <div class="main-categories px-4 py-3 border-b border-gray-100">
+            <div id="mainCategories" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1"></div>
+        </div>
+
+        <!-- Sub Categories -->
+        <div class="sub-categories px-4 py-2 border-b border-gray-100 bg-white">
+            <div id="subCategories" class="flex gap-2 overflow-x-auto hide-scrollbar"></div>
+        </div>
+
+        <!-- Menu Content -->
+        <div id="menuContent" class="px-4 pb-24 pt-4 space-y-8"></div>
+
+        <!-- Floating Action Button -->
+        <button onclick="scrollToTop()" id="backToTop" class="back-to-top fixed bottom-20 right-6 w-12 h-12 bg-[#d4c5a3] text-white rounded-full shadow-lg flex items-center justify-center z-30 hover:bg-[#c4b593] transition-colors">
+            <i class="fas fa-arrow-up"></i>
         </button>
-      </div>
-      <div id="mobile-categories-list" class="space-y-2"></div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 max-w-md mx-auto z-20">
+            <div class="flex items-center justify-between">
+                <button class="flex flex-col items-center gap-1 text-[#d4c5a3]" onclick="showTab('home')">
+                    <i class="fas fa-home text-lg"></i>
+                    <span class="text-[10px] font-medium">Home</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600" onclick="showTab('search')">
+                    <i class="fas fa-search text-lg"></i>
+                    <span class="text-[10px] font-medium">Search</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 relative" onclick="showTab('favorites')">
+                    <i class="fas fa-heart text-lg"></i>
+                    <span class="text-[10px] font-medium">Favorites</span>
+                    <span id="favCount" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+                <button onclick="toggleDrawer()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-bars text-lg"></i>
+                    <span class="text-[10px] font-medium">Menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm opacity-0 transition-opacity pointer-events-none z-50"></div>
     </div>
-  </div>
 
-  <div id="mobile-search-modal" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeMobileModal(event, 'mobile-search-modal')">
-    <div class="absolute top-20 left-4 right-4 bg-white rounded-[24px] p-4 shadow-premium" onclick="event.stopPropagation()">
-      <div class="ai-search-wrap">
-        <i class="fas fa-magnifying-glass text-gray-400 text-base"></i>
-        <input id="mobile-search-input" oninput="smartSearch(this.value)" placeholder="Ağıllı axtarış..." class="flex-1 min-w-0 outline-none bg-transparent text-sm" />
-        <button type="button" class="ai-badge" onclick="focusMobileSearch()">
-          <i class="fas fa-wand-magic-sparkles text-emerald-400 text-[10px]"></i>
-          <span>Ağıllı</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="detail-modal" class="detail-modal" onclick="closeDetailModal(event)">
-    <div id="detail-card" class="detail-card" onclick="event.stopPropagation()"></div>
-  </div>
-
-  <div id="popup-modal" class="popup-modal" onclick="closePopup(event)">
-    <div class="popup-card" onclick="event.stopPropagation()">
-      <button class="popup-close" onclick="closePopup()">
-        <i class="fas fa-times"></i>
-      </button>
-      <div id="popup-content"></div>
-    </div>
-  </div>
-
-  <script>
-    // ============================================
-    // KONFIQURASIYA - BURAYA ÖZ URL-NİZİ YAZIN
-    // ============================================
-    const CONFIG = {
-      // Google Apps Script Web App URL-nizi bura əlavə edin
-      GAS_URL: 'https://script.google.com/macros/s/AKfycbxy5SCDM5C7hoyxSZtFbi5i8gO9_HCLATm0OkK-K6nCcDqeBJNUGZlyHVCmtFJuK75nVg/exec',
-      
-      RECOMMENDED_SLIDE_INTERVAL: 3200,
-      POLL_INTERVAL: 7000,
-      CACHE_KEY: 'premium_qr_menu_cache_v6',
-      CACHE_TIME_KEY: 'premium_qr_menu_cache_time_v6',
-      POPUP_ONCE_KEY: 'menu_popup_seen_v1'
-    };
-
-    let currentLang = 'az';
-    let categories = [];
-    let products = [];
-    let settings = {};
-    let favorites = JSON.parse(localStorage.getItem('menu_favorites') || '[]');
-
-    let currentCategory = null;
-    let currentFilterMode = 'category';
-    let searchQuery = '';
-    let currentRecommendedIndex = 0;
-    let recommendedTimer = null;
-    let pollTimer = null;
-    let cardObserver = null;
-    let lastObservedCategory = null;
-    let lastScrollY = window.scrollY;
-    let isInitialFastRenderDone = false;
-
-    let bannerIndex = 0;
-    let bannerTimer = null;
-
-    // ============================================
-    // YARDIMCI FUNKSIYALAR
-    // ============================================
-    function safeText(v) { return v == null ? '' : String(v); }
-
-    function normalizeMediaUrl(url) {
-      const raw = safeText(url).trim();
-      if (!raw) return '';
-
-      const drivePatterns = [
-        /https?:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i,
-        /https?:\/\/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/i,
-        /https?:\/\/drive\.google\.com\/uc\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i,
-        /https?:\/\/docs\.google\.com\/uc\?(?:[^#]*&)?id=([a-zA-Z0-9_-]+)/i
-      ];
-
-      for (const pattern of drivePatterns) {
-        const match = raw.match(pattern);
-        if (match?.[1]) {
-          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w2000`;
-        }
-      }
-
-      if (/drive\.google\.com|docs\.google\.com/i.test(raw)) {
-        try {
-          const parsed = new URL(raw);
-          const id = parsed.searchParams.get('id');
-          if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
-        } catch {
-          // parse mümkün olmazsa olduğu kimi saxla
-        }
-      }
-
-      return raw;
-    }
-
-    function escapeHtml(value = '') {
-      return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-    }
-
-    function normalizeText(str) {
-      const map = { 'ə':'e','Ə':'e','ı':'i','I':'i','İ':'i','ö':'o','Ö':'o','ğ':'g','Ğ':'g','ü':'u','Ü':'u','ş':'s','Ş':'s','ç':'c','Ç':'c' };
-      return safeText(str)
-        .split('')
-        .map(ch => map[ch] || ch)
-        .join('')
-        .toLowerCase()
-        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function tokenize(str) { return normalizeText(str).split(' ').filter(Boolean); }
-
-    function levenshtein(a, b) {
-      const m = a.length, n = b.length;
-      if (!m) return n;
-      if (!n) return m;
-      const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-      for (let i = 0; i <= m; i++) dp[i][0] = i;
-      for (let j = 0; j <= n; j++) dp[0][j] = j;
-      for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-          dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-        }
-      }
-      return dp[m][n];
-    }
-
-    function fuzzySimilarity(a, b) {
-      if (!a || !b) return 0;
-      if (a === b) return 1;
-      if (a.includes(b) || b.includes(a)) return .9;
-      const dist = levenshtein(a, b);
-      return Math.max(0, 1 - dist / Math.max(a.length, b.length));
-    }
-
-    function getLocalized(fieldAz, fieldEn) {
-      return currentLang === 'az' ? (fieldAz || fieldEn || '') : (fieldEn || fieldAz || '');
-    }
-
-    function getCategoryById(id) {
-      return categories.find(c => Number(c.id) === Number(id));
-    }
-
-    function getLocalizedCategoryName(cat) {
-      return cat ? getLocalized(cat.nameAz, cat.nameEn) : '';
-    }
-
-    function getLocalizedProductName(product) {
-      return getLocalized(product.nameAz, product.nameEn);
-    }
-
-    function getLocalizedProductDesc(product) {
-      return getLocalized(product.descAz, product.descEn);
-    }
-
-    function buildSearchCorpus(product) {
-      const category = getCategoryById(product.categoryId);
-      return [
-        product.nameAz, product.nameEn,
-        product.descAz, product.descEn,
-        product.ingredientsAz, product.ingredientsEn,
-        category?.nameAz, category?.nameEn,
-        product.categoryName
-      ].map(safeText).join(' ');
-    }
-
-    function scoreProduct(product, query) {
-      const q = normalizeText(query);
-      if (!q) return 0;
-      const qTokens = tokenize(q);
-      const corpus = buildSearchCorpus(product);
-      const corpusTokens = tokenize(corpus);
-      const nameAz = normalizeText(product.nameAz);
-      const nameEn = normalizeText(product.nameEn);
-      const descAz = normalizeText(product.descAz);
-      const descEn = normalizeText(product.descEn);
-      let score = 0;
-
-      [nameAz, nameEn, descAz, descEn, normalizeText(corpus)].forEach(field => {
-        if (!field) return;
-        if (field === q) score += 120;
-        if (field.startsWith(q)) score += 60;
-        if (field.includes(q)) score += 40;
-      });
-
-      qTokens.forEach(qt => {
-        corpusTokens.forEach(tok => {
-          const sim = fuzzySimilarity(qt, tok);
-          if (sim >= .98) score += 22;
-          else if (sim >= .88) score += 12;
-          else if (sim >= .78) score += 6;
-        });
-
-        [nameAz, nameEn].forEach(field => {
-          tokenize(field).forEach(tok => {
-            const sim = fuzzySimilarity(qt, tok);
-            if (sim >= .98) score += 30;
-            else if (sim >= .88) score += 18;
-            else if (sim >= .78) score += 8;
-          });
-        });
-      });
-
-      if (product.popular) score += 4;
-      if (product.recommended) score += 5;
-      return score;
-    }
-
-    function getSearchResults(query) {
-      return products
-        .filter(p => p.available !== false)
-        .map(product => ({ product, score: scoreProduct(product, query) }))
-        .filter(item => item.score > 12)
-        .sort((a, b) => b.score - a.score)
-        .map(item => item.product);
-    }
-
-    function highlightMatch(text, query) {
-      if (!query || !text) return escapeHtml(text);
-      const escaped = escapeHtml(text);
-      const q = safeText(query).trim();
-      if (!q) return escaped;
-      try {
-        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig');
-        return escaped.replace(regex, '<span class="bg-yellow-200 rounded px-1">$1</span>');
-      } catch {
-        return escaped;
-      }
-    }
-
-    function getCachePayload() {
-      try {
-        return JSON.parse(localStorage.getItem(CONFIG.CACHE_KEY) || 'null');
-      } catch {
-        return null;
-      }
-    }
-
-    function setCachePayload(payload) {
-      localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(payload));
-      localStorage.setItem(CONFIG.CACHE_TIME_KEY, String(Date.now()));
-    }
-
-    function parseBoolean(value, defaultValue = true) {
-      if (typeof value === 'boolean') return value;
-      if (typeof value === 'number') return value !== 0;
-      if (typeof value === 'string') {
-        const normalized = value.trim().toLowerCase();
-        if (['true', '1', 'yes', 'y', 'active', 'on'].includes(normalized)) return true;
-        if (['false', '0', 'no', 'n', 'inactive', 'off'].includes(normalized)) return false;
-      }
-      return defaultValue;
-    }
-
-    function parseNumber(value, fallback = 0) {
-      const parsed = Number(value);
-      return Number.isFinite(parsed) ? parsed : fallback;
-    }
-
-    function parseArrayMaybe(value) {
-      if (Array.isArray(value)) return value;
-      if (typeof value === 'string') {
-        try {
-          const parsed = JSON.parse(value);
-          return Array.isArray(parsed) ? parsed : [];
-        } catch {
-          return value
-            .split(/[\n,;]/)
-            .map(item => item.trim())
-            .filter(Boolean);
-        }
-      }
-      return [];
-    }
-
-
-    function pickFirstValue(obj, keys, fallback = '') {
-      for (const key of keys) {
-        if (!key) continue;
-        const value = obj?.[key];
-        if (value !== undefined && value !== null && String(value).trim() !== '') {
-          return value;
-        }
-      }
-      return fallback;
-    }
-
-    function normalizeSettingsShape(rawSettings) {
-      let settings = rawSettings || {};
-
-      // Bəzi sheet qurulumlarında settings key-value siyahısı kimi gələ bilir
-      if (Array.isArray(settings)) {
-        const mapped = {};
-        settings.forEach((row) => {
-          const key = safeText(row?.key ?? row?.name ?? row?.field ?? row?.settingKey).trim();
-          if (!key) return;
-          mapped[key] = row?.value ?? row?.val ?? row?.settingValue ?? '';
-        });
-        settings = mapped;
-      }
-
-      if (!settings || typeof settings !== 'object') return {};
-
-      const resolved = {
-        ...settings,
-        nameAz: safeText(pickFirstValue(settings, ['nameAz', 'restaurantNameAz', 'restaurantName', 'titleAz', 'title'])),
-        nameEn: safeText(pickFirstValue(settings, ['nameEn', 'restaurantNameEn', 'restaurantName', 'titleEn', 'title'])),
-        logo: normalizeMediaUrl(pickFirstValue(settings, ['logo', 'logoUrl', 'brandLogo', 'headerLogo', 'siteLogo', 'logo_image'])),
-        heroTitleAz: safeText(pickFirstValue(settings, ['heroTitleAz', 'heroTitle', 'coverTitleAz', 'mainTitleAz', 'mainTitle'])),
-        heroTitleEn: safeText(pickFirstValue(settings, ['heroTitleEn', 'coverTitleEn', 'mainTitleEn', 'mainTitle'])),
-        heroImage: normalizeMediaUrl(pickFirstValue(settings, ['heroImage', 'heroImageUrl', 'coverImage', 'coverPhoto', 'mainImage', 'headerImage', 'header_image', 'hero_image'])),
-        workWeekday: safeText(pickFirstValue(settings, ['workWeekday', 'workingHoursWeekday', 'weekdayHours', 'hoursWeekday'])),
-        workWeekend: safeText(pickFirstValue(settings, ['workWeekend', 'workingHoursWeekend', 'weekendHours', 'hoursWeekend'])),
-        addressAz: safeText(pickFirstValue(settings, ['addressAz', 'address', 'location', 'venueAddressAz'])),
-        addressEn: safeText(pickFirstValue(settings, ['addressEn', 'address', 'location', 'venueAddressEn'])),
-        phone: safeText(pickFirstValue(settings, ['phone', 'phoneNumber', 'contactPhone', 'tel'])),
-        whatsapp: safeText(pickFirstValue(settings, ['whatsapp', 'whatsappNumber', 'wa'])),
-        instagram: safeText(pickFirstValue(settings, ['instagram', 'instagramUrl', 'insta'])),
-        facebook: safeText(pickFirstValue(settings, ['facebook', 'facebookUrl', 'fb'])),
-        bannerEnabled: parseBoolean(pickFirstValue(settings, ['bannerEnabled', 'showBanner', 'showBanners'], settings.bannerEnabled), false),
-        bannerTitle: safeText(pickFirstValue(settings, ['bannerTitle', 'promoTitle', 'campaignTitle'])),
-        bannerInterval: parseNumber(pickFirstValue(settings, ['bannerInterval', 'bannerDuration', 'sliderInterval', 'slideInterval', 'intervalMs'], 3000), 3000),
-        adImage: normalizeMediaUrl(pickFirstValue(settings, ['adImage', 'adImageUrl', 'reklamImage', 'reklamSekli', 'advertisementImage'])),
-        popupEnabled: parseBoolean(pickFirstValue(settings, ['popupEnabled', 'showPopup'], settings.popupEnabled), false),
-        popupShowOnce: parseBoolean(pickFirstValue(settings, ['popupShowOnce', 'showPopupOnce'], settings.popupShowOnce), true),
-        popupTitle: safeText(pickFirstValue(settings, ['popupTitle', 'announcementTitle', 'modalTitle'])),
-        popupText: safeText(pickFirstValue(settings, ['popupText', 'announcementText', 'modalText'])),
-        popupLink: safeText(pickFirstValue(settings, ['popupLink', 'announcementLink', 'modalLink'])),
-        popupImage: normalizeMediaUrl(pickFirstValue(settings, ['popupImage', 'popupImageUrl', 'announcementImage', 'modalImage']))
-      };
-
-      return resolved;
-    }
-
-    // ============================================
-    // DATA NORMALIZASIYA - GOOGLE SHEETS UYĞUN
-    // ============================================
-    function normalizeIncomingData(data) {
-      // Google Sheets-dən gələn cavabı emal et
-      let source = data;
-
-      if (data && typeof data === 'object' && data.data) {
-        source = data.data;
-      }
-
-      if (data && typeof data === 'object' && data.result) {
-        source = data.result;
-      }
-
-      let categoriesData = source?.categories || source?.category || source?.menuCategories || [];
-      let productsData = source?.products || source?.items || source?.menuItems || [];
-      let settingsData = source?.settings || source?.config || source?.restaurant || {};
-
-      categoriesData = Array.isArray(categoriesData) ? categoriesData : [];
-      productsData = Array.isArray(productsData) ? productsData : [];
-      settingsData = normalizeSettingsShape(settingsData);
-
-      categoriesData = categoriesData.map((category, index) => ({
-        id: parseNumber(category.id ?? category.categoryId ?? category.category_id, index + 1),
-        nameAz: safeText(category.nameAz ?? category.nameAZ ?? category.azName ?? category.name ?? category.title),
-        nameEn: safeText(category.nameEn ?? category.nameEN ?? category.enName ?? category.name ?? category.title),
-        icon: safeText(category.icon || '🍽️'),
-        sortOrder: parseNumber(category.sortOrder ?? category.order ?? category.sort ?? index + 1, index + 1),
-        active: parseBoolean(category.active ?? category.isActive ?? category.enabled ?? category.status, true)
-      }));
-
-      productsData = productsData.map((product, index) => {
-        let images = [];
-        if (product.images && Array.isArray(product.images)) {
-          images = product.images;
-        } else if (product.imagesJson) {
-          images = parseArrayMaybe(product.imagesJson);
-        } else if (product.imageUrls) {
-          images = parseArrayMaybe(product.imageUrls);
-        } else if (product.photos) {
-          images = parseArrayMaybe(product.photos);
-        } else if (product.gallery) {
-          images = parseArrayMaybe(product.gallery);
-        }
-
-        const fallbackImage = safeText(product.image ?? product.photo ?? product.imageUrl);
-        if (!images.length && fallbackImage) {
-          images = [fallbackImage];
-        }
-
-        images = images.map(normalizeMediaUrl).filter(Boolean);
-
-        return {
-          id: parseNumber(product.id ?? product.productId ?? product.product_id, index + 1),
-          categoryId: parseNumber(product.categoryId ?? product.category_id ?? product.category, 0),
-          categoryName: safeText(product.categoryName ?? product.category_name),
-          nameAz: safeText(product.nameAz ?? product.nameAZ ?? product.azName ?? product.name ?? product.title),
-          nameEn: safeText(product.nameEn ?? product.nameEN ?? product.enName ?? product.name ?? product.title),
-          descAz: safeText(product.descAz ?? product.descriptionAz ?? product.azDescription ?? product.description),
-          descEn: safeText(product.descEn ?? product.descriptionEn ?? product.enDescription ?? product.description),
-          ingredientsAz: safeText(product.ingredientsAz ?? product.azIngredients ?? product.ingredients),
-          ingredientsEn: safeText(product.ingredientsEn ?? product.enIngredients ?? product.ingredients),
-          allergensAz: safeText(product.allergensAz ?? product.azAllergens ?? product.allergens),
-          allergensEn: safeText(product.allergensEn ?? product.enAllergens ?? product.allergens),
-          price: parseNumber(product.price ?? product.cost ?? product.amount, 0),
-          popular: parseBoolean(product.popular ?? product.isPopular, false),
-          recommended: parseBoolean(product.recommended ?? product.isRecommended, false),
-          available: parseBoolean(product.available ?? product.isAvailable ?? product.active, true),
-          images: images,
-          videoUrl: normalizeMediaUrl(product.videoUrl)
-        };
-      });
-
-      if (settingsData.bannerImages && typeof settingsData.bannerImages === 'string') {
-        try {
-          settingsData.bannerImages = JSON.parse(settingsData.bannerImages);
-        } catch {
-          settingsData.bannerImages = [];
-        }
-      }
-      if (!Array.isArray(settingsData.bannerImages)) {
-        settingsData.bannerImages = parseArrayMaybe(settingsData.bannerImagesJson || settingsData.banners || '[]');
-      }
-
-      settingsData.bannerImages = settingsData.bannerImages.map(item => {
-        if (typeof item === 'string') {
-          return { image: normalizeMediaUrl(item), title: '', active: true };
-        }
-        return {
-          ...item,
-          image: normalizeMediaUrl(item?.image ?? item?.url ?? item?.imageUrl),
-          title: safeText(item?.title ?? item?.name),
-          active: parseBoolean(item?.active ?? item?.enabled, true)
-        };
-      }).filter(item => item.image);
-
-
-      settingsData.logo = normalizeMediaUrl(settingsData.logo || settingsData.logoUrl);
-      settingsData.heroImage = normalizeMediaUrl(settingsData.heroImage);
-      settingsData.popupImage = normalizeMediaUrl(settingsData.popupImage);
-      settingsData.adImage = normalizeMediaUrl(settingsData.adImage);
-      settingsData.bannerImages = settingsData.bannerImages.map(item => ({
-        ...item,
-        image: normalizeMediaUrl(item?.image)
-      }));
-
-      if (!settingsData.bannerImages.length) {
-        const rawBannerCandidates = pickFirstValue(settingsData, ['bannerImage', 'bannerImageUrl', 'banner_image', 'bannerImagesList', 'sliderImages', 'sliderImageUrls']);
-        const parsedBannerCandidates = parseArrayMaybe(rawBannerCandidates)
-          .map(item => {
-            if (typeof item === 'string') return { image: normalizeMediaUrl(item), title: '', active: true };
-            return {
-              image: normalizeMediaUrl(item?.image ?? item?.url ?? item?.imageUrl),
-              title: safeText(item?.title ?? item?.name),
-              active: parseBoolean(item?.active ?? item?.enabled, true)
-            };
-          })
-          .filter(item => item.image);
-        settingsData.bannerImages = parsedBannerCandidates;
-      }
-
-      if (!settingsData.popupImage && settingsData.adImage) {
-        settingsData.popupImage = settingsData.adImage;
-      }
-
-      // recommendedIds string olmalıdır
-      if (settingsData.recommendedIds && typeof settingsData.recommendedIds !== 'string') {
-        try {
-          settingsData.recommendedIds = JSON.stringify(settingsData.recommendedIds || []);
-        } catch {
-          settingsData.recommendedIds = '[]';
-        }
-      }
-      if (!settingsData.recommendedIds) settingsData.recommendedIds = '[]';
-
-      return {
-        categories: categoriesData,
-        products: productsData,
-        settings: settingsData
-      };
-    }
-
-    function sameData(a, b) {
-      return JSON.stringify(a) === JSON.stringify(b);
-    }
-
-    function preloadCriticalImages() {
-      const imgs = [];
-      if (settings.heroImage) imgs.push(settings.heroImage);
-
-      getActiveBannerImages().slice(0, 3).forEach(b => {
-        if (b.image) imgs.push(b.image);
-      });
-
-      getRecommendedProducts().slice(0, 4).forEach(p => {
-        if (p.images?.[0]) imgs.push(p.images[0]);
-      });
-
-      getCurrentFilteredProducts().slice(0, 6).forEach(p => {
-        if (p.images?.[0]) imgs.push(p.images[0]);
-      });
-
-      [...new Set(imgs)].forEach(src => {
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = src;
-      });
-    }
-
-    function fastInitialRender() {
-      const cached = getCachePayload();
-      const initial = normalizeIncomingData(cached || { categories: [], products: [], settings: {} });
-
-      categories = initial.categories;
-      products = initial.products;
-      settings = initial.settings;
-
-      const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-      if (active.length) {
-        if (!active.some(c => Number(c.id) === Number(currentCategory))) {
-          currentCategory = Number(active[0].id);
-        }
-      } else {
-        currentCategory = null;
-      }
-
-      renderAll();
-      preloadCriticalImages();
-      maybeShowPopup();
-      isInitialFastRenderDone = true;
-    }
-
-    // ============================================
-    // GOOGLE SHEETS-DƏN MƏLUMAT ÇƏKMƏ
-    // ============================================
-    async function fetchMenuData(showLiveBadge = false) {
-      try {
-        const url = `${CONFIG.GAS_URL}?action=getMenu&_=${Date.now()}`;
-
-        const res = await fetch(url, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        let data;
-        try {
-          data = await res.json();
-        } catch {
-          const text = await res.text();
-          data = JSON.parse(text);
-        }
-
-        // Cavabı yoxla
-        if (!data.success && data.error) {
-          throw new Error(data.error);
-        }
-
-        const normalized = normalizeIncomingData(data);
-        const currentData = { categories, products, settings };
-
-        if (!sameData(normalized, currentData)) {
-          categories = normalized.categories;
-          products = normalized.products;
-          settings = normalized.settings;
-
-          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-          if (active.length) {
-            if (!active.some(c => Number(c.id) === Number(currentCategory))) {
-              currentCategory = Number(active[0].id);
+    <script>
+        // ==========================================
+        // APP CONFIGURATION
+        // ==========================================
+        const APP_CONFIG = {
+            // Google Apps Script Web App URL - bunu öz deployment URL-inizlə əvəz edin
+            GAS_URL: 'https://script.google.com/macros/s/AKfycbxy5SCDM5C7hoyxSZtFbi5i8gO9_HCLATm0OkK-K6nCcDqeBJNUGZlyHVCmtFJuK75nVg/exec',
+            
+            // Fallback data (offline mode üçün)
+            FALLBACK_MODE: true,
+            
+            SHEET_NAMES: {
+                CATEGORIES: 'CATEGORIES',
+                PRODUCTS: 'PRODUCTS',
+                SETTINGS: 'SETTINGS'
             }
-          } else {
-            currentCategory = null;
-          }
-
-          setCachePayload(normalized);
-          renderAll();
-          preloadCriticalImages();
-          maybeShowPopup();
-
-          if (showLiveBadge) flashLiveBadge();
-        } else if (!isInitialFastRenderDone) {
-          renderAll();
-          preloadCriticalImages();
-          maybeShowPopup();
-        }
-      } catch (e) {
-        console.error('Fetch error, JSONP fallback işə salınır:', e);
-        try {
-          const data = await fetchMenuDataJsonp();
-          const normalized = normalizeIncomingData(data);
-          categories = normalized.categories;
-          products = normalized.products;
-          settings = normalized.settings;
-
-          const active = categories.filter(c => c.active !== false).sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-          currentCategory = active.length ? Number(active[0].id) : null;
-
-          setCachePayload(normalized);
-          renderAll();
-          preloadCriticalImages();
-          maybeShowPopup();
-          if (showLiveBadge) flashLiveBadge();
-          return;
-        } catch (jsonpError) {
-          console.error('JSONP fallback da uğursuz oldu:', jsonpError);
-        }
-
-        // Xəta baş verərsə, keşdəki məlumatı istifadə et
-        if (!isInitialFastRenderDone) {
-          fastInitialRender();
-        }
-      }
-    }
-
-    function fetchMenuDataJsonp() {
-      return new Promise((resolve, reject) => {
-        const callbackName = `menuJsonpCb_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-        const script = document.createElement('script');
-        const timeout = setTimeout(() => {
-          cleanup();
-          reject(new Error('JSONP timeout'));
-        }, 10000);
-
-        function cleanup() {
-          clearTimeout(timeout);
-          delete window[callbackName];
-          if (script.parentNode) script.parentNode.removeChild(script);
-        }
-
-        window[callbackName] = (payload) => {
-          cleanup();
-          if (!payload) {
-            reject(new Error('JSONP cavabı boşdur'));
-            return;
-          }
-          resolve(payload);
         };
 
-        script.onerror = () => {
-          cleanup();
-          reject(new Error('JSONP script yüklənmədi'));
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        let appState = {
+            categories: [],
+            products: [],
+            settings: {},
+            currentCategory: null,
+            currentSubcategory: null,
+            currentSlide: 0,
+            favorites: new Set(),
+            touchStartX: 0,
+            touchEndX: 0,
+            isLoading: false
         };
 
-        script.src = `${CONFIG.GAS_URL}?action=getMenu&callback=${callbackName}&_=${Date.now()}`;
-        document.body.appendChild(script);
-      });
-    }
+        // ==========================================
+        // FALLBACK DATA (Admin paneldən əlavə edilən məlumatlar)
+        // ==========================================
+        const fallbackData = {
+            categories: [
+                {
+                    id: 'beverage',
+                    nameAz: 'İçkilər',
+                    nameEn: 'Beverage menu',
+                    icon: '🍹',
+                    sortOrder: 1,
+                    active: true,
+                    subcategories: ['Soft Drinks', 'Fresh Juices', 'Drinks by bottle', 'Coffee', 'Tea', 'Vermouth', 'Liquor', 'Cocktails', 'Mocktails']
+                },
+                {
+                    id: 'food',
+                    nameAz: 'Yeməklər',
+                    nameEn: 'Food menu',
+                    icon: '🍽️',
+                    sortOrder: 2,
+                    active: true,
+                    subcategories: ['Starters', 'Salads', 'Soups', 'Main Courses', 'Desserts', 'Breakfast']
+                },
+                {
+                    id: 'wine',
+                    nameAz: 'Şərablar',
+                    nameEn: 'Wine list',
+                    icon: '🍷',
+                    sortOrder: 3,
+                    active: true,
+                    subcategories: ['Red Wine', 'White Wine', 'Rose', 'Champagne', 'Sparkling']
+                },
+                {
+                    id: 'cigarettes',
+                    nameAz: 'Siqaretlər',
+                    nameEn: 'Cigarettes',
+                    icon: '🚬',
+                    sortOrder: 4,
+                    active: true,
+                    subcategories: ['Cigarettes', 'Heated Tobacco', 'Accessories']
+                }
+            ],
+            products: [
+                // Soft Drinks
+                { id: 1, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Evian still su', nameEn: 'Evian still water', price: 22, volume: '0.75ml', time: '3min', imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80', likes: 45, popular: true },
+                { id: 2, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Perrier qazlı su', nameEn: 'Perrier sparkling water', price: 22, volume: '0.75ml', time: '3min', imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80', likes: 38 },
+                { id: 3, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Borjomi', nameEn: 'Borjomi', price: 6, volume: '0.5ml', time: '3min', imageUrl: 'https://images.unsplash.com/photo-1560023907-5f339617ea30?w=400&q=80', likes: 52, vat: true },
+                { id: 4, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Coca Cola', nameEn: 'Coca Cola', price: 4, volume: '0.33ml', time: '2min', imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80', likes: 89 },
+                { id: 5, categoryId: 'beverage', categoryName: 'Soft Drinks', nameAz: 'Fanta Orange', nameEn: 'Fanta Orange', price: 4, volume: '0.33ml', time: '2min', imageUrl: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=400&q=80', likes: 34 },
+                
+                // Cocktails
+                { id: 6, categoryId: 'beverage', categoryName: 'Cocktails', nameAz: 'Mojito', nameEn: 'Mojito', price: 18, volume: '300ml', time: '5min', imageUrl: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&q=80', likes: 127, popular: true },
+                { id: 7, categoryId: 'beverage', categoryName: 'Cocktails', nameAz: 'Margarita', nameEn: 'Margarita', price: 20, volume: '250ml', time: '5min', imageUrl: 'https://images.unsplash.com/photo-1556855810-2b7d2b9c5b8f?w=400&q=80', likes: 98 },
+                
+                // Starters
+                { id: 8, categoryId: 'food', categoryName: 'Starters', nameAz: 'Kartof fri', nameEn: 'French fries', price: 6, volume: '200g', time: '10min', imageUrl: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80', likes: 83, popular: true, featured: true },
+                { id: 9, categoryId: 'food', categoryName: 'Starters', nameAz: 'Soğan halqaları', nameEn: 'Onion rings', price: 8, volume: '150g', time: '12min', imageUrl: 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=400&q=80', likes: 56 },
+                
+                // Main Courses
+                { id: 10, categoryId: 'food', categoryName: 'Main Courses', nameAz: 'Quzu lüləsi', nameEn: 'Lamb lula', price: 12, volume: '300g', time: '20min', imageUrl: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400&q=80', likes: 52, featured: true },
+                { id: 11, categoryId: 'food', categoryName: 'Main Courses', nameAz: 'Penne Arrabbiata', nameEn: 'Penne Arrabbiata', price: 17, volume: '350g', time: '15min', imageUrl: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&q=80', likes: 41, featured: true },
+                { id: 12, categoryId: 'food', categoryName: 'Main Courses', nameAz: 'Qızardılmış somon', nameEn: 'Grilled Salmon', price: 28, volume: '250g', time: '25min', imageUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80', likes: 76 },
+                
+                // Cigarettes
+                { id: 13, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Kent Nano White', nameEn: 'Kent Nano White', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 23, vat: true },
+                { id: 14, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Kent Navy Blue', nameEn: 'Kent Navy Blue', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 19, vat: true },
+                { id: 15, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Sobranie White', nameEn: 'Sobranie White', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 31, vat: true },
+                { id: 16, categoryId: 'cigarettes', categoryName: 'Cigarettes', nameAz: 'Kent Neo Sticks', nameEn: 'Kent Neo Sticks', price: 10, imageUrl: 'https://images.unsplash.com/photo-1630551359047-7f2548f5a2a3?w=400&q=80', likes: 15, vat: true }
+            ],
+            settings: {
+                bannerImages: [
+                    { id: 1, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80', title: 'Qafqaz Riverside Hotel', price: '', likes: '' },
+                    { id: 2, image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80', title: 'French fries', price: '6 AZN', likes: '83' },
+                    { id: 3, image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=800&q=80', title: 'Lamb lula', price: '12 AZN', likes: '52' },
+                    { id: 4, image: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=800&q=80', title: 'Penne Arrabbiata', price: '17 AZN', likes: '41' }
+                ],
+                videoAd: {
+                    enabled: true,
+                    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-preparing-a-salad-with-oil-42913-large.mp4',
+                    posterUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
+                    title: 'Yeni Təklif!',
+                    subtitle: 'Bu həftə xüsusi endirimlər'
+                },
+                restaurantName: 'Gabala restaurant',
+                hotelName: 'Qafqaz Riverside Hotel',
+                currency: 'AZN',
+                vatRate: 18
+            }
+        };
 
-    function startPolling() {
-      clearInterval(pollTimer);
-      pollTimer = setInterval(() => fetchMenuData(true), CONFIG.POLL_INTERVAL);
-    }
-
-    function flashLiveBadge() {
-      const badge = document.getElementById('live-badge');
-      badge.classList.remove('hidden');
-      clearTimeout(badge._timer);
-      badge._timer = setTimeout(() => {
-        badge.classList.add('hidden');
-      }, 2200);
-    }
-
-    function renderSkeletonCards() {
-      const container = document.getElementById('products-grid');
-      container.innerHTML = Array.from({ length: 6 }).map(() => `
-        <div class="bg-white rounded-[22px] overflow-hidden border border-gray-200 shadow-premium">
-          <div class="skeleton h-[165px]"></div>
-          <div class="p-4 sm:p-5">
-            <div class="skeleton h-5 rounded-lg mb-3"></div>
-            <div class="skeleton h-4 rounded-lg mb-2"></div>
-            <div class="skeleton h-4 rounded-lg w-2/3 mb-4"></div>
-            <div class="skeleton h-6 rounded-lg w-24"></div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function loadData() {
-      renderSkeletonCards();
-      fastInitialRender();
-      fetchMenuData(false);
-      startPolling();
-    }
-
-    // ============================================
-    // RENDER FUNKSİYALARI
-    // ============================================
-    function renderAll() {
-      updateHeader();
-      renderHero();
-      renderBannerSlider();
-      renderRecommendedSection();
-      renderCategoryLists();
-      renderProducts();
-      renderInfo();
-      renderSocials();
-      renderTextLabels();
-      startRecommendedAutoplay();
-      syncSearchInputs();
-    }
-
-    function updateHeader() {
-      document.getElementById('restaurant-name').textContent = getLocalized(settings.nameAz, settings.nameEn) || 'Restaurant';
-      document.getElementById('restaurant-subtitle').textContent = settings.nameAz || settings.nameEn || 'QR Menu';
-      document.getElementById('current-lang').textContent = currentLang.toUpperCase();
-
-      if (settings.logo) {
-        document.getElementById('header-logo').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-contain" loading="eager" decoding="async" alt="Logo">`;
-      } else {
-        document.getElementById('header-logo').innerHTML = `<i class="fas fa-utensils text-gray-400"></i>`;
-      }
-    }
-
-    function renderHero() {
-      const hero = document.getElementById('hero-section');
-      const title = getLocalized(settings.heroTitleAz, settings.heroTitleEn) || getLocalized(settings.nameAz, settings.nameEn);
-      const sub = getLocalized(settings.nameAz, settings.nameEn);
-      const img = settings.heroImage || 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop';
-
-      hero.innerHTML = `
-        <div class="hero shadow-premium">
-          <img src="${img}" alt="Banner image" loading="eager" fetchpriority="high" decoding="async">
-          <div class="hero-overlay"></div>
-          <div class="hero-copy">
-            <div class="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold leading-tight">${escapeHtml(title)}</div>
-            <div class="text-sm sm:text-base md:text-lg text-white/90 mt-1.5">${escapeHtml(sub)}</div>
-          </div>
-        </div>
-      `;
-    }
-
-    function getActiveBannerImages() {
-      const manualBanners = (Array.isArray(settings.bannerImages) ? settings.bannerImages : [])
-        .filter(item => item && item.image && item.active !== false);
-
-      if (manualBanners.length) return manualBanners;
-
-      let recommendedIds = [];
-      try {
-        recommendedIds = JSON.parse(settings.recommendedIds || '[]');
-      } catch {
-        recommendedIds = [];
-      }
-
-      if (!Array.isArray(recommendedIds) || !recommendedIds.length) return [];
-
-      return products
-        .filter(product => recommendedIds.includes(Number(product.id)) && product.images?.[0])
-        .map(product => ({
-          image: product.images[0],
-          title: getLocalizedProductName(product),
-          active: true
-        }));
-    }
-
-    function renderBannerSlider() {
-      const section = document.getElementById('banner-section');
-      const enabled = !!settings.bannerEnabled;
-      const banners = getActiveBannerImages();
-
-      clearInterval(bannerTimer);
-      bannerIndex = 0;
-
-      if (!enabled || !banners.length) {
-        section.classList.add('hidden');
-        section.innerHTML = '';
-        return;
-      }
-
-      section.classList.remove('hidden');
-
-      section.innerHTML = `
-        <div class="banner-slider-wrap">
-          <div id="banner-track" class="banner-track">
-            ${banners.map(item => `
-              <div class="banner-slide">
-                <img src="${item.image}" alt="${escapeHtml(item.title || 'Banner')}" loading="eager" decoding="async">
-                <div class="banner-overlay"></div>
-                <div class="banner-caption">${escapeHtml(item.title || settings.bannerTitle || '')}</div>
-              </div>
-            `).join('')}
-          </div>
-
-          <div id="banner-dots" class="banner-dots">
-            ${banners.map((_, index) => `
-              <button class="banner-dot ${index === 0 ? 'active' : ''}" onclick="goToBanner(${index})"></button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
-      if (banners.length > 1) {
-        const interval = Number(settings.bannerInterval) || 3000;
-        bannerTimer = setInterval(() => {
-          bannerIndex = (bannerIndex + 1) % banners.length;
-          updateBannerSlider();
-        }, interval);
-      }
-    }
-
-    function updateBannerSlider() {
-      const track = document.getElementById('banner-track');
-      const dots = document.querySelectorAll('.banner-dot');
-      if (!track) return;
-
-      track.style.transform = `translateX(-${bannerIndex * 100}%)`;
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === bannerIndex);
-      });
-    }
-
-    function goToBanner(index) {
-      bannerIndex = index;
-      updateBannerSlider();
-
-      const banners = getActiveBannerImages();
-      clearInterval(bannerTimer);
-
-      if (banners.length > 1) {
-        const interval = Number(settings.bannerInterval) || 3000;
-        bannerTimer = setInterval(() => {
-          bannerIndex = (bannerIndex + 1) % banners.length;
-          updateBannerSlider();
-        }, interval);
-      }
-    }
-
-    function getRecommendedProducts() {
-      let recommendedIds = [];
-      try { 
-        recommendedIds = JSON.parse(settings.recommendedIds || '[]'); 
-      } catch { 
-        recommendedIds = []; 
-      }
-
-      let items = products.filter(p => recommendedIds.includes(p.id) || recommendedIds.includes(String(p.id)));
-      if (!items.length) items = products.filter(p => p.recommended || p.popular).slice(0, 10);
-      return items.filter(p => p.available !== false);
-    }
-
-    function renderRecommendedSection() {
-      const wrap = document.getElementById('recommended-section');
-      const rec = getRecommendedProducts();
-
-      if (!rec.length) {
-        wrap.classList.add('hidden');
-        return;
-      }
-
-      wrap.classList.remove('hidden');
-
-      wrap.innerHTML = `
-        <div class="flex items-center justify-between mb-4 gap-3">
-          <h3 class="text-[20px] sm:text-[24px] md:text-[26px] font-extrabold leading-tight" data-az="Tövsiyə olunan yeməklər" data-en="Recommended dishes">Tövsiyə olunan yeməklər</h3>
-          <div class="flex items-center gap-2">
-            <button onclick="slideRecommended(-1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
-              <i class="fas fa-chevron-left text-xs sm:text-sm"></i>
-            </button>
-            <button onclick="slideRecommended(1)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 bg-white hover:bg-gray-50">
-              <i class="fas fa-chevron-right text-xs sm:text-sm"></i>
-            </button>
-          </div>
-        </div>
-
-        <div id="recommended-track" class="recommended-track custom-scroll">
-          ${rec.map((product, index) => `
-            <article class="recommended-card" onclick="openDetail(${Number(product.id)})">
-              <img
-                src="${product.images?.[0] || 'https://via.placeholder.com/700x500?text=Food'}"
-                alt="${escapeHtml(getLocalizedProductName(product))}"
-                loading="${index < 3 ? 'eager' : 'lazy'}"
-                fetchpriority="${index < 2 ? 'high' : 'auto'}"
-                decoding="async"
-              >
-              <div class="p-3 sm:p-4">
-                <h4 class="font-extrabold text-[15px] sm:text-[17px] line-clamp-2 leading-snug">${escapeHtml(getLocalizedProductName(product))}</h4>
-                <p class="mt-1 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
-                <div class="mt-2.5 text-[17px] sm:text-[19px] font-extrabold text-amber-700">${product.price} AZN</div>
-              </div>
-            </article>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    function slideRecommended(direction) {
-      const track = document.getElementById('recommended-track');
-      if (!track) return;
-      const cards = track.querySelectorAll('.recommended-card');
-      if (!cards.length) return;
-
-      currentRecommendedIndex += direction;
-      if (currentRecommendedIndex < 0) currentRecommendedIndex = cards.length - 1;
-      if (currentRecommendedIndex >= cards.length) currentRecommendedIndex = 0;
-
-      track.scrollTo({
-        left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft,
-        behavior: 'smooth'
-      });
-
-      restartRecommendedAutoplay();
-    }
-
-    function startRecommendedAutoplay() {
-      clearInterval(recommendedTimer);
-      recommendedTimer = setInterval(() => {
-        const track = document.getElementById('recommended-track');
-        if (!track) return;
-        const cards = track.querySelectorAll('.recommended-card');
-        if (cards.length < 2) return;
-
-        currentRecommendedIndex = (currentRecommendedIndex + 1) % cards.length;
-        track.scrollTo({
-          left: cards[currentRecommendedIndex].offsetLeft - track.offsetLeft,
-          behavior: 'smooth'
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
         });
-      }, CONFIG.RECOMMENDED_SLIDE_INTERVAL);
-    }
 
-    function restartRecommendedAutoplay() {
-      startRecommendedAutoplay();
-    }
-
-    function renderCategoryLists() {
-      const active = categories
-        .filter(c => c.active !== false)
-        .sort((a,b)=>(+a.sortOrder||0)-(+b.sortOrder||0));
-
-      const desktop = document.getElementById('categories-list');
-      const mobileModal = document.getElementById('mobile-categories-list');
-      const mobileSlider = document.getElementById('mobile-category-slider');
-
-      desktop.innerHTML = active.map(cat => `
-        <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
-          <span class="text-base">${cat.icon || '🍽️'}</span>
-          <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
-        </div>
-      `).join('');
-
-      mobileModal.innerHTML = active.map(cat => `
-        <div class="sidebar-link ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)}); closeMobileModal(null,'mobile-categories-modal')">
-          <span class="text-base">${cat.icon || '🍽️'}</span>
-          <span>${escapeHtml(getLocalizedCategoryName(cat))}</span>
-        </div>
-      `).join('');
-
-      mobileSlider.innerHTML = active.map(cat => `
-        <button class="category-pill ${currentFilterMode === 'category' && Number(currentCategory) === Number(cat.id) ? 'active' : ''}" onclick="selectCategory(${Number(cat.id)})">
-          <span class="mr-1">${cat.icon || '🍽️'}</span>${escapeHtml(getLocalizedCategoryName(cat))}
-        </button>
-      `).join('');
-
-      updateSectionHeader();
-    }
-
-    function updateSectionHeader() {
-      const title = document.getElementById('current-category');
-      const sub = document.getElementById('current-subcategory');
-
-      if (currentFilterMode === 'popular') {
-        title.textContent = currentLang === 'az' ? 'Populyar yeməklər' : 'Popular dishes';
-        sub.textContent = currentLang === 'az' ? 'Ən çox seçilənlər' : 'Most selected';
-        return;
-      }
-
-      if (currentFilterMode === 'favorites') {
-        title.textContent = currentLang === 'az' ? 'Seçilənlər' : 'Favorites';
-        sub.textContent = currentLang === 'az' ? 'Bəyəndiyiniz yeməklər' : 'Saved dishes';
-        return;
-      }
-
-      if (currentFilterMode === 'search') {
-        title.textContent = currentLang === 'az' ? 'Ağıllı axtarış nəticələri' : 'Smart search results';
-        sub.textContent = searchQuery ? `“${searchQuery}”` : '';
-        return;
-      }
-
-      const cat = getCategoryById(currentCategory);
-      title.textContent = getLocalizedCategoryName(cat) || 'Menu';
-      sub.textContent = currentLang === 'az' ? 'Bütün yeməklər' : 'All dishes';
-    }
-
-    function getCurrentFilteredProducts() {
-      let filtered = products.filter(p => p.available !== false);
-
-      if (currentFilterMode === 'popular') {
-        filtered = filtered.filter(p => p.popular);
-      } else if (currentFilterMode === 'favorites') {
-        filtered = filtered.filter(p => favorites.includes(p.id));
-      } else if (currentFilterMode === 'search') {
-        filtered = getSearchResults(searchQuery);
-      } else {
-        filtered = filtered.filter(p => Number(p.categoryId) === Number(currentCategory));
-      }
-
-      return filtered;
-    }
-
-    function renderProducts() {
-      const container = document.getElementById('products-grid');
-      const filtered = getCurrentFilteredProducts();
-      updateSectionHeader();
-
-      if (!filtered.length) {
-        container.innerHTML = `<div class="sm:col-span-2 text-center py-12 sm:py-14 text-sm sm:text-base text-gray-500">${currentLang === 'az' ? 'Məhsul tapılmadı' : 'No dishes found'}</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map((product, index) => `
-        <article class="food-card" data-category-id="${Number(product.categoryId)}" onclick="openDetail(${Number(product.id)})">
-          <div class="food-card-image">
-            <img
-              src="${product.images?.[0] || 'https://via.placeholder.com/900x700?text=Food'}"
-              alt="${escapeHtml(getLocalizedProductName(product))}"
-              loading="${index < 4 ? 'eager' : 'lazy'}"
-              fetchpriority="${index < 2 ? 'high' : 'auto'}"
-              decoding="async"
-            >
-          </div>
-
-          <div class="p-4 sm:p-5">
-            <div class="flex items-start justify-between gap-3">
-              <h3 class="text-[18px] sm:text-[20px] font-extrabold leading-tight">${currentFilterMode === 'search' ? highlightMatch(getLocalizedProductName(product), searchQuery) : escapeHtml(getLocalizedProductName(product))}</h3>
-
-              <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}" onclick="event.stopPropagation(); toggleFavorite(${Number(product.id)}, this)">
-                <i class="${favorites.includes(product.id) ? 'fas' : 'far'} fa-heart text-sm"></i>
-              </button>
-            </div>
-
-            <p class="mt-2 text-[12px] sm:text-sm text-gray-500 line-clamp-2">${escapeHtml(getLocalizedProductDesc(product))}</p>
-            <div class="mt-3 sm:mt-4 text-[18px] sm:text-[20px] font-extrabold text-amber-700">${product.price} AZN</div>
-          </div>
-        </article>
-      `).join('');
-
-      initCardObserver();
-      startScrollCategorySync();
-    }
-
-    function initCardObserver() {
-      if (cardObserver) cardObserver.disconnect();
-
-      cardObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          const img = entry.target.querySelector('img[loading="lazy"]');
-          if (img) img.loading = 'eager';
-          cardObserver.unobserve(entry.target);
-        });
-      }, { rootMargin: '250px 0px' });
-
-      document.querySelectorAll('.food-card').forEach(card => cardObserver.observe(card));
-    }
-
-    function startScrollCategorySync() {
-      lastObservedCategory = currentCategory;
-    }
-
-    function updateCategoryByScroll() {
-      if (currentFilterMode !== 'category') return;
-
-      const cards = Array.from(document.querySelectorAll('.food-card[data-category-id]'));
-      if (!cards.length) return;
-
-      const triggerY = window.innerHeight * 0.36;
-      let activeCard = null;
-
-      for (const card of cards) {
-        const rect = card.getBoundingClientRect();
-        if (rect.top <= triggerY && rect.bottom >= triggerY) {
-          activeCard = card;
-          break;
+        async function initApp() {
+            showLoading(true);
+            
+            try {
+                // Try to fetch from Google Sheets
+                if (!APP_CONFIG.FALLBACK_MODE) {
+                    await fetchDataFromSheets();
+                } else {
+                    // Use fallback data
+                    appState.categories = fallbackData.categories;
+                    appState.products = fallbackData.products;
+                    appState.settings = fallbackData.settings;
+                }
+                
+                // Initialize UI
+                initHeroSlider();
+                initCategories();
+                initSchedule();
+                loadMenu();
+                initVideoBanner();
+                setupScrollListener();
+                setupTouchHandlers();
+                
+            } catch (error) {
+                console.error('App initialization error:', error);
+                showToast('Xəta baş verdi. Offline mod işləyir.');
+                
+                // Fallback to local data
+                appState.categories = fallbackData.categories;
+                appState.products = fallbackData.products;
+                appState.settings = fallbackData.settings;
+                
+                initHeroSlider();
+                initCategories();
+                initSchedule();
+                loadMenu();
+                initVideoBanner();
+            } finally {
+                showLoading(false);
+            }
         }
-      }
 
-      if (!activeCard) {
-        const sorted = cards
-          .map(card => ({ card, dist: Math.abs(card.getBoundingClientRect().top - triggerY) }))
-          .sort((a, b) => a.dist - b.dist);
+        // ==========================================
+        // DATA FETCHING
+        // ==========================================
+        async function fetchDataFromSheets() {
+            try {
+                const response = await fetch(`${APP_CONFIG.GAS_URL}?action=getMenu`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    appState.categories = data.data.categories || [];
+                    appState.products = data.data.products || [];
+                    appState.settings = data.data.settings || {};
+                } else {
+                    throw new Error(data.error || 'Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
+            }
+        }
 
-        activeCard = sorted[0]?.card || null;
-      }
+        // ==========================================
+        // HERO SLIDER (Admin Banner Management)
+        // ==========================================
+        function initHeroSlider() {
+            const slider = document.getElementById('heroSlider');
+            const indicators = document.getElementById('slideIndicators');
+            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
+            
+            if (!banners || banners.length === 0) {
+                // Default banner if none set
+                banners.push({
+                    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
+                    title: appState.settings.restaurantName || 'Gabala Restaurant',
+                    price: '',
+                    likes: ''
+                });
+            }
+            
+            slider.innerHTML = '';
+            indicators.innerHTML = '';
+            
+            banners.forEach((slide, index) => {
+                // Create slide
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'hero-slide min-w-full h-full relative';
+                slideDiv.innerHTML = `
+                    <img src="${slide.image}" class="w-full h-full object-cover" alt="${slide.title}" loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                `;
+                slider.appendChild(slideDiv);
+                
+                // Create indicator
+                const indicator = document.createElement('div');
+                indicator.className = `slide-indicator w-2 h-2 rounded-full bg-white/50 cursor-pointer ${index === 0 ? 'active' : ''}`;
+                indicator.onclick = () => goToSlide(index);
+                indicators.appendChild(indicator);
+            });
+            
+            document.getElementById('totalSlides').textContent = banners.length;
+            updateSlideInfo();
+            
+            // Auto slide
+            setInterval(() => {
+                nextSlide();
+            }, 5000);
+        }
 
-      if (!activeCard) return;
+        function updateSlideInfo() {
+            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
+            const slide = banners[appState.currentSlide];
+            
+            if (slide) {
+                document.getElementById('slideTitle').textContent = slide.title || '';
+                document.getElementById('slidePrice').textContent = slide.price || '';
+                document.getElementById('slideLikes').textContent = slide.likes || '';
+            }
+            
+            document.getElementById('currentSlide').textContent = appState.currentSlide + 1;
+            
+            // Update indicators
+            document.querySelectorAll('.slide-indicator').forEach((ind, idx) => {
+                ind.classList.toggle('active', idx === appState.currentSlide);
+            });
+        }
 
-      const newCategory = Number(activeCard.dataset.categoryId);
-      if (newCategory && newCategory !== lastObservedCategory) {
-        lastObservedCategory = newCategory;
-        currentCategory = newCategory;
-        renderCategoryLists();
-      }
-    }
+        function nextSlide() {
+            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
+            appState.currentSlide = (appState.currentSlide + 1) % banners.length;
+            document.getElementById('heroSlider').scrollTo({ 
+                left: appState.currentSlide * window.innerWidth, 
+                behavior: 'smooth' 
+            });
+            updateSlideInfo();
+        }
 
-    function openDetail(productId) {
-      const product = products.find(p => Number(p.id) === Number(productId));
-      if (!product) return;
+        function prevSlide() {
+            const banners = appState.settings.bannerImages || fallbackData.settings.bannerImages;
+            appState.currentSlide = (appState.currentSlide - 1 + banners.length) % banners.length;
+            document.getElementById('heroSlider').scrollTo({ 
+                left: appState.currentSlide * window.innerWidth, 
+                behavior: 'smooth' 
+            });
+            updateSlideInfo();
+        }
 
-      const detail = document.getElementById('detail-card');
-      detail.innerHTML = `
-        <button class="detail-close" onclick="closeDetailModal()">
-          <i class="fas fa-times"></i>
-        </button>
+        function goToSlide(index) {
+            appState.currentSlide = index;
+            document.getElementById('heroSlider').scrollTo({ 
+                left: appState.currentSlide * window.innerWidth, 
+                behavior: 'smooth' 
+            });
+            updateSlideInfo();
+        }
 
-        <img class="detail-cover" src="${product.images?.[0] || 'https://via.placeholder.com/1200x900?text=Food'}" alt="${escapeHtml(getLocalizedProductName(product))}" loading="eager" fetchpriority="high" decoding="async">
+        // ==========================================
+        // VIDEO BANNER (Admin Controlled)
+        // ==========================================
+        function initVideoBanner() {
+            const videoAd = appState.settings.videoAd || fallbackData.settings.videoAd;
+            
+            if (!videoAd || !videoAd.enabled) {
+                document.getElementById('videoBannerContainer').classList.add('hidden');
+                return;
+            }
+            
+            const container = document.getElementById('videoBannerContainer');
+            const video = document.getElementById('adVideo');
+            const source = video.querySelector('source');
+            
+            source.src = videoAd.videoUrl;
+            video.poster = videoAd.posterUrl;
+            document.getElementById('adTitle').textContent = videoAd.title;
+            document.getElementById('adSubtitle').textContent = videoAd.subtitle;
+            
+            container.classList.remove('hidden');
+            video.load();
+        }
 
-        <div class="p-5 sm:p-6 md:p-7">
-          <div class="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h3 class="text-[22px] sm:text-[24px] md:text-[30px] font-extrabold leading-tight">${escapeHtml(getLocalizedProductName(product))}</h3>
-              <p class="mt-2 text-sm sm:text-base text-gray-500">${escapeHtml(getLocalizedProductDesc(product))}</p>
-            </div>
-            <div class="text-[20px] sm:text-[22px] md:text-[28px] font-extrabold text-amber-700">${product.price} AZN</div>
-          </div>
+        function playVideo(container) {
+            const video = container.querySelector('video');
+            const overlay = container.querySelector('.play-overlay');
+            
+            if (video.paused) {
+                video.play();
+                overlay.style.opacity = '0';
+            } else {
+                video.pause();
+                overlay.style.opacity = '1';
+            }
+        }
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-5 sm:mt-6">
-            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
-              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Tərkibi' : 'Ingredients'}</div>
-              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.ingredientsAz, product.ingredientsEn) || getLocalizedProductDesc(product) || '-')}</p>
-            </div>
+        // ==========================================
+        // CATEGORIES
+        // ==========================================
+        function initCategories() {
+            const mainContainer = document.getElementById('mainCategories');
+            mainContainer.innerHTML = '';
+            
+            const categories = appState.categories.filter(c => c.active !== false);
+            
+            if (categories.length === 0) return;
+            
+            // Set first category as default
+            if (!appState.currentCategory) {
+                appState.currentCategory = categories[0].id;
+            }
+            
+            categories.forEach((cat, index) => {
+                const btn = document.createElement('button');
+                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 ${cat.id === appState.currentCategory ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
+                btn.innerHTML = `<span>${cat.nameEn || cat.nameAz}</span>`;
+                btn.onclick = () => switchCategory(cat.id);
+                mainContainer.appendChild(btn);
+            });
+            
+            updateSubcategories();
+        }
 
-            <div class="rounded-[22px] border border-gray-200 p-4 sm:p-5 bg-gray-50">
-              <div class="font-extrabold text-[15px] sm:text-[16px] mb-2">${currentLang === 'az' ? 'Allergenlər' : 'Allergens'}</div>
-              <p class="text-sm sm:text-base text-gray-600 leading-6 sm:leading-7">${escapeHtml(getLocalized(product.allergensAz, product.allergensEn) || '-')}</p>
-            </div>
-          </div>
-        </div>
-      `;
+        function switchCategory(catId) {
+            appState.currentCategory = catId;
+            
+            // Update main category buttons
+            document.querySelectorAll('.main-categories .category-tab').forEach((btn, idx) => {
+                const categories = appState.categories.filter(c => c.active !== false);
+                const cat = categories[idx];
+                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 ${cat.id === catId ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
+            });
+            
+            // Update subcategories
+            updateSubcategories();
+            
+            // Load first subcategory
+            const cat = appState.categories.find(c => c.id === catId);
+            if (cat && cat.subcategories && cat.subcategories.length > 0) {
+                switchSubcategory(cat.subcategories[0]);
+            }
+        }
 
-      document.getElementById('detail-modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+        function updateSubcategories() {
+            const container = document.getElementById('subCategories');
+            container.innerHTML = '';
+            
+            const cat = appState.categories.find(c => c.id === appState.currentCategory);
+            if (!cat || !cat.subcategories) return;
+            
+            cat.subcategories.forEach((sub, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${idx === 0 ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
+                btn.textContent = sub;
+                btn.onclick = () => switchSubcategory(sub);
+                container.appendChild(btn);
+            });
+        }
 
-    function closeDetailModal(event) {
-      if (event && event.target !== event.currentTarget) return;
-      document.getElementById('detail-modal').classList.remove('active');
-      document.body.style.overflow = '';
-    }
+        function switchSubcategory(subName) {
+            appState.currentSubcategory = subName;
+            
+            // Update subcategory buttons
+            document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
+                btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === subName ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
+            });
+            
+            loadMenu();
+            scrollToSubcategory(subName);
+        }
 
-    function toggleFavorite(productId, button) {
-      const index = favorites.indexOf(productId);
-      if (index > -1) favorites.splice(index, 1);
-      else favorites.push(productId);
+        // ==========================================
+        // MENU LOADING
+        // ==========================================
+        function loadMenu() {
+            const container = document.getElementById('menuContent');
+            container.innerHTML = '';
+            
+            const cat = appState.categories.find(c => c.id === appState.currentCategory);
+            if (!cat || !cat.subcategories) return;
+            
+            // Group items by subcategory for continuous scroll
+            cat.subcategories.forEach((subName, index) => {
+                const items = appState.products.filter(p => 
+                    p.categoryId === appState.currentCategory && 
+                    p.categoryName === subName &&
+                    p.available !== false
+                );
+                
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.id = `section-${subName.replace(/\s+/g, '-')}`;
+                
+                const title = document.createElement('h2');
+                title.className = 'text-xl font-bold text-gray-900 mb-4 flex items-center gap-2';
+                title.innerHTML = `${subName} <span class="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-1 rounded-full">${items.length}</span>`;
+                section.appendChild(title);
+                
+                if (items.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'text-gray-400 text-sm py-8 text-center';
+                    empty.textContent = 'Məhsul yoxdur / No items available';
+                    section.appendChild(empty);
+                } else {
+                    const grid = document.createElement('div');
+                    grid.className = 'space-y-4';
+                    
+                    items.forEach(item => {
+                        const card = createMenuCard(item);
+                        grid.appendChild(card);
+                    });
+                    
+                    section.appendChild(grid);
+                }
+                
+                // Add advertisement banner between sections (except last)
+                if (index < cat.subcategories.length - 1 && index % 2 === 1) {
+                    const adBanner = document.createElement('div');
+                    adBanner.className = 'my-6 rounded-xl overflow-hidden bg-gradient-to-r from-[#d4c5a3] to-[#b8a88a] p-4 text-white relative';
+                    adBanner.innerHTML = `
+                        <div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">REKLAM</div>
+                        <h4 class="font-bold text-lg mb-1">Xüsusi Təklif!</h4>
+                        <p class="text-sm opacity-90">Bu kateqoriyada 10% endirim</p>
+                        <button class="mt-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-medium">Ətraflı</button>
+                    `;
+                    section.appendChild(adBanner);
+                }
+                
+                container.appendChild(section);
+            });
+        }
 
-      localStorage.setItem('menu_favorites', JSON.stringify(favorites));
+        function createMenuCard(item) {
+            const card = document.createElement('div');
+            card.className = 'menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm';
+            
+            const isLiked = appState.favorites.has(item.id);
+            const imageUrl = item.imageUrl || (item.images && item.images[0]) || 'https://via.placeholder.com/400x400?text=No+Image';
+            
+            card.innerHTML = `
+                <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                    <img src="${imageUrl}" class="item-image" alt="${item.nameEn || item.nameAz}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
+                </div>
+                <div class="flex-1 flex flex-col justify-between py-1">
+                    <div>
+                        <h3 class="font-semibold text-gray-900 text-base leading-tight mb-1">${item.nameEn || item.nameAz}</h3>
+                        ${item.descEn || item.descAz ? `<p class="text-xs text-gray-500 mb-1 line-clamp-2">${item.descEn || item.descAz}</p>` : ''}
+                        <div class="flex items-center gap-3 text-xs text-gray-500">
+                            ${item.volume ? `<span class="flex items-center gap-1"><i class="fas fa-flask text-[10px]"></i> ${item.volume}</span>` : ''}
+                            ${item.time ? `<span class="flex items-center gap-1"><i class="fas fa-clock text-[10px]"></i> ${item.time}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <span class="price-tag font-bold text-lg">${item.price} ${appState.settings.currency || 'AZN'}</span>
+                            ${item.vat ? '<span class="text-xs text-gray-400 ml-1">18% VAT</span>' : ''}
+                        </div>
+                        <button onclick="toggleLike(${item.id}, this)" class="heart-btn w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center ${isLiked ? 'liked' : 'text-gray-400'}">
+                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                            <span class="text-xs ml-1">${(item.likes || 0) + (isLiked ? 1 : 0)}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
 
-      if (currentFilterMode === 'favorites') {
-        renderProducts();
-      } else {
-        button.innerHTML = `<i class="${favorites.includes(productId) ? 'fas' : 'far'} fa-heart text-sm"></i>`;
-        button.className = `w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center ${favorites.includes(productId) ? 'text-red-500' : 'text-gray-500'}`;
-      }
-    }
+        // ==========================================
+        // FAVORITES
+        // ==========================================
+        function toggleLike(itemId, btn) {
+            if (appState.favorites.has(itemId)) {
+                appState.favorites.delete(itemId);
+                btn.classList.remove('liked');
+                btn.classList.add('text-gray-400');
+                btn.querySelector('i').classList.replace('fas', 'far');
+            } else {
+                appState.favorites.add(itemId);
+                btn.classList.add('liked');
+                btn.classList.remove('text-gray-400');
+                btn.querySelector('i').classList.replace('far', 'fas');
+                
+                // Animation
+                btn.style.transform = 'scale(1.2)';
+                setTimeout(() => btn.style.transform = 'scale(1)', 200);
+            }
+            
+            updateFavCount();
+            
+            // Save to localStorage
+            localStorage.setItem('favorites', JSON.stringify([...appState.favorites]));
+        }
 
-    function renderInfo() {
-      const weekday = settings.workWeekday || '';
-      const weekend = settings.workWeekend || '';
-      document.getElementById('working-hours').textContent = weekend ? `${weekday} / ${weekend}` : (weekday || '07:00 - 24:00');
-      document.getElementById('venue-address').textContent = getLocalized(settings.addressAz, settings.addressEn) || 'Address not set';
-      document.getElementById('venue-phone').textContent = settings.phone || '-';
-    }
+        function updateFavCount() {
+            const count = appState.favorites.size;
+            const badge = document.getElementById('favCount');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
 
-    function renderSocials() {
-      const container = document.getElementById('social-links');
-      let html = '';
+        // Load favorites from localStorage
+        function loadFavorites() {
+            const saved = localStorage.getItem('favorites');
+            if (saved) {
+                appState.favorites = new Set(JSON.parse(saved));
+                updateFavCount();
+            }
+        }
 
-      if (settings.whatsapp) {
-        const num = safeText(settings.whatsapp).replace(/[^\d]/g, '');
-        html += `<a href="https://wa.me/${num}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-whatsapp"></i></a>`;
-      }
+        // ==========================================
+        // SCHEDULE
+        // ==========================================
+        function initSchedule() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const scheduleList = document.getElementById('scheduleList');
+            const today = new Date().getDay();
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const currentDayName = dayNames[today];
+            
+            scheduleList.innerHTML = '';
+            
+            days.forEach(day => {
+                const isToday = day === currentDayName;
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-2 rounded-lg ${isToday ? 'bg-[#d4c5a3] text-white' : 'hover:bg-gray-100'}`;
+                div.innerHTML = `
+                    <span class="font-medium text-sm">${day}</span>
+                    <span class="text-sm ${isToday ? 'text-white' : 'text-gray-600'}">07:00 - 24:00</span>
+                `;
+                scheduleList.appendChild(div);
+            });
+            
+            document.getElementById('currentDay').textContent = currentDayName.slice(0, 3);
+        }
 
-      if (settings.instagram) {
-        html += `<a href="${settings.instagram}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-instagram"></i></a>`;
-      }
+        function toggleSchedule() {
+            const dropdown = document.getElementById('scheduleDropdown');
+            const arrow = document.getElementById('scheduleArrow');
+            dropdown.classList.toggle('hidden');
+            arrow.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
 
-      if (settings.facebook) {
-        html += `<a href="${settings.facebook}" target="_blank" class="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] border border-gray-200 bg-white flex items-center justify-center shadow-premium text-lg sm:text-xl"><i class="fab fa-facebook-f"></i></a>`;
-      }
+        // ==========================================
+        // DRAWER
+        // ==========================================
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('overlay');
+            
+            if (drawer.classList.contains('closed')) {
+                drawer.classList.remove('closed');
+                drawer.classList.add('open');
+                overlay.classList.remove('hide');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } else {
+                drawer.classList.remove('open');
+                drawer.classList.add('closed');
+                overlay.classList.remove('show');
+                overlay.classList.add('hide');
+                document.body.style.overflow = '';
+            }
+        }
 
-      container.innerHTML = html;
-    }
+        // ==========================================
+        // UTILITIES
+        // ==========================================
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard');
+            });
+        }
 
-    function renderTextLabels() {
-      document.querySelectorAll('[data-az][data-en]').forEach(el => {
-        el.textContent = el.getAttribute(`data-${currentLang}`);
-      });
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
 
-      document.getElementById('search-input').placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
-      const mobileSearch = document.getElementById('mobile-search-input');
-      if (mobileSearch) mobileSearch.placeholder = currentLang === 'az' ? 'Ağıllı axtarış...' : 'Smart search...';
+        function getDirections() {
+            window.open('https://maps.google.com/?q=Qafqaz+Riverside+Resort+Hotel+Qabala', '_blank');
+        }
 
-      document.getElementById('smart-search-label').textContent = currentLang === 'az' ? 'Ağıllı Axtarış' : 'Smart Search';
-      const badge = document.querySelector('#live-badge span');
-      if (badge) badge.textContent = currentLang === 'az' ? 'Canlı yeniləndi' : 'Live updated';
+        function showLoading(show) {
+            appState.isLoading = show;
+            // You can add a loading spinner here if needed
+        }
 
-      const smartEnabled = String(settings.smartSearchBadge || 'true') === 'true';
-      document.getElementById('smart-search-box').style.display = smartEnabled ? 'flex' : 'none';
-    }
+        function showTab(tab) {
+            if (tab === 'favorites') {
+                showFavorites();
+            } else if (tab === 'home') {
+                // Reset to home
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (tab === 'search') {
+                // Implement search functionality
+                const searchTerm = prompt('Axtarış:');
+                if (searchTerm) {
+                    searchProducts(searchTerm);
+                }
+            }
+        }
 
-    function syncSearchInputs() {
-      const desktop = document.getElementById('search-input');
-      const mobile = document.getElementById('mobile-search-input');
-      if (desktop) desktop.value = searchQuery;
-      if (mobile) mobile.value = searchQuery;
-    }
+        function showFavorites() {
+            const container = document.getElementById('menuContent');
+            container.innerHTML = '';
+            
+            const favProducts = appState.products.filter(p => appState.favorites.has(p.id));
+            
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            
+            const title = document.createElement('h2');
+            title.className = 'text-xl font-bold text-gray-900 mb-4';
+            title.textContent = 'Seçilmişlər / Favorites';
+            section.appendChild(title);
+            
+            if (favProducts.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-gray-400 text-sm py-8 text-center';
+                empty.textContent = 'Seçilmiş məhsul yoxdur / No favorites yet';
+                section.appendChild(empty);
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'space-y-4';
+                
+                favProducts.forEach(item => {
+                    const card = createMenuCard(item);
+                    grid.appendChild(card);
+                });
+                
+                section.appendChild(grid);
+            }
+            
+            container.appendChild(section);
+        }
 
-    function selectCategory(categoryId, autoScroll = false) {
-      currentCategory = Number(categoryId);
-      lastObservedCategory = currentCategory;
-      currentFilterMode = 'category';
-      searchQuery = '';
-      syncSearchInputs();
-      renderCategoryLists();
-      renderProducts();
+        function searchProducts(term) {
+            const container = document.getElementById('menuContent');
+            container.innerHTML = '';
+            
+            const searchLower = term.toLowerCase();
+            const results = appState.products.filter(p => 
+                (p.nameEn && p.nameEn.toLowerCase().includes(searchLower)) ||
+                (p.nameAz && p.nameAz.toLowerCase().includes(searchLower)) ||
+                (p.descEn && p.descEn.toLowerCase().includes(searchLower)) ||
+                (p.descAz && p.descAz.toLowerCase().includes(searchLower))
+            );
+            
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            
+            const title = document.createElement('h2');
+            title.className = 'text-xl font-bold text-gray-900 mb-4';
+            title.textContent = `Axtarış nəticələri: "${term}"`;
+            section.appendChild(title);
+            
+            if (results.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-gray-400 text-sm py-8 text-center';
+                empty.textContent = 'Məhsul tapılmadı / No products found';
+                section.appendChild(empty);
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'space-y-4';
+                
+                results.forEach(item => {
+                    const card = createMenuCard(item);
+                    grid.appendChild(card);
+                });
+                
+                section.appendChild(grid);
+            }
+            
+            container.appendChild(section);
+        }
 
-      if (!autoScroll) {
-        const section = document.getElementById('products-grid');
-        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
+        // ==========================================
+        // SCROLL HANDLING
+        // ==========================================
+        function setupScrollListener() {
+            let lastScroll = 0;
+            const backToTop = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                // Back to top button
+                if (currentScroll > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+                
+                // Update active subcategory based on scroll position
+                updateActiveSubcategoryOnScroll();
+                
+                lastScroll = currentScroll;
+            }, { passive: true });
+        }
 
-    function filterPopular() {
-      currentFilterMode = 'popular';
-      searchQuery = '';
-      syncSearchInputs();
-      renderCategoryLists();
-      renderProducts();
-    }
+        function updateActiveSubcategoryOnScroll() {
+            const sections = document.querySelectorAll('.category-section');
+            const scrollPos = window.scrollY + 200;
+            
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                const id = section.id.replace('section-', '').replace(/-/g, ' ');
+                
+                if (scrollPos >= top && scrollPos < top + height) {
+                    // Update subcategory buttons
+                    document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
+                        btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === id ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
+                    });
+                    
+                    appState.currentSubcategory = id;
+                }
+            });
+        }
 
-    function showFavoritesOnly() {
-      currentFilterMode = 'favorites';
-      searchQuery = '';
-      syncSearchInputs();
-      renderCategoryLists();
-      renderProducts();
-    }
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-    function smartSearch(value) {
-      searchQuery = safeText(value).trim();
-      syncSearchInputs();
-      currentFilterMode = searchQuery ? 'search' : 'category';
-      renderCategoryLists();
-      renderProducts();
-    }
+        function scrollToSubcategory(subName) {
+            const element = document.getElementById(`section-${subName.replace(/\s+/g, '-')}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
 
-    function focusSearch() {
-      const input = document.getElementById('search-input');
-      if (!input) return;
-      input.focus();
-      input.select();
-    }
+        // ==========================================
+        // TOUCH HANDLERS FOR SWIPE NAVIGATION
+        // ==========================================
+        function setupTouchHandlers() {
+            const menuContent = document.getElementById('menuContent');
+            
+            menuContent.addEventListener('touchstart', (e) => {
+                appState.touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            menuContent.addEventListener('touchend', (e) => {
+                appState.touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+        }
 
-    function focusMobileSearch() {
-      const input = document.getElementById('mobile-search-input');
-      if (!input) return;
-      input.focus();
-      input.select();
-    }
+        function handleSwipe() {
+            const swipeThreshold = 100;
+            const diff = appState.touchStartX - appState.touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                const cat = appState.categories.find(c => c.id === appState.currentCategory);
+                if (!cat || !cat.subcategories) return;
+                
+                const currentIndex = cat.subcategories.indexOf(appState.currentSubcategory);
+                
+                if (diff > 0 && currentIndex < cat.subcategories.length - 1) {
+                    // Swipe left - next category
+                    switchSubcategory(cat.subcategories[currentIndex + 1]);
+                } else if (diff < 0 && currentIndex > 0) {
+                    // Swipe right - previous category
+                    switchSubcategory(cat.subcategories[currentIndex - 1]);
+                }
+            }
+        }
 
-    function toggleLanguage() {
-      currentLang = currentLang === 'az' ? 'en' : 'az';
-      renderAll();
-      maybeShowPopup(true);
-    }
+        // ==========================================
+        // KEYBOARD NAVIGATION
+        // ==========================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
 
-    function showMobileCategories() {
-      document.getElementById('mobile-categories-modal').classList.remove('hidden');
-    }
-
-    function showMobileSearch() {
-      document.getElementById('mobile-search-modal').classList.remove('hidden');
-      setTimeout(() => {
-        const input = document.getElementById('mobile-search-input');
-        if (input) input.focus();
-      }, 80);
-    }
-
-    function closeMobileModal(event, id) {
-      if (event && event.target !== event.currentTarget) return;
-      document.getElementById(id).classList.add('hidden');
-    }
-
-    function maybeShowPopup(force = false) {
-      if (!settings.popupEnabled) {
-        closePopup();
-        return;
-      }
-
-      const seen = localStorage.getItem(CONFIG.POPUP_ONCE_KEY) === '1';
-      if (!force && settings.popupShowOnce && seen) return;
-      if (!settings.popupImage && !settings.popupTitle && !settings.popupText) return;
-
-      const content = document.getElementById('popup-content');
-      const title = settings.popupTitle || '';
-      const text = settings.popupText || '';
-      const link = settings.popupLink || '';
-      const image = settings.popupImage || '';
-
-      content.innerHTML = `
-        ${image ? `<img src="${image}" class="popup-image" alt="${escapeHtml(title || 'Popup')}" loading="eager" decoding="async">` : ''}
-        <div class="p-5 sm:p-6">
-          ${title ? `<h3 class="text-[22px] sm:text-[26px] font-extrabold text-gray-900 mb-3">${escapeHtml(title)}</h3>` : ''}
-          ${text ? `<p class="text-sm sm:text-base text-gray-600 leading-7">${escapeHtml(text)}</p>` : ''}
-          ${link ? `
-            <a href="${link}" target="_blank" class="inline-flex items-center justify-center mt-5 px-5 py-3 rounded-2xl bg-teal-700 text-white font-bold hover:bg-teal-800">
-              ${currentLang === 'az' ? 'Ətraflı bax' : 'View more'}
-            </a>
-          ` : ''}
-        </div>
-      `;
-
-      document.getElementById('popup-modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
-
-      if (settings.popupShowOnce) {
-        localStorage.setItem(CONFIG.POPUP_ONCE_KEY, '1');
-      }
-    }
-
-    function closePopup(event) {
-      if (event && event.target !== event.currentTarget) return;
-      document.getElementById('popup-modal').classList.remove('active');
-      if (!document.getElementById('detail-modal').classList.contains('active')) {
-        document.body.style.overflow = '';
-      }
-    }
-
-    // ============================================
-    // EVENT LISTENERS
-    // ============================================
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeDetailModal();
-        closePopup();
-        closeMobileModal(null, 'mobile-categories-modal');
-        closeMobileModal(null, 'mobile-search-modal');
-      }
-    });
-
-    window.addEventListener('scroll', () => {
-      const currentY = window.scrollY;
-      if (Math.abs(currentY - lastScrollY) > 8) {
-        updateCategoryByScroll();
-        lastScrollY = currentY;
-      }
-    }, { passive: true });
-
-    window.addEventListener('focus', () => fetchMenuData(true));
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') fetchMenuData(true);
-    });
-
-    document.addEventListener('DOMContentLoaded', loadData);
-  </script>
+        // ==========================================
+        // LOAD FAVORITES ON START
+        // ==========================================
+        loadFavorites();
+    </script>
 </body>
 </html>
