@@ -1,1144 +1,793 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Digital Menu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        body {
-            overflow-x: hidden;
-            background-color: #f5f5f5;
-        }
-        
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .hero-slider {
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-        }
-        
-        .hero-slide { scroll-snap-align: start; }
-        
-        .menu-item-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .menu-item-card:active { transform: scale(0.98); }
-        
-        .category-tab {
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .category-tab.active {
-            background-color: #d4c5a3;
-            color: #2c2c2c;
-        }
-        
-        .heart-btn { transition: transform 0.2s ease; }
-        .heart-btn:active { transform: scale(1.2); }
-        .heart-btn.liked { color: #ef4444; }
-        .heart-btn.liked i { font-weight: 900; }
-        
-        .slide-indicator { transition: all 0.3s ease; }
-        .slide-indicator.active { background-color: white; width: 24px; }
-        
-        .drawer {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .drawer.open { transform: translateX(0); }
-        .drawer.closed { transform: translateX(-100%); }
-        
-        .overlay {
-            transition: opacity 0.3s ease;
-        }
-        
-        .overlay.show { opacity: 1; pointer-events: auto; }
-        .overlay.hide { opacity: 0; pointer-events: none; }
-        
-        .item-image {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .price-tag { color: #b8a88a; }
-        
-        .nav-icon-btn { transition: all 0.2s ease; }
-        .nav-icon-btn:active {
-            transform: scale(0.95);
-            background-color: rgba(0,0,0,0.1);
-        }
-        
-        .back-to-top {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .back-to-top.visible { opacity: 1; }
-        
-        .category-section { scroll-margin-top: 140px; }
-        
-        .main-categories {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            background: white;
-        }
-        
-        .sub-categories {
-            position: sticky;
-            top: 56px;
-            z-index: 30;
-            background: white;
-        }
-
-        .video-banner {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .video-banner video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .play-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Menyu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--gold:#b5964a;--gold2:#d4b86a;--bg:#f5f5f3;--white:#fff;--text:#1a1a1a;--gray:#6b7280;--border:#e5e7eb;--r:14px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+/* SCREENS */
+.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+/* LOADING */
+#scr-loading{align-items:center;justify-content:center;background:var(--white);}
+.spin{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:16px auto 0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* HEADER */
+.hdr{background:var(--white);padding:10px 14px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);}
+.hdr-logo{width:50px;height:50px;border-radius:10px;border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;}
+.hdr-logo img{width:100%;height:100%;object-fit:contain;}
+.hdr-right{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.lang-wrap{position:relative;}
+.lang-btn{display:flex;align-items:center;gap:4px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;}
+.lang-dd{position:absolute;top:calc(100% + 4px);left:0;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:200;min-width:80px;display:none;}
+.lang-dd.open{display:block;}
+.lang-opt{padding:9px 14px;font-size:14px;font-weight:500;cursor:pointer;}
+.lang-opt:hover{background:#f3f4f6;}
+.lang-opt.active{color:var(--gold);font-weight:700;}
+.icon-btn{width:38px;height:38px;background:var(--white);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--text);}
+/* HERO SLIDER */
+.hero{position:relative;width:100%;overflow:hidden;background:#111;}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;}
+.hero-slide.active{opacity:1;position:relative;}
+.hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-inner{width:100%;aspect-ratio:16/9;position:relative;}
+.hero-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;z-index:5;}
+.hero-nav.prev{left:10px;}
+.hero-nav.next{right:10px;}
+.hero-info{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.55);color:#fff;padding:5px 10px;border-radius:7px;font-size:12px;display:flex;align-items:center;gap:6px;max-width:calc(100% - 70px);}
+.hero-info b{font-weight:700;}
+.hero-info .hi{display:flex;align-items:center;gap:3px;}
+.hero-info .hi i{color:#ef4444;font-size:10px;}
+.hero-ctr{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;padding:3px 9px;border-radius:6px;font-size:11px;}
+/* HOME */
+.home-info{padding:16px 14px 8px;}
+.home-info h1{font-size:22px;font-weight:800;margin-bottom:3px;}
+.home-info p{font-size:13px;color:var(--gray);}
+.sec-label{display:flex;align-items:center;gap:8px;margin:4px 14px 10px;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gray);text-transform:uppercase;}
+.sec-label::before,.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.menu-list{padding:0 14px;display:flex;flex-direction:column;gap:7px;padding-bottom:20px;}
+.mli{background:var(--white);border-radius:var(--r);padding:16px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid var(--border);transition:.15s;}
+.mli:active{background:#f9f9f9;}
+.mli span{font-size:15px;font-weight:600;}
+.mli i{color:var(--gray);font-size:13px;}
+/* CATEGORY SCREEN */
+.cat-hdr{background:var(--white);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);}
+.cat-hdr-top{padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.back-btn{width:34px;height:34px;background:var(--bg);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);font-size:13px;flex-shrink:0;}
+.here-badge{display:flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;}
+.here-badge i{color:var(--gold);}
+/* Main tabs (top-level categories) */
+.main-tabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid var(--border);}
+.main-tabs::-webkit-scrollbar{display:none;}
+.main-tab{flex-shrink:0;padding:11px 14px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.15s;}
+.main-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+/* Sub tabs */
+.sub-tabs{display:flex;overflow-x:auto;gap:6px;padding:9px 14px;scrollbar-width:none;background:var(--white);}
+.sub-tabs::-webkit-scrollbar{display:none;}
+.sub-tab{flex-shrink:0;padding:6px 13px;background:#f3f4f6;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;color:var(--gray);border:1.5px solid transparent;transition:.15s;}
+.sub-tab.active{background:#fef3cd;color:var(--gold);border-color:var(--gold);}
+/* Quick bar */
+.quick-bar{background:var(--white);border-bottom:1px solid var(--border);}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;}
+.quick-btn{padding:11px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text);}
+.quick-btn:first-child{border-right:1px solid var(--border);}
+/* BANNER */
+.banner-wrap{position:relative;overflow:hidden;background:#111;}
+.banner-slide{display:none;}
+.banner-slide.active{display:block;position:relative;}
+.banner-slide img{width:100%;height:160px;object-fit:cover;display:block;}
+.banner-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent);padding:20px 14px 10px;color:#fff;}
+.banner-caption .bc-name{font-size:14px;font-weight:700;}
+.banner-caption .bc-price{font-size:13px;font-weight:600;color:var(--gold2);}
+.banner-dots{position:absolute;bottom:8px;right:10px;display:flex;gap:4px;}
+.bdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);}
+.bdot.active{background:#fff;width:14px;border-radius:3px;}
+/* SEARCH */
+.search-bar{padding:9px 14px;background:var(--white);border-bottom:1px solid var(--border);display:none;}
+.s-wrap{position:relative;}
+.s-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--gray);}
+.s-inp{width:100%;padding:9px 11px 9px 34px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;font-family:'Inter',sans-serif;background:#f9f9f9;}
+.s-inp:focus{border-color:var(--gold);}
+/* PRODUCTS */
+.prod-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.prod-list{padding:0 14px 40px;}
+.cat-title{font-size:20px;font-weight:800;padding:14px 0 4px;}
+.sub-title{font-size:15px;font-weight:700;padding:10px 0 2px;color:var(--text);}
+.prod-item{display:flex;align-items:flex-start;justify-content:space-between;padding:13px 0;border-bottom:1px dashed var(--border);gap:10px;}
+.prod-item:last-child{border-bottom:none;}
+.prod-left{flex:1;min-width:0;}
+.prod-name{font-size:14px;font-weight:700;margin-bottom:2px;line-height:1.4;}
+.prod-price{font-size:14px;color:var(--gold);font-weight:700;margin-bottom:3px;}
+.prod-price .vat{font-size:11px;color:var(--gray);font-weight:400;margin-left:3px;}
+.prod-specs{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gray);}
+.prod-specs span{display:flex;align-items:center;gap:3px;}
+.prod-desc{font-size:12px;color:var(--gray);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.prod-btns{display:flex;align-items:center;margin-top:8px;gap:8px;}
+.like-btn{width:34px;height:34px;border:1.5px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#ccc;}
+.like-btn.on{color:#ef4444;border-color:#fca5a5;}
+.like-cnt{font-size:12px;color:var(--gray);}
+.video-play-btn{display:flex;align-items:center;gap:4px;background:#fee2e2;border:none;border-radius:8px;padding:5px 9px;cursor:pointer;font-size:11px;font-weight:600;color:#ef4444;}
+.prod-right{flex-shrink:0;}
+.prod-img{width:88px;height:78px;border-radius:11px;overflow:hidden;background:#f3f4f6;position:relative;cursor:pointer;}
+.prod-img img{width:100%;height:100%;object-fit:cover;}
+.prod-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.fav-btn{position:absolute;bottom:4px;right:4px;width:26px;height:26px;background:rgba(255,255,255,.9);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#ccc;cursor:pointer;}
+.fav-btn.on{color:#ef4444;}
+.vid-badge{position:absolute;top:3px;left:3px;background:rgba(0,0,0,.6);color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;display:flex;align-items:center;gap:2px;}
+.badge-p{display:inline-block;background:#fef3cd;color:var(--gold);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:3px;}
+.badge-n{display:inline-block;background:#d1fae5;color:#059669;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:3px;}
+.badge-r{display:inline-block;background:#dbeafe;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:3px;}
+.badge-u{display:inline-block;background:#fee2e2;color:#ef4444;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-bottom:3px;}
+.unavail{opacity:.55;}
+.no-prod{text-align:center;padding:40px 14px;color:var(--gray);}
+.no-prod i{font-size:36px;margin-bottom:10px;color:var(--border);}
+/* VIDEO MODAL */
+.vid-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;display:none;align-items:center;justify-content:center;}
+.vid-modal.open{display:flex;}
+.vid-modal video{width:100%;max-width:480px;border-radius:12px;}
+.vid-close{position:absolute;top:14px;right:14px;width:38px;height:38px;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
+/* IMG LIGHTBOX */
+.img-box{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;display:none;align-items:center;justify-content:center;padding:16px;}
+.img-box.open{display:flex;}
+.img-box-inner{position:relative;max-width:100%;max-height:90vh;text-align:center;}
+.img-box-close{position:absolute;top:-38px;right:0;width:34px;height:34px;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;}
+.img-box img{max-width:100%;max-height:75vh;border-radius:12px;display:block;margin:0 auto;}
+.img-dots{display:flex;gap:6px;justify-content:center;margin-top:10px;}
+.img-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;}
+.img-dot.active{background:#fff;width:18px;border-radius:4px;}
+/* SIDE MENU */
+.side-ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;display:none;}
+.side-ov.open{display:block;}
+.side-menu{position:fixed;top:0;right:-290px;width:270px;height:100%;background:var(--white);z-index:160;transition:right .3s;overflow-y:auto;display:flex;flex-direction:column;}
+.side-menu.open{right:0;}
+.side-head{padding:18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.side-head h3{font-weight:700;font-size:15px;}
+.side-close{width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--gray);}
+.side-item{padding:13px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid var(--border);font-size:14px;font-weight:500;}
+.side-item i{width:18px;color:var(--gold);text-align:center;}
+.side-lbl{padding:10px 14px 3px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray);}
+/* CONTACT */
+.contact-body{padding:14px;flex:1;}
+.c-block{background:var(--white);border-radius:var(--r);border:1px solid var(--border);margin-bottom:14px;overflow:hidden;}
+.c-item{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;}
+.c-item:last-child{border-bottom:none;}
+.c-ico{width:34px;height:34px;background:var(--bg);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.c-txt{flex:1;}
+.c-lbl{font-size:10px;color:var(--gray);margin-bottom:1px;}
+.c-val{font-size:13px;font-weight:500;}
+.c-copy{font-size:13px;color:var(--gray);}
+.wh-toggle{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;}
+.wh-tbl{display:none;margin-top:6px;border-radius:8px;overflow:hidden;}
+.wh-tbl.open{display:block;}
+.wh-row{display:flex;justify-content:space-between;padding:8px 12px;font-size:12px;background:#f9f9f9;}
+.wh-row:nth-child(even){background:var(--white);}
+.wh-row.today{background:var(--gold);color:#fff;font-weight:700;}
+.soc-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 14px;}
+.soc-btn{display:flex;align-items:center;gap:7px;background:#f3f4f6;border-radius:9px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;}
+.soc-btn.fb i{color:#1877f2;}
+.soc-btn.ig i{color:#e4405f;}
+.soc-btn.wa i{color:#25d366;}
+.map-block{background:var(--white);border-radius:var(--r);border:1px solid var(--border);margin-bottom:14px;overflow:hidden;}
+.map-block h3{font-size:15px;font-weight:700;padding:13px 14px 9px;}
+.map-ph{height:170px;background:linear-gradient(135deg,#e8f0e8,#d4e8d4);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--gray);}
+.map-ph i{font-size:28px;color:var(--gold);}
+.dir-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;font-size:13px;font-weight:600;border-top:1px solid var(--border);cursor:pointer;}
+/* POPUP */
+.popup-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:14px;display:none;}
+.popup-ov.open{display:flex;}
+.popup-box{background:var(--white);border-radius:18px;overflow:hidden;width:100%;max-width:360px;position:relative;}
+.popup-close{position:absolute;top:10px;right:10px;width:32px;height:32px;background:rgba(0,0,0,.4);color:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;z-index:5;}
+.popup-img{width:100%;height:190px;object-fit:cover;display:block;}
+.popup-body{padding:14px;}
+.popup-title{font-size:17px;font-weight:700;margin-bottom:5px;}
+.popup-text{font-size:13px;color:var(--gray);margin-bottom:11px;line-height:1.5;}
+.popup-cta{display:block;text-align:center;background:var(--gold);color:#fff;padding:11px;border-radius:9px;font-weight:600;font-size:13px;}
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:9px 18px;border-radius:999px;font-size:12px;font-weight:500;z-index:400;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;}
+.toast.on{opacity:1;}
+/* FOOTER */
+.pg-footer{padding:18px 14px;text-align:center;font-size:11px;color:var(--gray);}
+.pg-footer strong{color:var(--gold);}
+/* INFO BAR (below menu list) */
+.info-bar{background:var(--white);border-radius:var(--r);border:1px solid var(--border);margin:0 14px 10px;overflow:hidden;}
+.info-bar-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);}
+.info-bar-item:last-child{border-bottom:none;}
+.info-bar-ico{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.info-bar-txt{flex:1;}
+.info-bar-lbl{font-size:10px;color:var(--gray);margin-bottom:2px;}
+.info-bar-val{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.copy-btn{width:26px;height:26px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--gray);}
+.more-link{color:var(--gold);font-size:12px;font-weight:600;cursor:pointer;}
+</style>
 </head>
-<body class="bg-gray-50">
-    <!-- Overlay for drawer -->
-    <div id="overlay" class="overlay hide fixed inset-0 bg-black/50 z-40" onclick="toggleDrawer()"></div>
-    
-    <!-- Navigation Drawer -->
-    <div id="drawer" class="drawer closed fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-50 shadow-2xl overflow-y-auto">
-        <div class="p-4">
-            <button onclick="toggleDrawer()" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-[#d4c5a3] text-white">
-                <i class="fas fa-times text-lg"></i>
-            </button>
-            
-            <div class="mt-8 mb-6">
-                <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl mb-3 cursor-pointer hover:bg-gray-100 transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                        <i class="fas fa-user text-gray-600"></i>
-                    </div>
-                    <span class="font-medium text-gray-800 flex-1">Log in</span>
-                    <i class="fas fa-chevron-right text-gray-400"></i>
-                </div>
-                <p class="text-sm text-gray-500 px-2">Log in to simplify the ordering process and use additional features.</p>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">Contacts</h3>
-                <div class="space-y-4" id="contactInfo">
-                    <!-- Populated from settings -->
-                </div>
-            </div>
-            
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-gray-400 text-sm font-medium uppercase tracking-wider">Working Hours</h3>
-                    <button onclick="toggleSchedule()" class="text-sm text-[#b8a88a] font-medium flex items-center gap-1">
-                        Schedule <i id="scheduleArrow" class="fas fa-chevron-down transition-transform"></i>
-                    </button>
-                </div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-clock text-gray-600"></i>
-                    </div>
-                    <span class="text-gray-800 text-sm" id="currentHours">07:00 - 24:00</span>
-                    <span class="text-gray-500 text-sm" id="currentDay">Tue</span>
-                </div>
-                <div id="scheduleDropdown" class="hidden mt-3 bg-gray-50 rounded-xl p-3">
-                    <div class="space-y-2" id="scheduleList"></div>
-                </div>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">We are on social networks</h3>
-                <div class="flex gap-3" id="socialLinks">
-                    <!-- Populated from settings -->
-                </div>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wider">On the map</h3>
-                <div class="relative rounded-xl overflow-hidden bg-gray-100 h-48" id="mapContainer">
-                    <!-- Map populated from settings -->
-                </div>
-                <button onclick="getDirections()" class="w-full mt-3 p-3 border border-gray-200 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-route text-gray-600"></i>
-                    <span class="text-sm font-medium">Get directions</span>
-                </button>
-            </div>
-            
-            <div class="mb-6">
-                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-exclamation-triangle text-amber-600"></i>
-                    </div>
-                    <span class="text-gray-800 text-sm flex-1 font-medium">List of allergens</span>
-                    <i class="fas fa-chevron-right text-gray-400"></i>
-                </div>
-            </div>
-            
-            <div class="p-4 bg-gray-50 rounded-xl mb-4">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fas fa-info-circle text-gray-400"></i>
-                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wider">About the place</span>
-                </div>
-                <p class="text-sm text-gray-700" id="vatInfo">Prices are in AZN and 18% VAT</p>
-            </div>
-        </div>
-        
-        <div class="p-4 border-t border-gray-100">
-            <p class="text-center text-xs text-gray-400">
-                Powered by <span class="text-[#d4c5a3] font-semibold">GHG/CED</span>
-            </p>
-        </div>
+<body>
+<div id="toast" class="toast"></div>
+
+<!-- LOADING -->
+<div id="scr-loading" class="screen active">
+  <div style="text-align:center;">
+    <div id="ld-logo" style="font-size:52px;margin-bottom:12px;">🍽️</div>
+    <div id="ld-name" style="font-size:18px;font-weight:700;">Yüklənir...</div>
+    <div class="spin"></div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div id="vid-modal" class="vid-modal">
+  <div class="vid-close" onclick="closeVid()"><i class="fas fa-times"></i></div>
+  <video id="vid-player" controls playsinline></video>
+</div>
+
+<!-- IMG LIGHTBOX -->
+<div id="img-box" class="img-box">
+  <div class="img-box-inner" id="img-box-inner">
+    <div class="img-box-close" onclick="closeImgBox()"><i class="fas fa-times"></i></div>
+    <img id="img-box-img" src="" alt="">
+    <div class="img-dots" id="img-dots"></div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup-ov" class="popup-ov">
+  <div class="popup-box">
+    <div class="popup-close" onclick="closePopup()"><i class="fas fa-times"></i></div>
+    <img id="pop-img" class="popup-img" src="" style="display:none;" alt="">
+    <div class="popup-body">
+      <div class="popup-title" id="pop-title"></div>
+      <div class="popup-text" id="pop-text"></div>
+      <a id="pop-cta" class="popup-cta" href="#" target="_blank" style="display:none;">Ətraflı</a>
     </div>
+  </div>
+</div>
 
-    <!-- Main Content -->
-    <div class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative">
-        
-        <!-- Top Navigation -->
-        <div class="fixed top-0 left-0 right-0 z-30 max-w-md mx-auto">
-            <div class="bg-gradient-to-b from-black/60 to-transparent pt-2 pb-8 px-4">
-                <div class="flex items-center justify-between">
-                    <div class="bg-white rounded-lg px-3 py-2 shadow-lg">
-                        <div class="text-xs font-bold tracking-wider text-gray-800" id="logoText">MENU</div>
-                    </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <button class="nav-icon-btn bg-white rounded-lg px-3 py-2 shadow-lg flex items-center gap-1">
-                            <span class="text-sm font-medium">EN</span>
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </button>
-                        <button class="nav-icon-btn bg-white rounded-lg w-10 h-10 shadow-lg flex items-center justify-center">
-                            <i class="fas fa-search text-gray-700"></i>
-                        </button>
-                        <button onclick="toggleDrawer()" class="nav-icon-btn bg-white rounded-lg w-10 h-10 shadow-lg flex items-center justify-center">
-                            <i class="fas fa-user text-gray-700"></i>
-                        </button>
-                        <button onclick="toggleDrawer()" class="nav-icon-btn bg-white rounded-lg w-10 h-10 shadow-lg flex items-center justify-center">
-                            <i class="fas fa-bars text-gray-700"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+<!-- SIDE OVERLAY -->
+<div id="side-ov" class="side-ov" onclick="closeSide()"></div>
+<div id="side-menu" class="side-menu">
+  <div class="side-head">
+    <h3 id="side-rname">Menyu</h3>
+    <div class="side-close" onclick="closeSide()"><i class="fas fa-times"></i></div>
+  </div>
+  <div class="side-lbl">Səhifələr</div>
+  <div class="side-item" onclick="showContact();closeSide()"><i class="fas fa-info-circle"></i><span id="sl-about">Haqqımızda</span></div>
+  <div class="side-lbl" id="sl-contact-lbl">Əlaqə</div>
+  <div id="sl-phone" class="side-item" style="display:none"><i class="fas fa-phone"></i><span id="sl-phone-val"></span></div>
+  <div id="sl-fb" class="side-item" style="display:none"><i class="fab fa-facebook"></i> Facebook</div>
+  <div id="sl-ig" class="side-item" style="display:none"><i class="fab fa-instagram"></i> Instagram</div>
+  <div id="sl-wa" class="side-item" style="display:none"><i class="fab fa-whatsapp"></i> WhatsApp</div>
+</div>
+
+<!-- HOME -->
+<div id="scr-home" class="screen">
+  <div class="hdr">
+    <div class="hdr-logo" id="hdr-logo"><span style="font-size:22px;">🍽️</span></div>
+    <div class="hdr-right">
+      <div class="lang-wrap">
+        <div class="lang-btn" id="lb-home" onclick="toggleLang(this)"><span id="ll-home">AZ</span><i class="fas fa-chevron-down" style="font-size:9px;color:var(--gray);"></i></div>
+        <div class="lang-dd" id="ld-home">
+          <div class="lang-opt active" onclick="setLang('az')">AZ</div>
+          <div class="lang-opt" onclick="setLang('en')">EN</div>
         </div>
-
-        <!-- Hero Slider Section -->
-        <div class="relative">
-            <div id="heroSlider" class="hero-slider flex overflow-x-auto hide-scrollbar h-[45vh] relative">
-                <!-- Loading skeleton -->
-                <div class="hero-slide min-w-full h-full skeleton"></div>
-            </div>
-            
-            <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white hover:bg-black/50 transition-colors z-10">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white hover:bg-black/50 transition-colors z-10">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            
-            <div class="absolute bottom-4 left-4 right-4 flex items-end justify-between z-10">
-                <div class="bg-black/50 backdrop-blur-md rounded-lg px-4 py-2 text-white max-w-[70%]">
-                    <h3 id="slideTitle" class="font-semibold text-sm truncate"></h3>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span id="slidePrice" class="text-[#d4c5a3] font-bold"></span>
-                        <span class="flex items-center gap-1 text-xs">
-                            <i class="fas fa-heart text-white/80"></i>
-                            <span id="slideLikes"></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="bg-black/50 backdrop-blur-md rounded-lg px-3 py-1.5 text-white text-sm">
-                    <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
-                </div>
-            </div>
-            
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-                <div id="slideIndicators" class="flex gap-1.5"></div>
-            </div>
-        </div>
-
-        <!-- Restaurant Info -->
-        <div class="px-4 pt-6 pb-2 bg-white">
-            <h1 class="text-2xl font-bold text-gray-900 mb-1" id="restaurantName">Loading...</h1>
-            <p class="text-gray-500 text-sm mb-4" id="hotelName">Please wait</p>
-            
-            <div class="flex items-center justify-center gap-4 mb-6">
-                <div class="h-px bg-gray-200 flex-1"></div>
-                <span class="text-gray-400 text-xs font-medium uppercase tracking-widest">Digital Menu</span>
-                <div class="h-px bg-gray-200 flex-1"></div>
-            </div>
-        </div>
-
-        <!-- Video Advertisement Banner -->
-        <div id="videoBannerContainer" class="px-4 mb-4 hidden">
-            <div class="video-banner rounded-2xl h-48 bg-gray-900 relative overflow-hidden group cursor-pointer" onclick="playVideo(this)">
-                <video id="adVideo" loop muted playsinline poster="">
-                    <source src="" type="video/mp4">
-                </video>
-                <div class="play-overlay group-hover:bg-black/40 transition-colors">
-                    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <i class="fas fa-play text-white text-2xl ml-1"></i>
-                    </div>
-                </div>
-                <div class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">REKLAM</div>
-                <div class="absolute bottom-3 left-3 right-3">
-                    <h4 id="adTitle" class="text-white font-bold text-lg drop-shadow-lg"></h4>
-                    <p id="adSubtitle" class="text-white/90 text-sm drop-shadow-md"></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Categories -->
-        <div class="main-categories px-4 py-3 border-b border-gray-100">
-            <div id="mainCategories" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                <div class="skeleton w-24 h-10 rounded-full"></div>
-                <div class="skeleton w-24 h-10 rounded-full"></div>
-                <div class="skeleton w-24 h-10 rounded-full"></div>
-            </div>
-        </div>
-
-        <!-- Sub Categories -->
-        <div class="sub-categories px-4 py-2 border-b border-gray-100 bg-white">
-            <div id="subCategories" class="flex gap-2 overflow-x-auto hide-scrollbar">
-                <div class="skeleton w-20 h-8 rounded-full"></div>
-                <div class="skeleton w-20 h-8 rounded-full"></div>
-            </div>
-        </div>
-
-        <!-- Menu Content -->
-        <div id="menuContent" class="px-4 pb-24 pt-4 space-y-8">
-            <div class="space-y-4">
-                <div class="skeleton h-6 w-32 rounded"></div>
-                <div class="menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm">
-                    <div class="w-24 h-24 flex-shrink-0 rounded-lg skeleton"></div>
-                    <div class="flex-1 space-y-2">
-                        <div class="skeleton h-4 w-3/4 rounded"></div>
-                        <div class="skeleton h-3 w-1/2 rounded"></div>
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="skeleton h-5 w-16 rounded"></div>
-                            <div class="skeleton w-10 h-10 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm">
-                    <div class="w-24 h-24 flex-shrink-0 rounded-lg skeleton"></div>
-                    <div class="flex-1 space-y-2">
-                        <div class="skeleton h-4 w-3/4 rounded"></div>
-                        <div class="skeleton h-3 w-1/2 rounded"></div>
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="skeleton h-5 w-16 rounded"></div>
-                            <div class="skeleton w-10 h-10 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Floating Action Button -->
-        <button onclick="scrollToTop()" id="backToTop" class="back-to-top fixed bottom-20 right-6 w-12 h-12 bg-[#d4c5a3] text-white rounded-full shadow-lg flex items-center justify-center z-30 hover:bg-[#c4b593] transition-colors">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-
-        <!-- Bottom Navigation -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 max-w-md mx-auto z-20">
-            <div class="flex items-center justify-between">
-                <button class="flex flex-col items-center gap-1 text-[#d4c5a3]" onclick="showTab('home')">
-                    <i class="fas fa-home text-lg"></i>
-                    <span class="text-[10px] font-medium">Home</span>
-                </button>
-                <button class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600" onclick="showTab('search')">
-                    <i class="fas fa-search text-lg"></i>
-                    <span class="text-[10px] font-medium">Search</span>
-                </button>
-                <button class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 relative" onclick="showTab('favorites')">
-                    <i class="fas fa-heart text-lg"></i>
-                    <span class="text-[10px] font-medium">Favorites</span>
-                    <span id="favCount" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center hidden">0</span>
-                </button>
-                <button onclick="toggleDrawer()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-bars text-lg"></i>
-                    <span class="text-[10px] font-medium">Menu</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Toast Notification -->
-        <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm opacity-0 transition-opacity pointer-events-none z-50"></div>
+      </div>
+      <div class="icon-btn" onclick="openSearch()"><i class="fas fa-search"></i></div>
+      <div class="icon-btn" onclick="showContact()"><i class="fas fa-user-circle"></i></div>
+      <div class="icon-btn" onclick="openSide()"><i class="fas fa-bars"></i></div>
     </div>
+  </div>
 
-    <script>
-        // ==========================================
-        // CONFIGURATION - BUNU DƏYİŞDİRİN
-        // ==========================================
-        const CONFIG = {
-            // Google Apps Script Web App URL-nizi bura yazın
-            GAS_URL: 'https://script.google.com/macros/s/AKfycbxy5SCDM5C7hoyxSZtFbi5i8gO9_HCLATm0OkK-K6nCcDqeBJNUGZlyHVCmtFJuK75nVg/exec',
-            
-            // Fallback mode - true olarsa Google Sheets işləməsə də işləyər
-            FALLBACK_MODE: false
-        };
+  <!-- HERO -->
+  <div class="hero" id="home-hero">
+    <div class="hero-inner" id="hero-inner">
+      <div class="hero-slide active" style="position:relative;">
+        <div style="width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0a1f0a,#1a3a1a);display:flex;align-items:center;justify-content:center;"><span style="font-size:60px;">🍽️</span></div>
+      </div>
+    </div>
+    <div class="hero-nav prev" onclick="heroNav(-1)"><i class="fas fa-chevron-left"></i></div>
+    <div class="hero-nav next" onclick="heroNav(1)"><i class="fas fa-chevron-right"></i></div>
+    <div class="hero-ctr" id="hero-ctr" style="display:none;">1/1</div>
+  </div>
 
-        // ==========================================
-        // STATE
-        // ==========================================
-        const state = {
-            categories: [],
-            products: [],
-            settings: {},
-            currentCategory: null,
-            currentSubcategory: null,
-            currentSlide: 0,
-            favorites: new Set(),
-            touchStartX: 0,
-            touchEndX: 0
-        };
+  <div class="home-info">
+    <h1 id="h-name">Restoran</h1>
+    <p id="h-sub"></p>
+  </div>
+  <div class="sec-label"><span id="lbl-dm">DİGİTAL MENYU</span></div>
+  <div class="menu-list" id="home-list"></div>
 
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            loadFavorites();
-            initApp();
-        });
+  <!-- Info bar below list -->
+  <div class="info-bar" id="home-info-bar" style="display:none;"></div>
 
-        async function initApp() {
-            try {
-                // Try to fetch from Google Sheets
-                const data = await fetchFromSheets();
-                
-                if (data && data.success) {
-                    state.categories = data.data.categories || [];
-                    state.products = data.data.products || [];
-                    state.settings = data.data.settings || {};
-                } else {
-                    throw new Error('No data received');
-                }
-            } catch (error) {
-                console.error('Failed to load from sheets:', error);
-                showToast('Failed to load menu. Please check connection.');
-                
-                if (CONFIG.FALLBACK_MODE) {
-                    // Use empty state - admin will add data
-                    state.categories = [];
-                    state.products = [];
-                    state.settings = {};
-                }
-            } finally {
-                renderApp();
-                setupEventListeners();
-            }
-        }
+  <div class="pg-footer">Powered by <strong>GHG/CED</strong></div>
+</div>
 
-        // ==========================================
-        // API FUNCTIONS
-        // ==========================================
-        async function fetchFromSheets() {
-            try {
-                const response = await fetch(`${CONFIG.GAS_URL}?action=getMenu`, {
-                    method: 'GET',
-                    mode: 'cors',
-                    cache: 'no-cache'
-                });
-                
-                if (!response.ok) throw new Error('Network response was not ok');
-                return await response.json();
-            } catch (error) {
-                console.error('Fetch error:', error);
-                throw error;
-            }
-        }
+<!-- CATEGORY -->
+<div id="scr-cat" class="screen">
+  <div class="cat-hdr">
+    <div class="cat-hdr-top">
+      <div class="back-btn" onclick="goHome()"><i class="fas fa-chevron-left"></i></div>
+      <div class="here-badge"><i class="fas fa-utensils"></i><span id="lbl-here">Burada</span></div>
+      <div class="hdr-right" style="margin-left:auto;">
+        <div class="lang-wrap">
+          <div class="lang-btn" id="lb-cat" onclick="toggleLang(this)"><span id="ll-cat">AZ</span><i class="fas fa-chevron-down" style="font-size:9px;color:var(--gray);"></i></div>
+          <div class="lang-dd" id="ld-cat">
+            <div class="lang-opt active" onclick="setLang('az')">AZ</div>
+            <div class="lang-opt" onclick="setLang('en')">EN</div>
+          </div>
+        </div>
+        <div class="icon-btn" onclick="openSearch()"><i class="fas fa-search"></i></div>
+        <div class="icon-btn" onclick="openSide()"><i class="fas fa-bars"></i></div>
+      </div>
+    </div>
+    <div class="main-tabs" id="main-tabs"></div>
+    <div class="sub-tabs" id="sub-tabs" style="display:none;"></div>
+  </div>
+  <div class="quick-bar">
+    <div class="quick-grid">
+      <div class="quick-btn" id="pop-btn" onclick="togglePopFilter()"><i class="fas fa-star" style="color:var(--gold);"></i><span id="lbl-pop">Populyar</span></div>
+      <div class="quick-btn" onclick="showFavs()"><i class="fas fa-heart" style="color:#ef4444;"></i><span id="lbl-favs">Sevimlilər</span>: <span id="fav-cnt">0</span></div>
+    </div>
+  </div>
+  <div id="banner-wrap" style="display:none;">
+    <div class="banner-wrap" id="banner-slider">
+      <div class="banner-dots" id="banner-dots"></div>
+    </div>
+  </div>
+  <div class="search-bar" id="cat-search">
+    <div class="s-wrap"><i class="fas fa-search"></i><input class="s-inp" id="s-inp" type="text" placeholder="Axtarın..." oninput="filterLive(this.value)"></div>
+  </div>
+  <div class="prod-scroll" id="prod-scroll" onscroll="handleScroll(this)">
+    <div class="prod-list" id="prod-list"></div>
+    <div class="pg-footer">Powered by <strong>GHG/CED</strong></div>
+  </div>
+</div>
 
-        // ==========================================
-        // RENDER FUNCTIONS
-        // ==========================================
-        function renderApp() {
-            renderSettings();
-            renderHeroSlider();
-            renderCategories();
-            renderMenu();
-            initSchedule();
-        }
+<!-- CONTACT -->
+<div id="scr-contact" class="screen">
+  <div class="hdr">
+    <div class="back-btn" onclick="goBack()" style="margin-right:8px;"><i class="fas fa-chevron-left"></i></div>
+    <span style="font-weight:700;font-size:15px;" id="lbl-contact">Əlaqə</span>
+  </div>
+  <div class="contact-body" id="contact-body"></div>
+  <div class="pg-footer">Powered by <strong>GHG/CED</strong></div>
+</div>
 
-        function renderSettings() {
-            const settings = state.settings;
-            
-            // Restaurant info
-            if (settings.restaurantName) {
-                document.getElementById('restaurantName').textContent = settings.restaurantName;
-            }
-            if (settings.hotelName) {
-                document.getElementById('hotelName').textContent = settings.hotelName;
-            }
-            if (settings.logoText) {
-                document.getElementById('logoText').textContent = settings.logoText;
-            }
-            
-            // VAT info
-            if (settings.vatInfo) {
-                document.getElementById('vatInfo').textContent = settings.vatInfo;
-            }
-            
-            // Contact info
-            if (settings.contacts) {
-                const contactContainer = document.getElementById('contactInfo');
-                contactContainer.innerHTML = '';
-                
-                if (settings.contacts.address) {
-                    contactContainer.innerHTML += `
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-map-marker-alt text-gray-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-gray-800 text-sm leading-relaxed">${settings.contacts.address}</p>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                if (settings.contacts.phone) {
-                    contactContainer.innerHTML += `
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-phone text-gray-600"></i>
-                            </div>
-                            <a href="tel:${settings.contacts.phone}" class="text-gray-800 text-sm flex-1">${settings.contacts.phone}</a>
-                        </div>
-                    `;
-                }
-                
-                if (settings.contacts.email) {
-                    contactContainer.innerHTML += `
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-envelope text-gray-600"></i>
-                            </div>
-                            <a href="mailto:${settings.contacts.email}" class="text-gray-800 text-sm flex-1">${settings.contacts.email}</a>
-                        </div>
-                    `;
-                }
-            }
-            
-            // Social links
-            if (settings.social) {
-                const socialContainer = document.getElementById('socialLinks');
-                socialContainer.innerHTML = '';
-                
-                if (settings.social.facebook) {
-                    socialContainer.innerHTML += `
-                        <button onclick="window.open('${settings.social.facebook}', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                            <i class="fab fa-facebook-f text-blue-600"></i>
-                            <span class="text-sm font-medium">Facebook</span>
-                        </button>
-                    `;
-                }
-                
-                if (settings.social.instagram) {
-                    socialContainer.innerHTML += `
-                        <button onclick="window.open('${settings.social.instagram}', '_blank')" class="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                            <i class="fab fa-instagram text-pink-600"></i>
-                            <span class="text-sm font-medium">Instagram</span>
-                        </button>
-                    `;
-                }
-            }
-            
-            // Map
-            if (settings.mapEmbedUrl) {
-                document.getElementById('mapContainer').innerHTML = `
-                    <iframe 
-                        src="${settings.mapEmbedUrl}"
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy"
-                    ></iframe>
-                `;
-            }
-            
-            // Video banner
-            if (settings.videoAd && settings.videoAd.enabled) {
-                const container = document.getElementById('videoBannerContainer');
-                const video = document.getElementById('adVideo');
-                const source = video.querySelector('source');
-                
-                source.src = settings.videoAd.videoUrl;
-                video.poster = settings.videoAd.posterUrl || '';
-                document.getElementById('adTitle').textContent = settings.videoAd.title || '';
-                document.getElementById('adSubtitle').textContent = settings.videoAd.subtitle || '';
-                
-                container.classList.remove('hidden');
-                video.load();
-            }
-        }
+<script>
+const GAS = 'https://script.google.com/macros/s/AKfycbxthfm9840TpThBg7o0M2QOFTxd8nQFq7SXZUA0NTis7qO3DH_hauY3i6JhCF1zLzW61A/exec';
 
-        function renderHeroSlider() {
-            const slider = document.getElementById('heroSlider');
-            const indicators = document.getElementById('slideIndicators');
-            const banners = state.settings.bannerImages || [];
-            
-            slider.innerHTML = '';
-            indicators.innerHTML = '';
-            
-            if (banners.length === 0) {
-                // Default placeholder
-                slider.innerHTML = '<div class="hero-slide min-w-full h-full bg-gray-200 flex items-center justify-center"><span class="text-gray-400">No banner images</span></div>';
-                document.getElementById('totalSlides').textContent = '0';
-                return;
-            }
-            
-            banners.forEach((slide, index) => {
-                if (!slide.active) return;
-                
-                const slideDiv = document.createElement('div');
-                slideDiv.className = 'hero-slide min-w-full h-full relative';
-                slideDiv.innerHTML = `
-                    <img src="${slide.image}" class="w-full h-full object-cover" alt="${slide.title}" loading="${index === 0 ? 'eager' : 'lazy'}" onerror="this.parentElement.style.display='none'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                `;
-                slider.appendChild(slideDiv);
-                
-                const indicator = document.createElement('div');
-                indicator.className = `slide-indicator w-2 h-2 rounded-full bg-white/50 cursor-pointer ${index === 0 ? 'active' : ''}`;
-                indicator.onclick = () => goToSlide(index);
-                indicators.appendChild(indicator);
-            });
-            
-            document.getElementById('totalSlides').textContent = banners.filter(b => b.active).length;
-            updateSlideInfo();
-            
-            // Auto slide
-            setInterval(() => {
-                if (banners.filter(b => b.active).length > 1) {
-                    nextSlide();
-                }
-            }, 5000);
-        }
+// STATE
+const S = {
+  lang: localStorage.getItem('ml') || 'az',
+  cats: [], prods: [], settings: {},
+  favs: JSON.parse(localStorage.getItem('mfavs')||'[]'),
+  likes: JSON.parse(localStorage.getItem('mlikes')||'{}'),
+  activeCat: null,   // active main (parent) category id
+  activeSub: null,   // active sub-category id
+  popFilter: false,
+  searchQ: '',
+  heroSlides: [], heroIdx: 0, heroTimer: null,
+  bannerSlides: [], bannerIdx: 0, bannerTimer: null,
+  prevScr: 'home',
+  imgBoxProds: [], imgBoxIdx: 0,
+};
 
-        function renderCategories() {
-            const mainContainer = document.getElementById('mainCategories');
-            mainContainer.innerHTML = '';
-            
-            const activeCategories = state.categories.filter(c => c.active !== false);
-            
-            if (activeCategories.length === 0) {
-                mainContainer.innerHTML = '<div class="text-gray-400 text-sm py-2">No categories available</div>';
-                return;
-            }
-            
-            // Set first category as default
-            if (!state.currentCategory) {
-                state.currentCategory = activeCategories[0].id;
-            }
-            
-            activeCategories.forEach((cat) => {
-                const btn = document.createElement('button');
-                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium ${cat.id === state.currentCategory ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
-                btn.textContent = cat.nameEn || cat.nameAz || cat.name;
-                btn.onclick = () => switchCategory(cat.id);
-                mainContainer.appendChild(btn);
-            });
-            
-            renderSubcategories();
-        }
+function $i(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function thumb(u){ if(!u)return ''; const m=u.match(/[?&]id=([a-zA-Z0-9_-]+)/)||u.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w800'; return u; }
+function tl(az,en){ return S.lang==='en'?(en||az):az; }
+function toast(msg){ const el=$i('toast'); el.textContent=msg; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),2200); }
+function showScr(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $i(id).classList.add('active'); }
 
-        function renderSubcategories() {
-            const container = document.getElementById('subCategories');
-            container.innerHTML = '';
-            
-            const cat = state.categories.find(c => c.id === state.currentCategory);
-            if (!cat || !cat.subcategories || cat.subcategories.length === 0) {
-                container.innerHTML = '<div class="text-gray-400 text-xs py-2">No subcategories</div>';
-                return;
-            }
-            
-            cat.subcategories.forEach((sub, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${idx === 0 ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
-                btn.textContent = sub;
-                btn.onclick = () => switchSubcategory(sub);
-                container.appendChild(btn);
-            });
-            
-            // Load first subcategory
-            if (cat.subcategories.length > 0) {
-                switchSubcategory(cat.subcategories[0]);
-            }
-        }
+// LANG
+function toggleLang(btn){ btn.parentElement.querySelector('.lang-dd').classList.toggle('open'); }
+function setLang(l){
+  S.lang=l; localStorage.setItem('ml',l);
+  document.querySelectorAll('.lang-dd').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.lang-opt').forEach(o=>o.classList.toggle('active',o.textContent.trim()===l.toUpperCase()));
+  document.querySelectorAll('#ll-home,#ll-cat').forEach(el=>el.textContent=l.toUpperCase());
+  renderAll();
+}
+document.addEventListener('click',e=>{ if(!e.target.closest('.lang-wrap')) document.querySelectorAll('.lang-dd').forEach(d=>d.classList.remove('open')); });
 
-        function renderMenu() {
-            const container = document.getElementById('menuContent');
-            container.innerHTML = '';
-            
-            const cat = state.categories.find(c => c.id === state.currentCategory);
-            if (!cat || !cat.subcategories) return;
-            
-            cat.subcategories.forEach((subName, index) => {
-                const items = state.products.filter(p => 
-                    p.categoryId === state.currentCategory && 
-                    p.categoryName === subName &&
-                    p.available !== false
-                );
-                
-                const section = document.createElement('div');
-                section.className = 'category-section';
-                section.id = `section-${subName.replace(/\s+/g, '-')}`;
-                
-                const title = document.createElement('h2');
-                title.className = 'text-xl font-bold text-gray-900 mb-4 flex items-center gap-2';
-                title.innerHTML = `${subName} <span class="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-1 rounded-full">${items.length}</span>`;
-                section.appendChild(title);
-                
-                if (items.length === 0) {
-                    const empty = document.createElement('div');
-                    empty.className = 'text-gray-400 text-sm py-8 text-center';
-                    empty.textContent = 'No items available';
-                    section.appendChild(empty);
-                } else {
-                    const grid = document.createElement('div');
-                    grid.className = 'space-y-4';
-                    
-                    items.forEach(item => {
-                        grid.appendChild(createMenuCard(item));
-                    });
-                    
-                    section.appendChild(grid);
-                }
-                
-                container.appendChild(section);
-            });
-        }
+// LOAD
+async function loadData(){
+  try{
+    const res = await fetch(GAS+'?action=getMenu&_='+Date.now(),{cache:'no-store'});
+    const raw = await res.json();
+    const d = raw.data||raw;
+    S.cats = Array.isArray(d.categories)?d.categories:[];
+    S.prods = (Array.isArray(d.products)?d.products:[]).map(normProd);
+    S.settings = d.settings||{};
+    let bi = S.settings.bannerImages;
+    if(typeof bi==='string'){try{bi=JSON.parse(bi);}catch{bi=[];}}
+    S.bannerSlides = Array.isArray(bi)?bi.filter(b=>b&&b.image&&b.active!==false):[];
+    buildHeroSlides();
+  }catch(e){ console.error('Load error:',e); }
+  renderAll();
+  showScr('scr-home');
+  checkPopup();
+}
 
-        function createMenuCard(item) {
-            const card = document.createElement('div');
-            card.className = 'menu-item-card bg-white rounded-xl p-3 flex gap-4 border border-gray-100 shadow-sm';
-            
-            const isLiked = state.favorites.has(item.id);
-            const imageUrl = item.imageUrl || (item.images && item.images[0]) || '';
-            
-            card.innerHTML = `
-                <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                    ${imageUrl ? `<img src="${imageUrl}" class="item-image" alt="${item.nameEn || item.nameAz}" loading="lazy" onerror="this.style.display='none'">` : '<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fas fa-image"></i></div>'}
-                </div>
-                <div class="flex-1 flex flex-col justify-between py-1">
-                    <div>
-                        <h3 class="font-semibold text-gray-900 text-base leading-tight mb-1">${item.nameEn || item.nameAz || 'Unnamed'}</h3>
-                        ${(item.descEn || item.descAz) ? `<p class="text-xs text-gray-500 mb-1 line-clamp-2">${item.descEn || item.descAz}</p>` : ''}
-                        <div class="flex items-center gap-3 text-xs text-gray-500">
-                            ${item.volume ? `<span class="flex items-center gap-1"><i class="fas fa-flask text-[10px]"></i> ${item.volume}</span>` : ''}
-                            ${item.time ? `<span class="flex items-center gap-1"><i class="fas fa-clock text-[10px]"></i> ${item.time}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="flex items-end justify-between">
-                        <div>
-                            <span class="price-tag font-bold text-lg">${item.price || 0} ${state.settings.currency || 'AZN'}</span>
-                            ${item.vat ? `<span class="text-xs text-gray-400 ml-1">${state.settings.vatRate || 18}% VAT</span>` : ''}
-                        </div>
-                        <button onclick="toggleLike(${item.id}, this)" class="heart-btn w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center ${isLiked ? 'liked' : 'text-gray-400'}">
-                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
-                            <span class="text-xs ml-1">${(item.likes || 0) + (isLiked ? 1 : 0)}</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
+function normProd(p){
+  let images=[];
+  if(Array.isArray(p.images)&&p.images.length) images=p.images.map(i=>typeof i==='string'?i.trim():(i&&typeof i==='object'?(i.url||i.image||i.directUrl||i.thumbnailUrl||'').trim():'')).filter(Boolean);
+  else if(typeof p.imagesJson==='string'&&p.imagesJson.trim()){try{const a=JSON.parse(p.imagesJson);images=(Array.isArray(a)?a:[]).map(i=>typeof i==='string'?i.trim():(i&&typeof i==='object'?(i.url||i.image||i.directUrl||i.thumbnailUrl||'').trim():'')).filter(Boolean);}catch{}}
+  if(!images.length&&p.imageUrl) images=[p.imageUrl];
+  return {...p, images};
+}
 
-        // ==========================================
-        // INTERACTION FUNCTIONS
-        // ==========================================
-        function switchCategory(catId) {
-            state.currentCategory = catId;
-            
-            document.querySelectorAll('.main-categories .category-tab').forEach((btn) => {
-                const cat = state.categories.find(c => c.id === catId);
-                btn.className = `category-tab px-4 py-2 rounded-full text-sm font-medium ${btn.textContent === (cat?.nameEn || cat?.nameAz) ? 'active bg-[#d4c5a3] text-gray-800' : 'bg-gray-100 text-gray-600'}`;
-            });
-            
-            renderSubcategories();
-        }
+function buildHeroSlides(){
+  const slides=[];
+  // Banner slides first
+  S.bannerSlides.forEach(b=>{ if(b.image) slides.push({type:'banner',image:b.image,title:b.productName||b.title||'',price:b.price||''}); });
+  // Then featured products
+  const feat=S.prods.filter(p=>p.images&&p.images.length&&(p.popular||p.recommended||p.isNew)&&p.available!==false);
+  feat.slice(0,Math.max(0,16-slides.length)).forEach(p=>slides.push({type:'prod',image:p.images[0],name:tl(p.nameAz,p.nameEn)||p.nameAz,price:p.price,id:p.id,likes:S.likes[p.id]||0}));
+  if(!slides.length){ S.prods.filter(p=>p.images&&p.images.length&&p.available!==false).slice(0,8).forEach(p=>slides.push({type:'prod',image:p.images[0],name:tl(p.nameAz,p.nameEn)||p.nameAz,price:p.price,id:p.id,likes:S.likes[p.id]||0})); }
+  S.heroSlides=slides;
+}
 
-        function switchSubcategory(subName) {
-            state.currentSubcategory = subName;
-            
-            document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
-                btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === subName ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
-            });
-            
-            scrollToSubcategory(subName);
-        }
+// RENDER ALL
+function renderAll(){
+  renderHdr(); renderHero(); renderHomeList(); renderSideMenu(); updateLbls(); updateFavCnt();
+}
+function updateLbls(){
+  $i('lbl-dm').textContent=tl('DİGİTAL MENYU','DIGITAL MENU');
+  $i('lbl-pop').textContent=tl('Populyar','Popular');
+  $i('lbl-favs').textContent=tl('Sevimlilər','Favorites');
+  $i('lbl-here').textContent=tl('Burada','Here');
+  $i('sl-about').textContent=tl('Haqqımızda','About us');
+  $i('lbl-contact').textContent=tl('Əlaqə','Contacts');
+}
 
-        function toggleLike(itemId, btn) {
-            if (state.favorites.has(itemId)) {
-                state.favorites.delete(itemId);
-                btn.classList.remove('liked');
-                btn.classList.add('text-gray-400');
-                btn.querySelector('i').classList.replace('fas', 'far');
-            } else {
-                state.favorites.add(itemId);
-                btn.classList.add('liked');
-                btn.classList.remove('text-gray-400');
-                btn.querySelector('i').classList.replace('far', 'fas');
-                
-                btn.style.transform = 'scale(1.2)';
-                setTimeout(() => btn.style.transform = 'scale(1)', 200);
-            }
-            
-            updateFavCount();
-            localStorage.setItem('favorites', JSON.stringify([...state.favorites]));
-        }
+function renderHdr(){
+  const s=S.settings;
+  const nm=tl(s.nameAz,s.nameEn)||s.nameAz||'Restoran';
+  $i('h-name').textContent=nm;
+  $i('h-sub').textContent=tl(s.addressAz,s.addressEn)||s.addressAz||'';
+  $i('side-rname').textContent=nm;
+  const logoUrl=thumb(s.logo||s.logoUrl||'');
+  if(logoUrl){ const lg=$i('hdr-logo'); lg.innerHTML=`<img src="${esc(logoUrl)}" alt="logo" onerror="this.parentElement.innerHTML='🍽️'">`; }
+  $i('ld-name').textContent=nm;
+  if(logoUrl) $i('ld-logo').innerHTML=`<img src="${esc(logoUrl)}" style="width:80px;height:80px;object-fit:contain;border-radius:12px;" onerror="this.outerHTML='🍽️'">`;
 
-        function updateFavCount() {
-            const count = state.favorites.size;
-            const badge = document.getElementById('favCount');
-            if (count > 0) {
-                badge.textContent = count;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
+  // Info bar on home
+  const ib=$i('home-info-bar');
+  let ibHtml='';
+  if(s.description){ ibHtml+=`<div class="info-bar-item"><div class="info-bar-ico">🍽️</div><div class="info-bar-txt"><div class="info-bar-lbl">${tl('Məkan haqqında:','About the place:')}</div><div class="info-bar-val" id="ib-desc-val">${esc(s.description.substring(0,80))}${s.description.length>80?`... <span class="more-link" onclick="showMoreDesc()">${tl('daha çox göstər','show more')}</span>`:''}</div></div></div>`; }
+  if(s.addressAz||s.address){ const addr=tl(s.addressAz,s.addressEn)||s.address||''; ibHtml+=`<div class="info-bar-item" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(addr)}','_blank')"><div class="info-bar-ico">📍</div><div class="info-bar-txt"><div class="info-bar-lbl">${tl('Ünvan:','Address:')}</div><div class="info-bar-val">${esc(addr)} <div class="copy-btn" onclick="event.stopPropagation();copyText('${esc(addr.replace(/'/g,'\\''))}')"><i class="fas fa-copy"></i></div></div></div></div>`; }
+  if(s.phone){ ibHtml+=`<div class="info-bar-item" onclick="window.open('tel:${esc(s.phone)}')"><div class="info-bar-ico">📞</div><div class="info-bar-txt"><div class="info-bar-lbl">${tl('Telefon:','Phone:')}</div><div class="info-bar-val">${esc(s.phone)} <div class="copy-btn" onclick="event.stopPropagation();copyText('${esc(s.phone)}')"><i class="fas fa-copy"></i></div></div></div></div>`; }
+  if(s.email){ ibHtml+=`<div class="info-bar-item" onclick="window.open('mailto:${esc(s.email)}')"><div class="info-bar-ico">✉️</div><div class="info-bar-txt"><div class="info-bar-lbl">Email:</div><div class="info-bar-val">${esc(s.email)} <div class="copy-btn" onclick="event.stopPropagation();copyText('${esc(s.email)}')"><i class="fas fa-copy"></i></div></div></div></div>`; }
+  if(s.website){ ibHtml+=`<div class="info-bar-item" onclick="window.open('${esc(s.website)}','_blank')"><div class="info-bar-ico">🌐</div><div class="info-bar-txt"><div class="info-bar-lbl">${tl('Veb sayt','Visit our website')}</div><div class="info-bar-val">${esc(s.website)}<i class="fas fa-external-link-alt" style="font-size:11px;margin-left:5px;color:var(--gray);"></i></div></div></div>`; }
+  ib.style.display=ibHtml?'block':'none';
+  ib.innerHTML=ibHtml;
+}
 
-        function loadFavorites() {
-            const saved = localStorage.getItem('favorites');
-            if (saved) {
-                state.favorites = new Set(JSON.parse(saved));
-            }
-        }
+window.copyText=function(t){ navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast(tl('Kopyalandı','Copied'))); };
+window.showMoreDesc=function(){ const v=$i('ib-desc-val'); if(v){ v.textContent=S.settings.description||''; } };
 
-        // ==========================================
-        // SLIDER FUNCTIONS
-        // ==========================================
-        function updateSlideInfo() {
-            const banners = (state.settings.bannerImages || []).filter(b => b.active);
-            const slide = banners[state.currentSlide];
-            
-            if (slide) {
-                document.getElementById('slideTitle').textContent = slide.title || '';
-                document.getElementById('slidePrice').textContent = slide.price || '';
-                document.getElementById('slideLikes').textContent = slide.likes || '';
-            }
-            
-            document.getElementById('currentSlide').textContent = banners.length > 0 ? state.currentSlide + 1 : 0;
-            
-            document.querySelectorAll('.slide-indicator').forEach((ind, idx) => {
-                ind.classList.toggle('active', idx === state.currentSlide);
-            });
-        }
+// HERO
+function renderHero(){
+  clearInterval(S.heroTimer);
+  const hi=$i('hero-inner'), ctr=$i('hero-ctr');
+  if(!S.heroSlides.length){ hi.innerHTML=`<div style="width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0a1f0a,#1a3a1a);display:flex;align-items:center;justify-content:center;"><span style="font-size:60px;">🍽️</span></div>`; ctr.style.display='none'; return; }
+  const n=S.heroSlides.length;
+  let html='';
+  S.heroSlides.forEach((sl,i)=>{
+    const url=thumb(sl.image);
+    const infoHtml = sl.type==='banner' ? (sl.title||sl.price?`<div class="hero-info"><b>${esc(sl.title||'')}</b>${sl.price?` <b style="color:var(--gold2);">${esc(sl.price)} ₼</b>`:''}</div>`:'') : (sl.name||sl.price?`<div class="hero-info"><b>${esc(sl.name||'')}</b>${sl.price?` <b>${sl.price} ₼</b>`:''} ${sl.likes?`<span class="hi"><i class="fas fa-heart"></i>${sl.likes}</span>`:''}</div>`:'');
+    html+=`<div class="hero-slide ${i===0?'active':''}" style="${i===0?'position:relative;':'position:absolute;inset:0;'}">`+
+      `<div style="width:100%;aspect-ratio:16/9;position:relative;">`+
+      `<img src="${esc(url)}" style="width:100%;height:100%;object-fit:cover;" loading="${i<2?'eager':'lazy'}" onerror="this.style.display='none'">`+
+      infoHtml+`</div></div>`;
+  });
+  hi.innerHTML=html;
+  S.heroIdx=0;
+  ctr.style.display='block'; ctr.textContent=`1/${n}`;
+  S.heroTimer=setInterval(()=>heroNav(1),4000);
+}
+function heroNav(d){
+  const slides=document.querySelectorAll('#hero-inner .hero-slide');
+  if(slides.length<2)return;
+  slides[S.heroIdx].classList.remove('active'); slides[S.heroIdx].style.position='absolute'; slides[S.heroIdx].style.inset='0';
+  S.heroIdx=(S.heroIdx+d+slides.length)%slides.length;
+  slides[S.heroIdx].classList.add('active'); slides[S.heroIdx].style.position='relative'; slides[S.heroIdx].style.inset='';
+  $i('hero-ctr').textContent=`${S.heroIdx+1}/${slides.length}`;
+}
 
-        function nextSlide() {
-            const banners = (state.settings.bannerImages || []).filter(b => b.active);
-            if (banners.length <= 1) return;
-            
-            state.currentSlide = (state.currentSlide + 1) % banners.length;
-            document.getElementById('heroSlider').scrollTo({ 
-                left: state.currentSlide * window.innerWidth, 
-                behavior: 'smooth' 
-            });
-            updateSlideInfo();
-        }
+// HOME LIST
+function renderHomeList(){
+  const list=$i('home-list');
+  // Only show parent (top-level) categories
+  const parentCats=[...S.cats].filter(c=>!c.parentCategoryId&&c.active!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  if(!parentCats.length){ list.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray);">Kateqoriya yoxdur</div>'; return; }
+  list.innerHTML=parentCats.map(cat=>`<div class="mli" onclick="openCat(${JSON.stringify(cat.id)})">`+
+    `<span>${esc(cat.icon||'🍽️')} ${esc(tl(cat.nameAz,cat.nameEn)||cat.nameAz)}</span>`+
+    `<i class="fas fa-chevron-right"></i></div>`).join('');
+}
 
-        function prevSlide() {
-            const banners = (state.settings.bannerImages || []).filter(b => b.active);
-            if (banners.length <= 1) return;
-            
-            state.currentSlide = (state.currentSlide - 1 + banners.length) % banners.length;
-            document.getElementById('heroSlider').scrollTo({ 
-                left: state.currentSlide * window.innerWidth, 
-                behavior: 'smooth' 
-            });
-            updateSlideInfo();
-        }
+// CATEGORY SCREEN
+function openCat(catId){
+  S.prevScr='home'; S.activeCat=catId; S.activeSub=null; S.popFilter=false; S.searchQ='';
+  $i('cat-search').style.display='none'; $i('s-inp').value='';
+  renderCatScr(); showScr('scr-cat');
+  setTimeout(()=>{ $i('prod-scroll').scrollTop=0; },50);
+}
 
-        function goToSlide(index) {
-            state.currentSlide = index;
-            document.getElementById('heroSlider').scrollTo({ 
-                left: state.currentSlide * window.innerWidth, 
-                behavior: 'smooth' 
-            });
-            updateSlideInfo();
-        }
+function renderCatScr(){
+  renderMainTabs(); renderSubTabs(); renderBanner(); renderProds(); updateFavCnt();
+}
 
-        // ==========================================
-        // DRAWER & UTILITIES
-        // ==========================================
-        function toggleDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('overlay');
-            
-            if (drawer.classList.contains('closed')) {
-                drawer.classList.remove('closed');
-                drawer.classList.add('open');
-                overlay.classList.remove('hide');
-                overlay.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            } else {
-                drawer.classList.remove('open');
-                drawer.classList.add('closed');
-                overlay.classList.remove('show');
-                overlay.classList.add('hide');
-                document.body.style.overflow = '';
-            }
-        }
+// MAIN TABS (parent categories only)
+function renderMainTabs(){
+  const parentCats=[...S.cats].filter(c=>!c.parentCategoryId&&c.active!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  $i('main-tabs').innerHTML=parentCats.map(c=>`<div class="main-tab ${String(c.id)===String(S.activeCat)?'active':''}" onclick="switchMain(${JSON.stringify(c.id)})">${esc(c.icon||'')} ${esc(tl(c.nameAz,c.nameEn)||c.nameAz)}</div>`).join('');
+  setTimeout(()=>{ const a=$i('main-tabs').querySelector('.main-tab.active'); if(a) a.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'}); },60);
+}
 
-        function initSchedule() {
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const scheduleList = document.getElementById('scheduleList');
-            const today = new Date().getDay();
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const currentDayName = dayNames[today];
-            
-            scheduleList.innerHTML = '';
-            
-            // Use settings schedule if available
-            const schedule = state.settings.workingHours || {};
-            
-            days.forEach(day => {
-                const isToday = day === currentDayName;
-                const hours = schedule[day] || '07:00 - 24:00';
-                
-                const div = document.createElement('div');
-                div.className = `flex justify-between items-center p-2 rounded-lg ${isToday ? 'bg-[#d4c5a3] text-white' : 'hover:bg-gray-100'}`;
-                div.innerHTML = `
-                    <span class="font-medium text-sm">${day}</span>
-                    <span class="text-sm ${isToday ? 'text-white' : 'text-gray-600'}">${hours}</span>
-                `;
-                scheduleList.appendChild(div);
-            });
-            
-            document.getElementById('currentDay').textContent = currentDayName.slice(0, 3);
-            if (schedule[currentDayName]) {
-                document.getElementById('currentHours').textContent = schedule[currentDayName];
-            }
-        }
+// SUB TABS (child categories of active parent)
+function renderSubTabs(){
+  const subCats=[...S.cats].filter(c=>String(c.parentCategoryId)===String(S.activeCat)&&c.active!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  const st=$i('sub-tabs');
+  if(!subCats.length){ st.style.display='none'; return; }
+  st.style.display='flex';
+  st.innerHTML=subCats.map(c=>`<div class="sub-tab ${String(c.id)===String(S.activeSub)?'active':''}" onclick="switchSub(${JSON.stringify(c.id)})">${esc(c.icon||'')} ${esc(tl(c.nameAz,c.nameEn)||c.nameAz)}</div>`).join('');
+  setTimeout(()=>{ const a=st.querySelector('.sub-tab.active'); if(a) a.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'}); },60);
+}
 
-        function toggleSchedule() {
-            const dropdown = document.getElementById('scheduleDropdown');
-            const arrow = document.getElementById('scheduleArrow');
-            dropdown.classList.toggle('hidden');
-            arrow.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-        }
+function switchMain(id){
+  S.activeCat=id; S.activeSub=null; S.popFilter=false; S.searchQ=''; $i('s-inp').value='';
+  renderMainTabs(); renderSubTabs(); renderProds(); $i('prod-scroll').scrollTop=0;
+}
+function switchSub(id){
+  S.activeSub=String(S.activeSub)===String(id)?null:id;
+  renderSubTabs(); renderProds(); $i('prod-scroll').scrollTop=0;
+}
 
-        function playVideo(container) {
-            const video = container.querySelector('video');
-            const overlay = container.querySelector('.play-overlay');
-            
-            if (video.paused) {
-                video.play();
-                overlay.style.opacity = '0';
-            } else {
-                video.pause();
-                overlay.style.opacity = '1';
-            }
-        }
+// BANNER
+function renderBanner(){
+  const bc=$i('banner-wrap'), bs=$i('banner-slider');
+  clearInterval(S.bannerTimer);
+  const s=S.settings;
+  const en=s.bannerEnabled===true||s.bannerEnabled==='true';
+  if(!en||!S.bannerSlides.length){ bc.style.display='none'; return; }
+  bc.style.display='block';
+  const intv=Number(s.bannerInterval)||3000;
+  let html='';
+  S.bannerSlides.forEach((b,i)=>{
+    const cap=(b.productName||b.title||b.price)?`<div class="banner-caption"><div class="bc-name">${esc(b.productName||b.title||'')}</div>${b.price?`<div class="bc-price">${esc(b.price)} ₼</div>`:''}</div>`:'' ;
+    html+=`<div class="banner-slide ${i===0?'active':''}"><img src="${esc(thumb(b.image))}" loading="lazy" onerror="this.style.opacity='.3'">${cap}</div>`;
+  });
+  const dots=S.bannerSlides.map((_,i)=>`<div class="bdot ${i===0?'active':''}" id="bd${i}"></div>`).join('');
+  bs.innerHTML=html+`<div class="banner-dots">${dots}</div>`;
+  S.bannerIdx=0;
+  S.bannerTimer=setInterval(()=>{
+    const slides=bs.querySelectorAll('.banner-slide'), ds=bs.querySelectorAll('.bdot');
+    if(!slides.length)return;
+    slides[S.bannerIdx].classList.remove('active'); ds[S.bannerIdx]?.classList.remove('active');
+    S.bannerIdx=(S.bannerIdx+1)%slides.length;
+    slides[S.bannerIdx].classList.add('active'); ds[S.bannerIdx]?.classList.add('active');
+  },intv);
+}
 
-        function getDirections() {
-            const address = state.settings.contacts?.address || 'Qafqaz Riverside Resort Hotel Qabala';
-            window.open(`https://maps.google.com/?q=${encodeURIComponent(address)}`, '_blank');
-        }
+// PRODUCTS
+function renderProds(){
+  const pl=$i('prod-list');
+  // Determine which category ids to show
+  let catId=S.activeCat;
+  let subCats=[...S.cats].filter(c=>String(c.parentCategoryId)===String(catId)&&c.active!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  const parentCat=S.cats.find(c=>String(c.id)===String(catId));
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.opacity = '1';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-            }, 2000);
-        }
+  let prods=S.prods.filter(p=>String(p.categoryId)===String(catId)||subCats.some(sc=>String(p.categoryId)===String(sc.id)));
+  if(S.activeSub) prods=prods.filter(p=>String(p.categoryId)===String(S.activeSub));
+  if(S.popFilter) prods=prods.filter(p=>p.popular);
+  if(S.searchQ){ const q=S.searchQ.toLowerCase(); prods=prods.filter(p=>(p.nameAz||'').toLowerCase().includes(q)||(p.nameEn||'').toLowerCase().includes(q)); }
 
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+  const catName=parentCat?tl(parentCat.nameAz,parentCat.nameEn)||parentCat.nameAz:'';
+  let html=`<div class="cat-title">${esc(catName)}</div>`;
 
-        function scrollToSubcategory(subName) {
-            const element = document.getElementById(`section-${subName.replace(/\s+/g, '-')}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
+  if(!prods.length){
+    html+='<div class="no-prod"><i class="fas fa-utensils"></i><p>'+(S.popFilter?tl('Populyar məhsul yoxdur','No popular items'):(S.searchQ?tl('Nəticə tapılmadı','No results found'):tl('Məhsul yoxdur','No items')))+'</p></div>';
+    pl.innerHTML=html; return;
+  }
 
-        function showTab(tab) {
-            if (tab === 'favorites') {
-                showFavorites();
-            } else if (tab === 'home') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (tab === 'search') {
-                const searchTerm = prompt('Search:');
-                if (searchTerm) searchProducts(searchTerm);
-            }
-        }
+  // Group by sub-category if no specific sub selected
+  if(!S.activeSub&&subCats.length>0){
+    // Products directly under parent cat
+    const directProds=prods.filter(p=>String(p.categoryId)===String(catId));
+    if(directProds.length){
+      html+=`<div class="prod-list-inner">${directProds.map(p=>renderProdItem(p)).join('')}</div>`;
+    }
+    // Products under each sub-cat
+    subCats.forEach(sc=>{
+      const sp=prods.filter(p=>String(p.categoryId)===String(sc.id));
+      if(!sp.length)return;
+      html+=`<div class="sub-title">${esc(sc.icon||'')} ${esc(tl(sc.nameAz,sc.nameEn)||sc.nameAz)}</div>`;
+      html+=sp.map(p=>renderProdItem(p)).join('');
+    });
+  } else {
+    html+=prods.map(p=>renderProdItem(p)).join('');
+  }
+  pl.innerHTML=html;
+}
 
-        function showFavorites() {
-            const container = document.getElementById('menuContent');
-            container.innerHTML = '';
-            
-            const favProducts = state.products.filter(p => state.favorites.has(p.id));
-            
-            const section = document.createElement('div');
-            section.className = 'category-section';
-            
-            const title = document.createElement('h2');
-            title.className = 'text-xl font-bold text-gray-900 mb-4';
-            title.textContent = 'Favorites';
-            section.appendChild(title);
-            
-            if (favProducts.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'text-gray-400 text-sm py-8 text-center';
-                empty.textContent = 'No favorites yet';
-                section.appendChild(empty);
-            } else {
-                const grid = document.createElement('div');
-                grid.className = 'space-y-4';
-                favProducts.forEach(item => grid.appendChild(createMenuCard(item)));
-                section.appendChild(grid);
-            }
-            
-            container.appendChild(section);
-        }
+function renderProdItem(p){
+  const nm=tl(p.nameAz,p.nameEn)||p.nameAz;
+  const desc=tl(p.descAz,p.descEn)||'';
+  const imgUrl=p.images&&p.images.length?thumb(p.images[0]):'';
+  const liked=S.likes[p.id]>0, isFav=S.favs.includes(String(p.id));
+  const unavail=p.available===false;
+  const badges=[p.popular?`<span class="badge-p">${tl('Populyar','Popular')}</span>`:'',p.isNew?`<span class="badge-n">${tl('Yeni','New')}</span>`:'',p.recommended?`<span class="badge-r">${tl('Tövsiyə','Rec')}</span>`:''].join('');
+  return `<div class="prod-item ${unavail?'unavail':''}" id="pi-${p.id}">
+    <div class="prod-left">
+      ${unavail?`<span class="badge-u">${tl('Bitib','Sold out')}</span>`:''}
+      ${badges?`<div style="margin-bottom:3px;">${badges}</div>`:''}
+      <div class="prod-name">${esc(nm)}</div>
+      <div class="prod-price">${p.price?p.price+' ₼':''}${p.vat?`<span class="vat">${esc(p.vat)} ƏDV</span>`:''}</div>
+      ${p.specs?.volume||p.specs?.time?`<div class="prod-specs">${p.specs.volume?`<span><i class="fas fa-tint"></i>${esc(p.specs.volume)}</span>`:''} ${p.specs.time?`<span><i class="far fa-clock"></i>${esc(p.specs.time)}</span>`:''}</div>`:''}
+      ${desc?`<div class="prod-desc">${esc(desc)}</div>`:''}
+      <div class="prod-btns">
+        <div class="like-btn ${liked?'on':''}" onclick="toggleLike(${JSON.stringify(p.id)},this)"><i class="fas fa-heart"></i></div>
+        ${(S.likes[p.id]||0)>0?`<span class="like-cnt">${S.likes[p.id]}</span>`:''}
+        ${p.videoUrl?`<button class="video-play-btn" onclick="openVid('${esc(p.videoUrl)}')"><i class="fas fa-play"></i> Video</button>`:''}
+      </div>
+    </div>
+    <div class="prod-right">
+      ${imgUrl?`<div class="prod-img" onclick="openImgBox(${JSON.stringify(p.id)})">`+
+        `<img src="${esc(imgUrl)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=prod-img-ph>🍽️</div>'">`+
+        `${p.videoUrl?`<div class="vid-badge"><i class="fas fa-video"></i> Video</div>`:''}`+
+        `<div class="fav-btn ${isFav?'on':''}" onclick="event.stopPropagation();toggleFav(${JSON.stringify(p.id)},this)"><i class="fas fa-heart"></i></div>`+
+        `</div>`:`<div class="prod-img"><div class="prod-img-ph">🍽️</div></div>`}
+    </div>
+  </div>`;
+}
 
-        function searchProducts(term) {
-            const container = document.getElementById('menuContent');
-            container.innerHTML = '';
-            
-            const searchLower = term.toLowerCase();
-            const results = state.products.filter(p => 
-                (p.nameEn && p.nameEn.toLowerCase().includes(searchLower)) ||
-                (p.nameAz && p.nameAz.toLowerCase().includes(searchLower))
-            );
-            
-            const section = document.createElement('div');
-            section.className = 'category-section';
-            
-            const title = document.createElement('h2');
-            title.className = 'text-xl font-bold text-gray-900 mb-4';
-            title.textContent = `Search: "${term}"`;
-            section.appendChild(title);
-            
-            if (results.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'text-gray-400 text-sm py-8 text-center';
-                empty.textContent = 'No products found';
-                section.appendChild(empty);
-            } else {
-                const grid = document.createElement('div');
-                grid.className = 'space-y-4';
-                results.forEach(item => grid.appendChild(createMenuCard(item)));
-                section.appendChild(grid);
-            }
-            
-            container.appendChild(section);
-        }
+// SCROLL → switch category
+function handleScroll(el){
+  const atBottom=(el.scrollHeight-el.scrollTop-el.clientHeight)<100;
+  const atTop=el.scrollTop<50;
+  const parentCats=[...S.cats].filter(c=>!c.parentCategoryId&&c.active!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  const idx=parentCats.findIndex(c=>String(c.id)===String(S.activeCat));
+  if(atBottom&&idx<parentCats.length-1){
+    S.activeCat=parentCats[idx+1].id; S.activeSub=null;
+    renderMainTabs(); renderSubTabs(); renderProds(); el.scrollTop=0;
+  } else if(atTop&&idx>0&&el.scrollTop===0){
+    S.activeCat=parentCats[idx-1].id; S.activeSub=null;
+    renderMainTabs(); renderSubTabs(); renderProds();
+    setTimeout(()=>{ el.scrollTop=el.scrollHeight; },50);
+  }
+}
 
-        // ==========================================
-        // EVENT LISTENERS
-        // ==========================================
-        function setupEventListeners() {
-            // Scroll listener
-            let lastScroll = 0;
-            window.addEventListener('scroll', () => {
-                const currentScroll = window.pageYOffset;
-                const backToTop = document.getElementById('backToTop');
-                
-                if (currentScroll > 500) {
-                    backToTop.classList.add('visible');
-                } else {
-                    backToTop.classList.remove('visible');
-                }
-                
-                // Update active subcategory on scroll
-                const sections = document.querySelectorAll('.category-section');
-                const scrollPos = window.scrollY + 200;
-                
-                sections.forEach(section => {
-                    const top = section.offsetTop;
-                    const height = section.offsetHeight;
-                    const id = section.id.replace('section-', '').replace(/-/g, ' ');
-                    
-                    if (scrollPos >= top && scrollPos < top + height) {
-                        document.querySelectorAll('.sub-categories .category-tab').forEach(btn => {
-                            btn.className = `category-tab px-4 py-1.5 rounded-full text-xs font-medium ${btn.textContent === id ? 'active bg-[#d4c5a3] text-gray-800' : 'text-gray-500'}`;
-                        });
-                        state.currentSubcategory = id;
-                    }
-                });
-                
-                lastScroll = currentScroll;
-            }, { passive: true });
+// LIKES & FAVS
+function toggleLike(id,btn){
+  const k=String(id), cur=S.likes[k]||0;
+  S.likes[k]=cur>0?0:1;
+  localStorage.setItem('mlikes',JSON.stringify(S.likes));
+  btn.classList.toggle('on',S.likes[k]>0);
+  const cnt=btn.nextElementSibling;
+  if(S.likes[k]>0){ if(!cnt||!cnt.classList.contains('like-cnt')) btn.insertAdjacentHTML('afterend',`<span class="like-cnt">1</span>`); }
+  else{ if(cnt&&cnt.classList.contains('like-cnt')) cnt.remove(); }
+}
+function toggleFav(id,btn){
+  const k=String(id);
+  if(S.favs.includes(k)){ S.favs=S.favs.filter(f=>f!==k); btn.classList.remove('on'); }
+  else{ S.favs.push(k); btn.classList.add('on'); toast(tl('Sevimlilərə əlavə edildi','Added to favorites')); }
+  localStorage.setItem('mfavs',JSON.stringify(S.favs)); updateFavCnt();
+}
+function updateFavCnt(){ $i('fav-cnt').textContent=S.favs.length; }
+function togglePopFilter(){ S.popFilter=!S.popFilter; $i('pop-btn').style.background=S.popFilter?'#fef3cd':''; renderProds(); }
+function showFavs(){
+  if(!S.favs.length){ toast(tl('Sevimli yoxdur','No favorites')); return; }
+  const pl=$i('prod-list');
+  const fp=S.prods.filter(p=>S.favs.includes(String(p.id)));
+  pl.innerHTML=`<div class="cat-title">${tl('Sevimlilər','Favorites')}</div>`+fp.map(renderProdItem).join('');
+}
 
-            // Touch handlers for swipe
-            const menuContent = document.getElementById('menuContent');
-            
-            menuContent.addEventListener('touchstart', (e) => {
-                state.touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
-            
-            menuContent.addEventListener('touchend', (e) => {
-                state.touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, { passive: true });
+// VIDEO
+function openVid(url){ const v=$i('vid-player'); v.src=url; v.load(); $i('vid-modal').classList.add('open'); v.play().catch(()=>{}); }
+function closeVid(){ const v=$i('vid-player'); v.pause(); v.src=''; $i('vid-modal').classList.remove('open'); }
+$i('vid-modal').addEventListener('click',e=>{ if(e.target===$i('vid-modal'))closeVid(); });
 
-            // Keyboard navigation
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') prevSlide();
-                if (e.key === 'ArrowRight') nextSlide();
-            });
-        }
+// IMG BOX
+function openImgBox(pid){
+  const p=S.prods.find(pr=>String(pr.id)===String(pid));
+  if(!p)return;
+  if(p.videoUrl&&(!p.images||!p.images.length)){ openVid(p.videoUrl); return; }
+  if(!p.images||!p.images.length)return;
+  S.imgBoxProds=p.images; S.imgBoxIdx=0; updateImgBox();
+  $i('img-box').classList.add('open');
+}
+function updateImgBox(){
+  const imgs=S.imgBoxProds; const idx=S.imgBoxIdx;
+  $i('img-box-img').src=thumb(imgs[idx]);
+  $i('img-dots').innerHTML=imgs.length>1?imgs.map((_,i)=>`<div class="img-dot ${i===idx?'active':''}" onclick="setImgIdx(${i})"></div>`).join(''):'';
+}
+window.setImgIdx=function(i){ S.imgBoxIdx=i; updateImgBox(); };
+function closeImgBox(){ $i('img-box').classList.remove('open'); }
+$i('img-box').addEventListener('click',e=>{ if(e.target===$i('img-box'))closeImgBox(); });
 
-        function handleSwipe() {
-            const swipeThreshold = 100;
-            const diff = state.touchStartX - state.touchEndX;
-            
-            if (Math.abs(diff) > swipeThreshold) {
-                const cat = state.categories.find(c => c.id === state.currentCategory);
-                if (!cat || !cat.subcategories) return;
-                
-                const currentIndex = cat.subcategories.indexOf(state.currentSubcategory);
-                
-                if (diff > 0 && currentIndex < cat.subcategories.length - 1) {
-                    switchSubcategory(cat.subcategories[currentIndex + 1]);
-                } else if (diff < 0 && currentIndex > 0) {
-                    switchSubcategory(cat.subcategories[currentIndex - 1]);
-                }
-            }
-        }
-    </script>
+// SEARCH
+function openSearch(){
+  if($i('scr-cat').classList.contains('active')){
+    const sb=$i('cat-search');
+    sb.style.display=sb.style.display==='none'?'block':'none';
+    if(sb.style.display==='block') setTimeout(()=>$i('s-inp').focus(),80);
+  } else {
+    const pc=[...S.cats].filter(c=>!c.parentCategoryId&&c.active!==false).sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+    if(pc.length){ openCat(pc[0].id); setTimeout(()=>{ $i('cat-search').style.display='block'; $i('s-inp').focus(); },200); }
+  }
+}
+function filterLive(q){ S.searchQ=q; renderProds(); }
+
+// NAVIGATION
+function goHome(){ clearInterval(S.bannerTimer); showScr('scr-home'); }
+function goBack(){ showScr('scr-'+S.prevScr); }
+function showContact(){
+  S.prevScr=$i('scr-cat').classList.contains('active')?'cat':'home';
+  renderContact(); showScr('scr-contact');
+}
+
+// SIDE MENU
+function openSide(){ $i('side-ov').classList.add('open'); $i('side-menu').classList.add('open'); }
+function closeSide(){ $i('side-ov').classList.remove('open'); $i('side-menu').classList.remove('open'); }
+function renderSideMenu(){
+  const s=S.settings;
+  if(s.phone){ const el=$i('sl-phone'); el.style.display='flex'; $i('sl-phone-val').textContent=s.phone; el.onclick=()=>window.open('tel:'+s.phone); }
+  if(s.facebook){ const el=$i('sl-fb'); el.style.display='flex'; el.onclick=()=>window.open(s.facebook,'_blank'); }
+  if(s.instagram){ const el=$i('sl-ig'); el.style.display='flex'; el.onclick=()=>window.open(s.instagram,'_blank'); }
+  if(s.whatsapp){ const el=$i('sl-wa'); el.style.display='flex'; el.onclick=()=>window.open('https://wa.me/'+s.whatsapp.replace(/\D/g,''),'_blank'); }
+}
+
+// CONTACT PAGE
+function renderContact(){
+  const s=S.settings;
+  const days=[tl('Bazar ertəsi','Monday'),tl('Çərşənbə axşamı','Tuesday'),tl('Çərşənbə','Wednesday'),tl('Cümə axşamı','Thursday'),tl('Cümə','Friday'),tl('Şənbə','Saturday'),tl('Bazar','Sunday')];
+  const tod=new Date().getDay(); const todIdx=tod===0?6:tod-1;
+  const wd=s.workWeekday||'07:00 - 24:00', we=s.workWeekend||'07:00 - 24:00';
+  const whRows=days.map((d,i)=>`<div class="wh-row ${i===todIdx?'today':''}"><span>${d}</span><span>${i>=5?we:wd}</span></div>`).join('');
+  let html=`<div class="c-block">`;
+  if(s.description) html+=`<div class="c-item"><div class="c-ico">🍽️</div><div class="c-txt"><div class="c-lbl">${tl('Məkan haqqında:','About the place:')}</div><div class="c-val">${esc(s.description)}</div></div></div>`;
+  if(s.addressAz||s.address){ const a=tl(s.addressAz,s.addressEn)||s.address||''; html+=`<div class="c-item" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(a)}','_blank')"><div class="c-ico">📍</div><div class="c-txt"><div class="c-lbl">${tl('Ünvan:','Address:')}</div><div class="c-val">${esc(a)}</div></div><i class="fas fa-copy c-copy" onclick="event.stopPropagation();copyText('${esc(a.replace(/'/g,"\\'"))}')"></i></div>`; }
+  if(s.phone) html+=`<div class="c-item" onclick="window.open('tel:${esc(s.phone)}')"><div class="c-ico">📞</div><div class="c-txt"><div class="c-lbl">${tl('Telefon:','Phone:')}</div><div class="c-val">${esc(s.phone)}</div></div><i class="fas fa-copy c-copy" onclick="event.stopPropagation();copyText('${esc(s.phone)}')"></i></div>`;
+  if(s.email) html+=`<div class="c-item" onclick="window.open('mailto:${esc(s.email)}')"><div class="c-ico">✉️</div><div class="c-txt"><div class="c-lbl">Email:</div><div class="c-val">${esc(s.email)}</div></div><i class="fas fa-copy c-copy" onclick="event.stopPropagation();copyText('${esc(s.email)}')"></i></div>`;
+  html+=`<div class="c-item"><div class="c-ico">🕐</div><div class="c-txt"><div class="c-lbl">${tl('İş saatları:','Working hours:')}</div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;"><span style="font-size:13px;font-weight:500;">${wd} <span style="font-size:11px;color:var(--gray);">${days[todIdx]}</span></span><div class="wh-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('i').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':'';">${tl('Cədvəl','Schedule')} <i class="fas fa-chevron-down"></i></div></div><div class="wh-tbl">${whRows}</div></div></div>`;
+  html+=`</div>`;
+  if(s.website) html+=`<div class="c-block"><div class="c-item" onclick="window.open('${esc(s.website)}','_blank')"><div class="c-ico">🌐</div><div class="c-txt"><div class="c-lbl">${tl('Veb sayt','Visit our website')}</div><div class="c-val">${esc(s.website)} <i class="fas fa-external-link-alt" style="font-size:11px;"></i></div></div></div></div>`;
+  const hasSoc=s.facebook||s.instagram||s.whatsapp||s.twitter;
+  if(hasSoc){ html+=`<div style="font-size:14px;font-weight:700;padding:0 0 8px;">${tl('Sosial şəbəkələr','We are on social networks')}</div><div class="soc-grid">`;
+    if(s.facebook) html+=`<div class="soc-btn fb" onclick="window.open('${esc(s.facebook)}','_blank')"><i class="fab fa-facebook fa-lg"></i> Facebook</div>`;
+    if(s.instagram) html+=`<div class="soc-btn ig" onclick="window.open('${esc(s.instagram)}','_blank')"><i class="fab fa-instagram fa-lg"></i> Instagram</div>`;
+    if(s.whatsapp) html+=`<div class="soc-btn wa" onclick="window.open('https://wa.me/'+${JSON.stringify(s.whatsapp.replace(/\D/g,''))},'_blank')"><i class="fab fa-whatsapp fa-lg"></i> WhatsApp</div>`;
+    html+=`</div>`; }
+  const addr=tl(s.addressAz,s.addressEn)||s.address||'';
+  html+=`<div class="map-block"><h3>${tl('Xəritədə','On the map')}</h3><div class="map-ph"><i class="fas fa-map-marker-alt"></i><span style="font-size:13px;font-weight:600;">${esc(tl(s.nameAz,s.nameEn)||s.nameAz||'')}</span>${addr?`<span style="font-size:12px;text-align:center;">${esc(addr)}</span>`:''}</div>${addr?`<div class="dir-btn" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(addr)}','_blank')"><i class="fas fa-route" style="color:var(--gold);"></i> ${tl('Yol göstər','Get directions')}</div>`:''}</div>`;
+  $i('contact-body').innerHTML=html;
+}
+
+// POPUP
+function checkPopup(){
+  const s=S.settings;
+  if(!s.popupEnabled&&s.popupEnabled!=='true'&&s.popupEnabled!==true)return;
+  const once=s.popupShowOnce===true||s.popupShowOnce==='true';
+  const key='pop_'+GAS.slice(-8);
+  if(once&&localStorage.getItem(key))return;
+  if(!s.popupTitle&&!s.popupText&&!s.popupImage&&!s.adImage)return;
+  const iu=thumb(s.popupImage||s.adImage||'');
+  if(iu){ const img=$i('pop-img'); img.src=iu; img.style.display='block'; }
+  $i('pop-title').textContent=s.popupTitle||'';
+  $i('pop-text').textContent=s.popupText||'';
+  const lnk=$i('pop-cta');
+  if(s.popupLink&&s.popupLink!=='#'){ lnk.href=s.popupLink; lnk.style.display='block'; }
+  $i('popup-ov').classList.add('open');
+  if(once) localStorage.setItem(key,'1');
+}
+function closePopup(){ $i('popup-ov').classList.remove('open'); }
+
+// INIT
+window.addEventListener('load', loadData);
+</script>
 </body>
 </html>
