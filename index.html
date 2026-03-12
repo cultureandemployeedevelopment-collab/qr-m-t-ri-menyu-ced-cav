@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta name="theme-color" content="#ffffff"/>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://drive.google.com">
 <title>Digital Menyu</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -16,8 +20,8 @@
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 /* ── LOADING ── */
-#scr-loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s;}
-.spin{width:44px;height:44px;border:3px solid #eee;border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:16px auto 0;}
+#scr-loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .25s;}
+.spin{width:36px;height:36px;border:3px solid #eee;border-top-color:var(--gold);border-radius:50%;animation:spin .65s linear infinite;margin:10px auto 0;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── SCREENS ── */
@@ -296,9 +300,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <!-- LOADING -->
 <div id="scr-loading">
-  <div id="ld-ico" style="font-size:54px;margin-bottom:10px;">🍽️</div>
-  <div id="ld-name" style="font-size:18px;font-weight:800;margin-bottom:4px;">Yüklənir...</div>
-  <div id="ld-sub" style="font-size:12px;color:#999;"></div>
+  <div id="ld-logo" style="width:80px;height:80px;border-radius:18px;border:2px solid #eee;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:#f9f9f9;">
+    <div id="ld-ico" style="font-size:44px;">🍽️</div>
+  </div>
+  <div id="ld-name" style="font-size:20px;font-weight:800;margin-bottom:4px;">Yüklənir...</div>
+  <div id="ld-sub" style="font-size:13px;color:#999;margin-bottom:6px;"></div>
   <div class="spin"></div>
 </div>
 
@@ -573,7 +579,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
-const GAS = 'https://script.google.com/macros/s/AKfycbzVfLV_TMxBP8jX8P9CosMKC2DCM25--tk5h_lh3U4ZBl_QiB1N6D1J_qpHsGDYA9hyAQ/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbxoQt3BJjUCsohCIF1O0VWADBcTb97DSlgWJPJAg9IqH_rP8l_807M4JeoJtExMIuAN/exec';
 
 // ════════════════════════════════════════
 // STATE
@@ -649,26 +655,76 @@ function setLang(l) {
 // DATA LOAD — fast, no blocking
 // ════════════════════════════════════════
 async function loadData() {
-  // Prefetch from cache first
   const cached = localStorage.getItem('mnCache');
-  if (cached) { try { applyData(JSON.parse(cached)); showScr('scr-home'); } catch{} }
-
+  
+  // Show cached data IMMEDIATELY - no waiting
+  if (cached) {
+    try {
+      applyData(JSON.parse(cached));
+      $('scr-loading').style.display='none';
+      showScr('scr-home');
+      renderAll();
+      checkPopup();
+    } catch(e) {}
+    // Refresh in background silently
+    refreshInBackground();
+    return;
+  }
+  
+  // No cache - must fetch, show loading
   try {
     const ctrl = new AbortController();
-    setTimeout(()=>ctrl.abort(), 8000); // 8s timeout
-    const res  = await fetch(GAS+'?action=getMenu&_='+Date.now(), { cache:'no-store', signal:ctrl.signal });
+    setTimeout(()=>ctrl.abort(), 10000);
+    const res = await fetch(GAS+'?action=getMenu&_='+Date.now(), { cache:'no-store', signal:ctrl.signal, headers:{'Accept':'application/json'} });
     const json = await res.json();
     const d = json.data||json;
     localStorage.setItem('mnCache', JSON.stringify(d));
     applyData(d);
   } catch(e) {
-    console.warn('loadData:', e);
-    if (!cached) { S.cats=[]; S.prods=[]; S.settings={}; S.banners=[]; }
+    console.warn('loadData first:', e);
+    S.cats=[]; S.prods=[]; S.settings={}; S.banners=[]; S.likes={};
   }
-  $('scr-loading').style.display='none';
+  $('scr-loading').style.opacity='0';
+  setTimeout(()=>{ $('scr-loading').style.display='none'; },250);
   renderAll();
-  if (!cached) showScr('scr-home');
+  showScr('scr-home');
   checkPopup();
+}
+
+async function refreshInBackground() {
+  try {
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(), 12000);
+    const res = await fetch(GAS+'?action=getMenu&_='+Date.now(), { cache:'no-store', signal:ctrl.signal });
+    const json = await res.json();
+    const d = json.data||json;
+    localStorage.setItem('mnCache', JSON.stringify(d));
+    // Only re-apply if data meaningfully changed (likes always update)
+    const prev = JSON.stringify({prods:S.prods.length, cats:S.cats.length});
+    applyData(d);
+    const curr = JSON.stringify({prods:S.prods.length, cats:S.cats.length});
+    if (prev !== curr) {
+      renderAll();
+      // If cat screen open, refresh products silently
+      if ($('scr-cat').classList.contains('on')) renderProds();
+    } else {
+      // Just update like counts without full re-render
+      updateAllLikeCounts();
+    }
+  } catch(e) { /* silent */ }
+}
+
+function updateAllLikeCounts() {
+  // Update all visible like counts without re-rendering
+  Object.entries(S.likes).forEach(([k, cnt]) => {
+    const btn = $('lb-'+k);
+    if (btn) btn.classList.toggle('on', cnt > 0);
+    const el = $('lc-'+k);
+    if (cnt > 0) {
+      if (el) el.textContent = cnt;
+      else if (btn) btn.insertAdjacentHTML('afterend', `<span id="lc-${k}" class="like-cnt">${cnt}</span>`);
+    } else if (el) el.remove();
+  });
 }
 
 function applyData(d) {
@@ -727,7 +783,7 @@ function renderHdr() {
   if($('ld-name'))$('ld-name').textContent=nm||'Yüklənir...';
   if($('ld-sub'))$('ld-sub').textContent=tl(s.addressAz,s.addressEn)||'';
   const logoUrl=thumb(s.logo||s.logoUrl||'');
-  if(logoUrl){ $('hdr-logo').innerHTML=`<img src="${esc(logoUrl)}" onerror="this.parentElement.innerHTML='🍽️'">`; if($('ld-ico'))$('ld-ico').innerHTML=`<img src="${esc(logoUrl)}" style="width:70px;height:70px;object-fit:contain;border-radius:14px;" onerror="this.outerHTML='🍽️'">`; }
+  if(logoUrl){ $('hdr-logo').innerHTML=`<img src="${esc(logoUrl)}" onerror="this.parentElement.innerHTML='🍽️'">`; const ldIco=$('ld-ico'); if(ldIco)ldIco.innerHTML=`<img src="${esc(logoUrl)}" style="width:76px;height:76px;object-fit:contain;border-radius:14px;" onerror="this.outerHTML='🍽️'">`; }
 }
 
 // ════════════════════════════════════════
