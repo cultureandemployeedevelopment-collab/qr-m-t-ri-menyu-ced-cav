@@ -999,7 +999,7 @@ function renderBanner(){
       if(lc>0) cap+='<span class="bnr-cap-heart">❤ '+lc+'</span>';
       cap+='</div></div>';
     }
-    const click=b.productId?'openDetailById(''+b.productId+'')':'';
+    const click=b.productId?`openDetailById('${b.productId}')`:'';
     bnrSlides+='<div class="bnr-slide"'+(click?' onclick="'+click+'"':'')+'>'+'<img src="'+esc(thumb(b.image))+'" loading="lazy" onerror="this.style.opacity=.2">'+cap+'</div>';
   });
   track.innerHTML=bnrSlides;
