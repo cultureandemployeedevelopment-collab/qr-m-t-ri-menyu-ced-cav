@@ -47,19 +47,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .hero-track{display:flex;transition:transform .45s ease;will-change:transform;}
 .hero-slide{min-width:100%;position:relative;background:#111;min-height:200px;}
 .hero-slide img{width:100%;height:56vw;max-height:320px;min-height:200px;object-fit:cover;display:block;background:#222;}
-#home-hero{background:#111;min-height:260px;}
-
-/* ── HOME HERO OVERLAY HEADER ── */
-.home-hero-section{position:relative;}
-#home-hdr{position:absolute;top:0;left:0;right:0;background:transparent;border-bottom:none;box-shadow:none;z-index:10;}
-.hero-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,transparent 60%);padding:28px 12px 10px;}
-.hero-name{color:#fff;font-size:14px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5);}
-.hero-price{color:var(--gold2);font-size:13px;font-weight:700;margin-top:2px;}
-.hero-ctr{position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);color:#fff;padding:3px 8px;border-radius:5px;font-size:11px;}
+#home-hero{background:#111;min-height:200px;}
+.hero-overlay{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;padding:8px 10px;}
+.hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:8px;padding:5px 10px;max-width:calc(100% - 56px);}
+.hero-name{color:#fff;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
+.hero-price{color:var(--gold2);font-size:13px;font-weight:700;white-space:nowrap;}
+.hero-heart{color:#fff;font-size:13px;font-weight:700;white-space:nowrap;}
+.hero-ctr{background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;padding:4px 9px;border-radius:7px;font-size:11px;font-weight:600;flex-shrink:0;}
 .hnav{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;background:rgba(255,255,255,.82);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;z-index:5;border:none;box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .hnav.l{left:8px;}.hnav.r{right:8px;}
-.hdots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;}
-.hdot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.4);transition:all .3s;cursor:pointer;}
+.hdots{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;}
+.hdot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.35);transition:all .3s;cursor:pointer;}
 .hdot.on{background:#fff;width:16px;}
 
 /* ── HOME CONTENT ── */
@@ -136,9 +134,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .bnr-track{display:flex;transition:transform .4s ease;}
 .bnr-slide{min-width:100%;position:relative;}
 .bnr-slide img{width:100%;height:150px;object-fit:cover;display:block;}
-.bnr-cap{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(0,0,0,.65),transparent);padding:22px 12px 7px;color:#fff;}
-.bnr-cap-name{font-size:13px;font-weight:700;}
-.bnr-cap-price{font-size:12px;color:var(--gold2);font-weight:700;}
+.bnr-cap{position:absolute;bottom:8px;left:10px;right:10px;display:flex;align-items:center;justify-content:space-between;}
+.bnr-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:8px;padding:5px 10px;}
+.bnr-cap-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+.bnr-cap-price{font-size:13px;color:var(--gold2);font-weight:700;white-space:nowrap;}
+.bnr-cap-heart{font-size:12px;color:#fff;font-weight:700;white-space:nowrap;}
 .bnr-dots{display:flex;gap:4px;justify-content:center;padding:5px 0;background:#fff;border-bottom:1px solid var(--border);}
 .bdot{width:6px;height:6px;border-radius:3px;background:var(--border);transition:all .3s;cursor:pointer;}
 .bdot.on{background:var(--gold);width:16px;}
@@ -477,24 +477,25 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <!-- ════════════════════════ HOME SCREEN ════════════════════════ -->
 <div id="scr-home" class="scr">
-  <!-- HERO + OVERLAY HEADER -->
-  <div class="home-hero-section">
-    <div id="home-hero"></div>
-    <div class="hdr" id="home-hdr">
-      <div class="hdr-logo" id="hdr-logo">🍽️</div>
-      <div class="hdr-btns">
-        <div class="lang-wrap">
-          <div class="lang-btn" onclick="toggleLD()"><span id="ll">AZ</span> <i class="fas fa-chevron-down" style="font-size:8px;color:#999;"></i></div>
-          <div class="lang-dd" id="ldd">
-            <div class="lopt on" id="lopt-az" onclick="setLang('az')">AZ</div>
-            <div class="lopt" id="lopt-en" onclick="setLang('en')">EN</div>
-          </div>
+  <div class="hdr">
+    <div class="hdr-logo" id="hdr-logo">🍽️</div>
+    <div style="flex:1;min-width:0;padding:0 7px;">
+      <div id="hdr-rname" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+    </div>
+    <div class="hdr-btns">
+      <div class="lang-wrap">
+        <div class="lang-btn" onclick="toggleLD()"><span id="ll">AZ</span> <i class="fas fa-chevron-down" style="font-size:8px;color:#999;"></i></div>
+        <div class="lang-dd" id="ldd">
+          <div class="lopt on" id="lopt-az" onclick="setLang('az')">AZ</div>
+          <div class="lopt" id="lopt-en" onclick="setLang('en')">EN</div>
         </div>
-        <div class="hbtn" onclick="openSearch()"><i class="fas fa-search"></i></div>
-        <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
       </div>
+      <div class="hbtn" onclick="openSearch()"><i class="fas fa-search"></i></div>
+      <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
     </div>
   </div>
+  <!-- HERO -->
+  <div id="home-hero"></div>
   <div class="home-info">
     <h1 id="h-name">Restoran</h1>
     <p id="h-sub"></p>
@@ -583,7 +584,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
-const GAS = 'https://script.google.com/macros/s/AKfycbw6OY_7s_OJp-G3bQDzdgsJrlGK7uJso7-1zP9YFl8NVEpVBMA_UuXo1xTDcmomY65UiQ/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbwSilV66q636PS55d6cej4nvQrzUD5hujMW-dfMYChlvKT8xUENm1axTtt0owAc10kLPA/exec';
 
 // ════════════════════════════════════════
 // STATE
@@ -803,17 +804,18 @@ function renderHero() {
   S.heroIdx=0;
   const n=S.heroSlides.length;
   let slides='';
-  S.heroSlides.forEach(sl=>{
+  S.heroSlides.forEach((sl,idx)=>{
     const u=thumb(sl.image);
     const lc=sl.productId?S.likes[String(sl.productId)]||0:0;
     let cap='';
     if(sl.name||sl.price||lc>0){
       cap='<div class="hero-overlay">';
-      cap+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">';
+      cap+='<div class="hero-pill">';
       if(sl.name) cap+='<span class="hero-name">'+esc(sl.name)+'</span>';
       if(sl.price) cap+='<span class="hero-price">'+esc(sl.price)+' ₼</span>';
-      if(lc>0) cap+='<span style="color:#fff;font-size:13px;font-weight:700;opacity:.95;">❤ '+lc+'</span>';
-      cap+='</div></div>';
+      if(lc>0) cap+='<span class="hero-heart">❤ '+lc+'</span>';
+      cap+='</div>';
+      cap+='</div>';
     }
     slides+='<div class="hero-slide"><img src="'+esc(u)+'" loading="eager" onerror="this.style.opacity=.15">'+cap+'</div>';
   });
@@ -890,7 +892,8 @@ function renderHomeInfoBar() {
         <div class="ibi-body">
           <div class="ibi-lbl">${tl('Məkan haqqında','About the place')}</div>
           <div id="hm-desc" class="ibi-val" style="white-space:normal;line-height:1.5;">${esc(shortD)}</div>
-          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/\n/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
+          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/
+/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
         </div>
       </div>
     </div>`;
@@ -966,20 +969,15 @@ function switchSub(id){
   const newSub=String(S.activeSub)===String(id)?null:id;
   S.activeSub=newSub;
   renderSubTabs();
-  if(!newSub){
-    // Show all - re-render and scroll to top
-    renderProds();$('prod-scroll').scrollTo({top:0,behavior:'smooth'});
-    return;
-  }
-  // Scroll to sub-section if it exists, otherwise re-render
-  const secEl=$('sub-sec-'+newSub);
-  if(secEl){
-    const scroll=$('prod-scroll');
-    const scrollTop=secEl.offsetTop - scroll.getBoundingClientRect().top - scroll.scrollTop - 8;
-    $('prod-scroll').scrollTo({top:secEl.offsetTop-8,behavior:'smooth'});
-  } else {
-    renderProds();$('prod-scroll').scrollTo({top:0,behavior:'smooth'});
-  }
+  if(!newSub){renderProds();$('prod-scroll').scrollTo({top:0,behavior:'smooth'});return;}
+  renderProds();
+  setTimeout(()=>{
+    const secEl=$('sub-sec-'+newSub),scroll=$('prod-scroll');
+    if(secEl&&scroll){
+      const sr=scroll.getBoundingClientRect(),er=secEl.getBoundingClientRect();
+      scroll.scrollTo({top:scroll.scrollTop+(er.top-sr.top)-8,behavior:'smooth'});
+    }
+  },80);
 }
 
 // BANNER
@@ -990,17 +988,22 @@ function renderBanner(){
   if(!en||!S.banners.length){area.style.display='none';return;}
   area.style.display='block';S.bnrIdx=0;
   const intv=Number(s.bannerInterval)||3000;
-  track.innerHTML=S.banners.map(b=>{
+  let bnrSlides='';
+  S.banners.forEach(b=>{
     const lc=b.productId?S.likes[String(b.productId)]||0:0;
-    const cap=(b.productName||b.title||b.price)?`<div class="bnr-cap">
-      <div class="bnr-cap-name">${esc(b.productName||b.title||'')}</div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
-        ${b.price?`<span class="bnr-cap-price">${esc(b.price)} ₼</span>`:''}
-        ${lc>0?`<span style="color:#fff;font-size:11px;font-weight:700;opacity:.9;">❤ ${lc}</span>`:''}
-      </div>
-    </div>`:'';
-    return`<div class="bnr-slide" onclick="${b.productId?`openDetailById('${b.productId}')`:''}""><img src="${esc(thumb(b.image))}" loading="lazy" onerror="this.style.opacity='.2'">${cap}</div>`;
-  }).join('');
+    const nm=b.productName||b.title||'';
+    let cap='';
+    if(nm||b.price||lc>0){
+      cap='<div class="bnr-cap"><div class="bnr-pill">';
+      if(nm) cap+='<span class="bnr-cap-name">'+esc(nm)+'</span>';
+      if(b.price) cap+='<span class="bnr-cap-price">'+esc(b.price)+' ₼</span>';
+      if(lc>0) cap+='<span class="bnr-cap-heart">❤ '+lc+'</span>';
+      cap+='</div></div>';
+    }
+    const click=b.productId?'openDetailById(''+b.productId+'')':'';
+    bnrSlides+='<div class="bnr-slide"'+(click?' onclick="'+click+'"':'')+'>'+'<img src="'+esc(thumb(b.image))+'" loading="lazy" onerror="this.style.opacity=.2">'+cap+'</div>';
+  });
+  track.innerHTML=bnrSlides;
   dots.innerHTML=S.banners.length>1?S.banners.map((_,i)=>`<div class="bdot${i===0?' on':''}" onclick="bnrGo(${i})"></div>`).join(''):'';
   if(S.banners.length>1) S.bnrTimer=setInterval(()=>{S.bnrIdx=(S.bnrIdx+1)%S.banners.length;track.style.transform=`translateX(-${S.bnrIdx*100}%)`;dots.querySelectorAll('.bdot').forEach((d,i)=>d.classList.toggle('on',i===S.bnrIdx));},intv);
 }
@@ -1271,7 +1274,7 @@ async function submitReview(){
   localStorage.setItem('mnReviews',JSON.stringify(lreviews));
   // Send to Sheets
   try {
-    fetch(GAS, {method:'POST',headers:{'Content-Type':'application/json'},
+    fetch(GAS, {method:'POST',headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({action:'saveReview',review:rev})}).catch(()=>{});
   } catch(e){}
   closeReview();
@@ -1378,7 +1381,7 @@ async function toggleLike(id, btn) {
   try {
     const res = await fetch(GAS, {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      headers: {'Content-Type':'text/plain'},
       body: JSON.stringify({action:'toggleLike', productId:k})
     });
     const data = await res.json();
