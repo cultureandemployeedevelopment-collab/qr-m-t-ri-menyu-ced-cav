@@ -294,6 +294,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .footer{padding:18px 14px;text-align:center;font-size:11px;color:var(--gray);}
 .footer strong{color:var(--gold);}
 .hidden{display:none!important;}
+
+/* ── HERO OVERLAY HEADER ── */
+#home-hero-wrap{position:relative;flex-shrink:0;}
+#hdr-home{position:absolute;top:0;left:0;right:0;background:transparent!important;border-bottom:none!important;box-shadow:none!important;z-index:10;}
+#hdr-home #hdr-rname{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);}
+
+/* ── HERO BOTTOM CONTENT ROW (name + price + likes) ── */
+.hero-bottom{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
+/* ── HERO TOP GRADIENT (readability for overlaid header) ── */
+.hero-top-grad{position:absolute;top:0;left:0;right:0;height:90px;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,transparent 100%);z-index:2;pointer-events:none;}
 </style>
 </head>
 <body>
@@ -472,25 +483,27 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <!-- ════════════════════════ HOME SCREEN ════════════════════════ -->
 <div id="scr-home" class="scr">
-  <div class="hdr">
-    <div class="hdr-logo" id="hdr-logo">🍽️</div>
-    <div style="flex:1;min-width:0;padding:0 7px;">
-      <div id="hdr-rname" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-    </div>
-    <div class="hdr-btns">
-      <div class="lang-wrap">
-        <div class="lang-btn" onclick="toggleLD()"><span id="ll">AZ</span> <i class="fas fa-chevron-down" style="font-size:8px;color:#999;"></i></div>
-        <div class="lang-dd" id="ldd">
-          <div class="lopt on" id="lopt-az" onclick="setLang('az')">AZ</div>
-          <div class="lopt" id="lopt-en" onclick="setLang('en')">EN</div>
-        </div>
+  <!-- HERO with header overlaid — no white space at top -->
+  <div id="home-hero-wrap">
+    <div id="home-hero"></div>
+    <div class="hdr" id="hdr-home">
+      <div class="hdr-logo" id="hdr-logo">🍽️</div>
+      <div style="flex:1;min-width:0;padding:0 7px;">
+        <div id="hdr-rname" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
       </div>
-      <div class="hbtn" onclick="openSearch()"><i class="fas fa-search"></i></div>
-      <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
+      <div class="hdr-btns">
+        <div class="lang-wrap">
+          <div class="lang-btn" onclick="toggleLD()"><span id="ll">AZ</span> <i class="fas fa-chevron-down" style="font-size:8px;color:#999;"></i></div>
+          <div class="lang-dd" id="ldd">
+            <div class="lopt on" id="lopt-az" onclick="setLang('az')">AZ</div>
+            <div class="lopt" id="lopt-en" onclick="setLang('en')">EN</div>
+          </div>
+        </div>
+        <div class="hbtn" onclick="openSearch()"><i class="fas fa-search"></i></div>
+        <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
+      </div>
     </div>
   </div>
-  <!-- HERO -->
-  <div id="home-hero"></div>
   <div class="home-info">
     <h1 id="h-name">Restoran</h1>
     <p id="h-sub"></p>
@@ -802,6 +815,7 @@ function renderHero() {
   S.heroIdx=0;
   const n=S.heroSlides.length;
   wrap.innerHTML=`<div style="position:relative;overflow:hidden;">
+    <div class="hero-top-grad"></div>
     <div class="hero-track" id="hero-track">${S.heroSlides.map(sl=>{const u=thumb(sl.image);const lc=sl.productId?S.likes[String(sl.productId)]||0:0;const cap=(sl.name||sl.price)?`<div class="hero-overlay"><div class="hero-bottom"><span class="hero-name">${esc(sl.name||'')}</span>${sl.price?`<span class="hero-price">${esc(sl.price)} ₼</span>`:''} ${lc>0?`<span style="color:#fff;font-size:13px;font-weight:700;opacity:.95;">❤ ${lc}</span>`:''}</div></div>`:lc>0?`<div class="hero-overlay"><div class="hero-bottom"><span style="color:#fff;font-size:12px;font-weight:700;">❤ ${lc}</span></div></div>`:'';return`<div class="hero-slide"><img src="${esc(u)}" loading="eager" onerror="this.style.opacity='.15'">${cap}</div>`;}).join('')}</div>
     ${n>1?`<button class="hnav l" onclick="heroNav(-1)"><i class="fas fa-chevron-left"></i></button><button class="hnav r" onclick="heroNav(1)"><i class="fas fa-chevron-right"></i></button>`:''}
     ${n>1?`<div class="hdots">${S.heroSlides.map((_,i)=>`<div class="hdot${i===0?' on':''}" onclick="heroGo(${i})"></div>`).join('')}</div>`:''}
