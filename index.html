@@ -802,7 +802,7 @@ function renderHero() {
   S.heroIdx=0;
   const n=S.heroSlides.length;
   wrap.innerHTML=`<div style="position:relative;overflow:hidden;">
-    <div class="hero-track" id="hero-track">${S.heroSlides.map(sl=>{const u=thumb(sl.image);const lc=sl.productId?S.likes[String(sl.productId)]||0:0;const cap=(sl.name||sl.price)?`<div class="hero-overlay"><div class="hero-bottom"><span class="hero-name">${esc(sl.name||'')}</span>${sl.price?`<span class="hero-price">${esc(sl.price)} ₼</span>`:''} ${lc>0?`<span style="color:#fff;font-size:13px;font-weight:700;opacity:.95;">❤ ${lc}</span>`:''}</div></div>`:'';return`<div class="hero-slide"><img src="${esc(u)}" loading="eager" onerror="this.style.opacity='.15'">${cap}</div>`;}).join('')}</div>
+    <div class="hero-track" id="hero-track">${S.heroSlides.map(sl=>{const u=thumb(sl.image);const lc=sl.productId?S.likes[String(sl.productId)]||0:0;const cap=(sl.name||sl.price)?`<div class="hero-overlay"><div class="hero-bottom"><span class="hero-name">${esc(sl.name||'')}</span>${sl.price?`<span class="hero-price">${esc(sl.price)} ₼</span>`:''} ${lc>0?`<span style="color:#fff;font-size:13px;font-weight:700;opacity:.95;">❤ ${lc}</span>`:''}</div></div>`:''} ${lc>0?`<span style="color:#fff;font-size:12px;font-weight:700;">❤ ${lc}</span>`:''}</div></div>`:'';return`<div class="hero-slide"><img src="${esc(u)}" loading="eager" onerror="this.style.opacity='.15'">${cap}</div>`;}).join('')}</div>
     ${n>1?`<button class="hnav l" onclick="heroNav(-1)"><i class="fas fa-chevron-left"></i></button><button class="hnav r" onclick="heroNav(1)"><i class="fas fa-chevron-right"></i></button>`:''}
     ${n>1?`<div class="hdots">${S.heroSlides.map((_,i)=>`<div class="hdot${i===0?' on':''}" onclick="heroGo(${i})"></div>`).join('')}</div>`:''}
     ${n>1?`<div class="hero-ctr" id="hero-ctr">1/${n}</div>`:''}
@@ -868,7 +868,8 @@ function renderHomeInfoBar() {
         <div class="ibi-body">
           <div class="ibi-lbl">${tl('Məkan haqqında','About the place')}</div>
           <div id="hm-desc" class="ibi-val" style="white-space:normal;line-height:1.5;">${esc(shortD)}</div>
-          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/\n/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
+          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/
+/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
         </div>
       </div>
     </div>`;
