@@ -47,7 +47,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .hero-track{display:flex;transition:transform .45s ease;will-change:transform;}
 .hero-slide{min-width:100%;position:relative;background:#111;min-height:200px;}
 .hero-slide img{width:100%;height:56vw;max-height:320px;min-height:200px;object-fit:cover;display:block;background:#222;}
-#home-hero{background:#111;min-height:200px;}
+#home-hero{background:#111;min-height:200px;border-bottom:3px solid #fff;}
 .hero-overlay{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;padding:8px 10px;}
 .hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:8px;padding:5px 10px;max-width:calc(100% - 56px);}
 .hero-name{color:#fff;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
@@ -124,6 +124,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .ingred-chips{display:flex;flex-wrap:wrap;gap:5px;padding:5px 0 2px;}
 .ichip{padding:4px 10px;background:#fef9ee;border:1.5px solid var(--gold2);border-radius:999px;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;white-space:nowrap;}
 .ichip.on{background:var(--gold);color:#fff;border-color:var(--gold);}
+.ichip-name{background:#f0f9ff;border-color:#93c5fd;color:#1d4ed8;}
+.ichip-name:active{background:#dbeafe;}
+.ichip-name i{font-size:10px;margin-right:3px;}
+#dm-fav-btn.on{background:var(--goldbg)!important;color:var(--gold);}
 .swrap{position:relative;}
 .swrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray);font-size:12px;}
 .sinp{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--border);border-radius:9px;font-size:14px;outline:none;font-family:'Inter',sans-serif;}
@@ -140,6 +144,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .bnr-cap-price{font-size:13px;color:var(--gold2);font-weight:700;white-space:nowrap;}
 .bnr-cap-heart{font-size:12px;color:#fff;font-weight:700;white-space:nowrap;}
 .bnr-dots{display:flex;gap:4px;justify-content:center;padding:5px 0;background:#fff;border-bottom:1px solid var(--border);}
+#bnr-area{border-top:3px solid #fff;}
 .bdot{width:6px;height:6px;border-radius:3px;background:var(--border);transition:all .3s;cursor:pointer;}
 .bdot.on{background:var(--gold);width:16px;}
 
@@ -603,6 +608,7 @@ const S = {
   iboxImgs:[], iboxIdx:0,
   dmProd:null,
   activeChips:new Set(),
+  inFavView:false,
   revItems:0, revService:0, revContactOn:false,
   // For scroll tracking
   sectionOffsets:[],
@@ -627,6 +633,12 @@ function toast(msg) {
   const el=$('toast');
   el.textContent=msg; el.classList.add('on');
   clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),2200);
+}
+
+function normalizeAz(s){
+  return(s||'').toLowerCase()
+    .replace(/ə/g,'e').replace(/ı/g,'i').replace(/ğ/g,'g')
+    .replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c').replace(/ş/g,'s');
 }
 
 function showScr(id) {
@@ -1026,9 +1038,16 @@ function renderProds(){
   });
   if(S.activeSub) pool=pool.filter(p=>String(p.categoryId)===String(S.activeSub));
   if(S.popOn) pool=pool.filter(p=>p.popular);
+  S.inFavView=false;
   if(S.searchQ){
     const q=S.searchQ.toLowerCase();
-    pool=pool.filter(p=>(p.nameAz||'').toLowerCase().includes(q)||(p.nameEn||'').toLowerCase().includes(q)||(p.descAz||'').toLowerCase().includes(q)||(p.descEn||'').toLowerCase().includes(q)||(p.ingredientsAz||'').toLowerCase().includes(q)||(p.ingredientsEn||'').toLowerCase().includes(q)||(p.allergensAz||'').toLowerCase().includes(q)||(p.allergensEn||'').toLowerCase().includes(q));
+    const nq=normalizeAz(q);
+    const tokens=nq.split(/\s+/).filter(t=>t.length>0);
+    pool=pool.filter(p=>{
+      const raw=[p.nameAz,p.nameEn,p.descAz,p.descEn,p.ingredientsAz,p.ingredientsEn,p.allergensAz,p.allergensEn].map(t=>t||'').join(' ').toLowerCase();
+      const norm=normalizeAz(raw);
+      return raw.includes(q)||norm.includes(nq)||tokens.every(tok=>norm.includes(tok));
+    });
   }
   if(S.activeChips&&S.activeChips.size){
     pool=pool.filter(p=>{
@@ -1194,7 +1213,9 @@ function openDetail(pid){
   else di.classList.add('hidden');
   $('dm-like-btn').classList.toggle('on',S.myLikes.has(String(p.id)));
   const dmCntEl=$('dm-like-cnt');if(dmCntEl){const lc=S.likes[String(p.id)]||0;dmCntEl.textContent=lc>0?lc:'';}
-  $('dm-fav-btn').style.background=S.favs.has(String(p.id))?'#fef3cd':'';
+  const dmFavBtn=$('dm-fav-btn');
+  dmFavBtn.classList.toggle('on',S.favs.has(String(p.id)));
+  dmFavBtn.style.background='';
   $('dmodal').classList.add('on');
   document.body.style.overflow='hidden';
 }
@@ -1213,7 +1234,14 @@ function closeDmodal(){$('dmodal').classList.remove('on');document.body.style.ov
 window.toggleLikeFromDm=function(){const p=S.dmProd;if(!p)return;toggleLike(p.id,$('dm-like-btn'));};
 window.toggleFavFromDm=function(){
   const p=S.dmProd;if(!p)return;const k=String(p.id);const btn=$('dm-fav-btn');
-  if(S.favs.has(k)){S.favs.delete(k);btn.style.background='';}else{S.favs.add(k);btn.style.background='#fef3cd';toast(tl('Sevimlilərə əlavə edildi','Added to favorites'));}
+  btn.style.background=''; // clear any legacy inline style
+  if(S.favs.has(k)){
+    S.favs.delete(k);btn.classList.remove('on');
+    toast(tl('Sevimlilər siyahısından çıxarıldı','Removed from favorites'));
+  } else {
+    S.favs.add(k);btn.classList.add('on');
+    toast(tl('Sevimlilərə əlavə edildi','Added to favorites'));
+  }
   localStorage.setItem('mnfavs',JSON.stringify([...S.favs]));updateFavBadge();
   const fvBtn=$('fv-'+k);if(fvBtn)fvBtn.classList.toggle('on',S.favs.has(k));
 };
@@ -1416,11 +1444,18 @@ function updateLikeCount(k) {
 }
 function toggleFav(id,btn){
   const k=String(id);
-  if(S.favs.has(k)){S.favs.delete(k);btn.classList.remove('on');}else{S.favs.add(k);btn.classList.add('on');toast(tl('Sevimlilərə əlavə edildi','Added to favorites'));}
+  if(S.favs.has(k)){
+    S.favs.delete(k);btn.classList.remove('on');
+    toast(tl('Sevimlilər siyahısından çıxarıldı','Removed from favorites'));
+    if(S.inFavView) showFavs();
+  } else {
+    S.favs.add(k);btn.classList.add('on');
+    toast(tl('Sevimlilərə əlavə edildi','Added to favorites'));
+  }
   localStorage.setItem('mnfavs',JSON.stringify([...S.favs]));updateFavBadge();
 }
 function updateFavBadge(){const b=$('fav-cnt');if(!b)return;b.textContent=S.favs.size;b.style.display=S.favs.size?'inline-block':'none';}
-function showFavs(){if(!S.favs.size){toast(tl('Sevimli yoxdur','No favorites'));return;}$('prod-list').innerHTML=`<div class="sec-title">${tl('Sevimlilər','Favorites')}</div>`+S.prods.filter(p=>S.favs.has(String(p.id))).map(renderProd).join('');}
+function showFavs(){if(!S.favs.size){toast(tl('Sevimli yoxdur','No favorites'));return;}S.inFavView=true;$('prod-list').innerHTML=`<div class="sec-title">${tl('Sevimlilər','Favorites')}</div>`+S.prods.filter(p=>S.favs.has(String(p.id))).map(renderProd).join('');}
 function togglePop(){S.popOn=!S.popOn;$('qpop').classList.toggle('on',S.popOn);renderProds();}
 
 // ════════════════════════════════════════
@@ -1438,6 +1473,7 @@ function openSearch(){
 }
 function onSearch(q){
   S.searchQ=q.trim();
+  if(!S.searchQ)S.activeChips=new Set();
   buildIngredChips();
   renderProds();
 }
@@ -1453,21 +1489,31 @@ function buildIngredChips() {
     return inP||inS;
   });
   if(!q){chips.classList.add('hidden');chips.innerHTML='';return;}
+  const nq=normalizeAz(q);
+  // Product name suggestions
+  const nameMatches=pool.filter(p=>{
+    const nm=normalizeAz(tl(p.nameAz,p.nameEn)||p.nameAz||'');
+    return nm.includes(nq)&&nm!==nq;
+  }).slice(0,5);
   // Extract unique ingredient tokens from matching products
   const allIngreds=new Set();
   pool.forEach(p=>{
     const ingText=(tl(p.ingredientsAz,p.ingredientsEn)||tl(p.descAz,p.descEn)||'').toLowerCase();
     ingText.split(/[,;،\s]+/).forEach(w=>{const t=w.trim();if(t.length>2)allIngreds.add(t);});
   });
-  // Filter to tokens that contain or match q
-  const relevant=[...allIngreds].filter(w=>w.includes(q)||q.includes(w)||
-    // Also include tokens from products that match the search
+  // Filter to tokens that contain or match q (normalized)
+  const relevant=[...allIngreds].filter(w=>normalizeAz(w).includes(nq)||nq.includes(normalizeAz(w))||
     pool.some(p=>((tl(p.ingredientsAz,p.ingredientsEn)||tl(p.descAz,p.descEn)||'').toLowerCase().includes(q)&&
       (tl(p.ingredientsAz,p.ingredientsEn)||'').toLowerCase().split(/[,;،\s]+/).map(x=>x.trim()).includes(w)))
-  ).slice(0,12);
-  if(!relevant.length){chips.classList.add('hidden');chips.innerHTML='';return;}
+  ).slice(0,8);
+  if(!nameMatches.length&&!relevant.length){chips.classList.add('hidden');chips.innerHTML='';return;}
   chips.classList.remove('hidden');
-  chips.innerHTML=relevant.map(w=>`<div class="ichip${S.activeChips&&S.activeChips.has(w)?' on':''}" onclick="toggleChip('${w.replace(/'/g,"\'")}')"> ${w}</div>`).join('');
+  let html='';
+  if(nameMatches.length){
+    html+=nameMatches.map(p=>`<div class="ichip ichip-name" onclick="openDetail(${JSON.stringify(p.id)})"><i class="fas fa-utensils"></i>${esc(tl(p.nameAz,p.nameEn)||p.nameAz||'')}</div>`).join('');
+  }
+  html+=relevant.map(w=>`<div class="ichip${S.activeChips&&S.activeChips.has(w)?' on':''}" onclick="toggleChip('${w.replace(/'/g,"\'")}')"> ${w}</div>`).join('');
+  chips.innerHTML=html;
 }
 
 function toggleChip(w) {
