@@ -584,7 +584,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
-const GAS = 'https://script.google.com/macros/s/AKfycbwSilV66q636PS55d6cej4nvQrzUD5hujMW-dfMYChlvKT8xUENm1axTtt0owAc10kLPA/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbznJqT-1GwliqVgn7NYpCYnfR_WVazmVn4fm0qgR1jERbfXv4KO8y_e6aISDWaNo9Q0OA/exec';
 
 // ════════════════════════════════════════
 // STATE
@@ -599,6 +599,7 @@ const S = {
   popOn:false, searchQ:'', prevScr:'home',
   favs: new Set(JSON.parse(localStorage.getItem('mnfavs') || '[]')),
   likes: {}, // global likes from Sheets — loaded via loadData
+  myLikes: new Set(JSON.parse(localStorage.getItem('mnMyLikes') || '[]')), // products this device has liked
   iboxImgs:[], iboxIdx:0,
   dmProd:null,
   activeChips:new Set(),
@@ -892,7 +893,8 @@ function renderHomeInfoBar() {
         <div class="ibi-body">
           <div class="ibi-lbl">${tl('Məkan haqqında','About the place')}</div>
           <div id="hm-desc" class="ibi-val" style="white-space:normal;line-height:1.5;">${esc(shortD)}</div>
-          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/\n/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
+          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/
+/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
         </div>
       </div>
     </div>`;
@@ -999,7 +1001,7 @@ function renderBanner(){
       if(lc>0) cap+='<span class="bnr-cap-heart">❤ '+lc+'</span>';
       cap+='</div></div>';
     }
-    const click=b.productId?`openDetailById('${b.productId}')`:'';
+    const click=b.productId?'openDetailById(''+b.productId+'')':'';
     bnrSlides+='<div class="bnr-slide"'+(click?' onclick="'+click+'"':'')+'>'+'<img src="'+esc(thumb(b.image))+'" loading="lazy" onerror="this.style.opacity=.2">'+cap+'</div>';
   });
   track.innerHTML=bnrSlides;
@@ -1060,7 +1062,7 @@ function renderProd(p){
   const desc=tl(p.descAz,p.descEn)||'';
   const imgUrl=p.images&&p.images.length?thumb(p.images[0]):'';
   const gifUrl=thumb(p.gifUrl||'');
-  const liked=(S.likes[String(p.id)]||0)>0;
+  const liked=S.myLikes.has(String(p.id)); // has THIS device liked it?
   const isFav=S.favs.has(String(p.id));
   const unavail=p.available===false;
   const badges=[p.popular?`<span class="bp">${tl('Populyar','Popular')}</span>`:'',p.isNew?`<span class="bn">${tl('Yeni','New')}</span>`:'',p.recommended?`<span class="br">${tl('Tövsiyə','Rec.')}</span>`:'',unavail?`<span class="bu">${tl('Bitib','Sold out')}</span>`:''].join('');
@@ -1191,7 +1193,7 @@ function openDetail(pid){
   const di=$('dm-ingred');
   if(ingred){$('dm-ingred-title').textContent=tl('İnqrediyentlər','Ingredients');$('dm-ingred-body').textContent=ingred;di.classList.remove('hidden');}
   else di.classList.add('hidden');
-  $('dm-like-btn').classList.toggle('on',(S.likes[String(p.id)]||0)>0);
+  $('dm-like-btn').classList.toggle('on',S.myLikes.has(String(p.id)));
   const dmCntEl=$('dm-like-cnt');if(dmCntEl){const lc=S.likes[String(p.id)]||0;dmCntEl.textContent=lc>0?lc:'';}
   $('dm-fav-btn').style.background=S.favs.has(String(p.id))?'#fef3cd':'';
   $('dmodal').classList.add('on');
@@ -1368,29 +1370,30 @@ function renderContact(){
 // ════════════════════════════════════════
 async function toggleLike(id, btn) {
   const k = String(id);
-  // Optimistic UI update immediately
-  const wasLiked = (S.likes[k] || 0) > 0;
-  S.likes[k] = wasLiked ? 0 : (S.likes[k] || 0) + 1;
-  const liked = S.likes[k] > 0;
-  btn.classList.toggle('on', liked);
+  // If already liked by this device, do nothing (one-way only)
+  if (S.myLikes.has(k)) {
+    toast('Artıq bəyəndiniz! ❤');
+    return;
+  }
+  // Mark as liked immediately (optimistic)
+  S.myLikes.add(k);
+  localStorage.setItem('mnMyLikes', JSON.stringify([...S.myLikes]));
+  S.likes[k] = (S.likes[k] || 0) + 1;
+  btn.classList.add('on');
   updateLikeCount(k);
   const dm = $('dm-like-btn');
-  if (dm && S.dmProd && String(S.dmProd.id) === k) dm.classList.toggle('on', liked);
-  // Send to server
+  if (dm && S.dmProd && String(S.dmProd.id) === k) dm.classList.add('on');
+  // Send to server (action='add' — only increment)
   try {
     const res = await fetch(GAS, {
       method: 'POST',
       headers: {'Content-Type':'text/plain'},
-      body: JSON.stringify({action:'toggleLike', productId:k})
+      body: JSON.stringify({action:'toggleLike', productId:k, likeAction:'add'})
     });
     const data = await res.json();
     if (data.success && data.count !== undefined) {
       S.likes[k] = data.count;
       updateLikeCount(k);
-      // Update button state based on server count
-      const isLiked = data.count > 0;
-      btn.classList.toggle('on', isLiked);
-      if (dm && S.dmProd && String(S.dmProd.id) === k) dm.classList.toggle('on', isLiked);
     }
   } catch(e) {
     // Keep optimistic update on error
