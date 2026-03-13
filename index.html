@@ -893,8 +893,7 @@ function renderHomeInfoBar() {
         <div class="ibi-body">
           <div class="ibi-lbl">${tl('Məkan haqqında','About the place')}</div>
           <div id="hm-desc" class="ibi-val" style="white-space:normal;line-height:1.5;">${esc(shortD)}</div>
-          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/
-/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
+          ${isLong?`<span onclick="document.getElementById('hm-desc').textContent='${esc(s.description).replace(/'/g,"\'").replace(/\n/g,' ')}';this.style.display='none'" style="color:var(--gold);font-size:12px;cursor:pointer;">${tl('daha çox göstər','show more')}</span>`:''}
         </div>
       </div>
     </div>`;
