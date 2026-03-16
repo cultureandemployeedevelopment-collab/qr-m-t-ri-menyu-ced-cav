@@ -28,8 +28,59 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .scr{display:none;min-height:100vh;flex-direction:column;}
 .scr.on{display:flex;}
 
-/* ── HEADER ── */
-.hdr{background:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05);}
+/* ═══════════════════════════════════════════
+   ── HEADER — OVERLAY ON HERO (home screen) ──
+   ═══════════════════════════════════════════ */
+/* Default header style (used on cat/contact screens) */
+.hdr{
+  background:#fff;
+  padding:10px 14px;
+  display:flex;align-items:center;gap:8px;
+  position:sticky;top:0;z-index:50;
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+
+/* Home screen hero wrapper — relative so overlay header can sit on top */
+#home-hero-wrap{
+  position:relative;
+}
+
+/* Home header becomes absolute overlay on hero */
+#home-hdr{
+  position:absolute;
+  top:0;left:0;right:0;
+  background:transparent;
+  border-bottom:none;
+  box-shadow:none;
+  z-index:20;
+  padding:14px 14px 10px;
+}
+
+/* Logo on overlay — white border for visibility */
+#home-hdr .hdr-logo{
+  background:rgba(255,255,255,0.92);
+  border-color:rgba(255,255,255,0.6);
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+
+/* Buttons on overlay — white bg for visibility */
+#home-hdr .hbtn{
+  background:rgba(255,255,255,0.92);
+  border-color:rgba(255,255,255,0.5);
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+#home-hdr .lang-btn{
+  background:rgba(255,255,255,0.92);
+  border-color:rgba(255,255,255,0.5);
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+#home-hdr #hdr-rname{
+  color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+
+/* ── HEADER (cat/contact) ── */
 .hdr-logo{width:46px;height:46px;border-radius:9px;border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;font-size:22px;}
 .hdr-logo img{width:100%;height:100%;object-fit:contain;}
 .hdr-btns{display:flex;align-items:center;gap:5px;margin-left:auto;}
@@ -42,12 +93,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .lopt:hover{background:#f3f4f6;}
 .lopt.on{color:var(--gold);}
 
-/* ── HERO ── */
+/* ═══════════════════════════════════════════
+   ── HERO — BIGGER, birinci şəkil ölçüsü ──
+   ═══════════════════════════════════════════ */
 .hero-wrap{position:relative;background:#111;overflow:hidden;}
 .hero-track{display:flex;transition:transform .45s ease;will-change:transform;}
-.hero-slide{min-width:100%;position:relative;background:#111;min-height:200px;}
-.hero-slide img{width:100%;height:56vw;max-height:320px;min-height:200px;object-fit:cover;display:block;background:#222;}
-#home-hero{background:#111;min-height:200px;border-bottom:3px solid #fff;}
+.hero-slide{min-width:100%;position:relative;background:#111;min-height:320px;}
+
+/* ★ Əsas dəyişiklik: hündürlük birinci şəkil kimi ~400px */
+.hero-slide img{
+  width:100%;
+  height:72vw;        /* telefonda ~400px */
+  max-height:420px;
+  min-height:320px;
+  object-fit:cover;
+  display:block;
+  background:#222;
+}
+
+#home-hero{background:#111;min-height:320px;}
+
 .hero-overlay{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;padding:8px 10px;}
 .hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:8px;padding:5px 10px;max-width:calc(100% - 56px);}
 .hero-name{color:#fff;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
@@ -72,7 +137,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .cli:active{background:#f9f9f9;}
 .cli-left{display:flex;align-items:center;gap:12px;}
 .cli-icon{font-size:26px;}
-/* ── BIG category names ── */
 .cli-name{font-size:18px;font-weight:700;letter-spacing:-.2px;}
 .cli-sub{font-size:13px;color:var(--gray);margin-top:3px;}
 .cli-arr{color:var(--gray);font-size:14px;}
@@ -102,7 +166,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .cat-hdr{background:#fff;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);}
 .cat-top{padding:8px 12px;display:flex;align-items:center;gap:8px;}
 .back-btn{width:33px;height:33px;background:var(--bg);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);font-size:12px;flex-shrink:0;}
-/* ── BIG main tabs ── */
 .main-tabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid var(--border);}
 .main-tabs::-webkit-scrollbar{display:none;}
 .mtab{flex-shrink:0;padding:11px 14px;font-size:15px;font-weight:700;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.15s;}
@@ -110,7 +173,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .sub-tabs-wrap{background:#fff;border-bottom:1px solid var(--border);}
 .sub-tabs{display:flex;overflow-x:auto;gap:6px;padding:7px 12px;scrollbar-width:none;}
 .sub-tabs::-webkit-scrollbar{display:none;}
-/* ── BIG sub tabs ── */
 .stab{flex-shrink:0;padding:6px 14px;background:#f3f4f6;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;color:var(--gray);border:1.5px solid transparent;transition:.15s;white-space:nowrap;}
 .stab.on{background:var(--goldbg);color:var(--gold);border-color:var(--gold);}
 
@@ -152,22 +214,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 /* ── PRODUCT LIST ── */
 .prod-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .prod-list{padding:0 14px 70px;}
-/* ── BIG section title ── */
 .sec-title{font-size:24px;font-weight:800;padding:16px 0 8px;line-height:1.2;}
-/* ── BIG sub section title ── */
 .sec-sub{font-size:19px;font-weight:700;padding:14px 0 6px;color:var(--text);border-bottom:1px solid var(--border);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
 
 /* ── PRODUCT ITEM ── */
 .pitem{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;}
 .pitem:last-child{border-bottom:none;}
 .pitem-left{flex:1;min-width:0;}
-/* ── BIG product name ── */
 .pname{font-size:16px;font-weight:700;line-height:1.35;margin-bottom:3px;}
 .pprice{font-size:15px;color:var(--gold);font-weight:700;display:inline;}
 .pvat{font-size:11px;color:var(--gray);font-weight:400;margin-left:4px;}
 .pdesc{font-size:13px;color:var(--gray);margin-top:4px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .pbtns{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap;}
-/* Like button - matches screenshot: outlined rounded with count */
 .like-btn{display:flex;align-items:center;justify-content:center;width:42px;height:36px;border:1.5px solid var(--border);border-radius:999px;cursor:pointer;font-size:15px;color:#ccc;transition:.15s;background:#fff;}
 .like-btn.on{color:#ef4444;border-color:#fca5a5;background:#fff5f5;}
 .like-cnt{font-size:14px;color:#6b7280;font-weight:500;}
@@ -188,7 +246,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .noprod i{font-size:36px;margin-bottom:10px;color:var(--border);display:block;}
 .unavail{opacity:.5;}
 
-/* ── DETAIL MODAL (bottom sheet) ── */
+/* ── DETAIL MODAL ── */
 .dmodal{position:fixed;inset:0;z-index:300;display:none;align-items:flex-end;}
 .dmodal.on{display:flex;}
 .dmodal-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -345,11 +403,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="dmodal-bg" onclick="closeDmodal()"></div>
   <div class="dsheet" id="dsheet">
     <div class="dsheet-close" onclick="closeDmodal()"><i class="fas fa-times"></i></div>
-    <!-- GIF (first if available) -->
     <img id="dm-gif" class="dsheet-gif hidden" src="" alt="">
-    <!-- Static main image -->
     <img id="dm-main-img" class="dsheet-img hidden" src="" alt="">
-    <!-- Thumbnail row -->
     <div id="dm-imgs-row" class="dsheet-imgs"></div>
     <div class="dsheet-body">
       <div id="dm-badges" style="margin-bottom:6px;"></div>
@@ -483,41 +538,46 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <!-- ════════════════════════ HOME SCREEN ════════════════════════ -->
 <div id="scr-home" class="scr">
-  <div class="hdr">
-    <div class="hdr-logo" id="hdr-logo">🍽️</div>
-    <div style="flex:1;min-width:0;padding:0 7px;">
-      <div id="hdr-rname" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-    </div>
-    <div class="hdr-btns">
-      <div class="lang-wrap">
-        <div class="lang-btn" onclick="toggleLD()"><span id="ll">AZ</span> <i class="fas fa-chevron-down" style="font-size:8px;color:#999;"></i></div>
-        <div class="lang-dd" id="ldd">
-          <div class="lopt on" id="lopt-az" onclick="setLang('az')">AZ</div>
-          <div class="lopt" id="lopt-en" onclick="setLang('en')">EN</div>
-        </div>
+
+  <!-- ★ Hero wrapper: relative, header is absolute overlay inside -->
+  <div id="home-hero-wrap">
+
+    <!-- ★ Home header — overlay on hero, no white background -->
+    <div class="hdr" id="home-hdr">
+      <div class="hdr-logo" id="hdr-logo">🍽️</div>
+      <div style="flex:1;min-width:0;padding:0 7px;">
+        <div id="hdr-rname" style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
       </div>
-      <div class="hbtn" onclick="openSearch()"><i class="fas fa-search"></i></div>
-      <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
+      <div class="hdr-btns">
+        <div class="lang-wrap">
+          <div class="lang-btn" onclick="toggleLD()"><span id="ll">AZ</span> <i class="fas fa-chevron-down" style="font-size:8px;color:#999;"></i></div>
+          <div class="lang-dd" id="ldd">
+            <div class="lopt on" id="lopt-az" onclick="setLang('az')">AZ</div>
+            <div class="lopt" id="lopt-en" onclick="setLang('en')">EN</div>
+          </div>
+        </div>
+        <div class="hbtn" onclick="openSearch()"><i class="fas fa-search"></i></div>
+        <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
+      </div>
     </div>
-  </div>
-  <!-- HERO -->
-  <div id="home-hero"></div>
+
+    <!-- HERO SLIDER -->
+    <div id="home-hero"></div>
+
+  </div><!-- /#home-hero-wrap -->
+
   <div class="home-info">
     <h1 id="h-name">Restoran</h1>
     <p id="h-sub"></p>
   </div>
-  <!-- DIGITAL MENU DIVIDER -->
   <div class="divider"><span id="lbl-dm">DİGİTAL MENYU</span></div>
-  <!-- CATEGORY LIST -->
   <div class="cat-list" id="home-cat-list"></div>
-  <!-- LINKS SECTION -->
   <div id="links-section" style="display:none;">
     <div class="links-section">
       <div class="divider" style="margin-top:12px;"><span id="lbl-links">LİNKLƏR</span></div>
       <div id="links-list"></div>
     </div>
   </div>
-  <!-- INFO BAR -->
   <div id="home-info-bar"></div>
   <div class="footer">Powered by <strong>GHG/CED</strong></div>
 </div>
@@ -590,7 +650,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
-const GAS = 'https://script.google.com/macros/s/AKfycbznJqT-1GwliqVgn7NYpCYnfR_WVazmVn4fm0qgR1jERbfXv4KO8y_e6aISDWaNo9Q0OA/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbwSilV66q636PS55d6cej4nvQrzUD5hujMW-dfMYChlvKT8xUENm1axTtt0owAc10kLPA/exec';
 
 // ════════════════════════════════════════
 // STATE
@@ -604,14 +664,13 @@ const S = {
   activeCat:null, activeSub:null,
   popOn:false, searchQ:'', prevScr:'home',
   favs: new Set(JSON.parse(localStorage.getItem('mnfavs') || '[]')),
-  likes: {}, // global likes from Sheets — loaded via loadData
-  myLikes: new Set(JSON.parse(localStorage.getItem('mnMyLikes') || '[]')), // products this device has liked
+  likes: {},
+  myLikes: new Set(JSON.parse(localStorage.getItem('mnMyLikes') || '[]')),
   iboxImgs:[], iboxIdx:0,
   dmProd:null,
   activeChips:new Set(),
   inFavView:false,
   revItems:0, revService:0, revContactOn:false,
-  // For scroll tracking
   sectionOffsets:[],
   scrollThrottle:false,
 };
@@ -671,12 +730,10 @@ function setLang(l) {
 }
 
 // ════════════════════════════════════════
-// DATA LOAD — fast, no blocking
+// DATA LOAD
 // ════════════════════════════════════════
 async function loadData() {
   const cached = localStorage.getItem('mnCache');
-  
-  // Show cached data IMMEDIATELY - no waiting
   if (cached) {
     try {
       applyData(JSON.parse(cached));
@@ -685,12 +742,9 @@ async function loadData() {
       renderAll();
       checkPopup();
     } catch(e) {}
-    // Refresh in background silently
     refreshInBackground();
     return;
   }
-  
-  // No cache - must fetch, show loading
   try {
     const ctrl = new AbortController();
     setTimeout(()=>ctrl.abort(), 10000);
@@ -718,23 +772,19 @@ async function refreshInBackground() {
     const json = await res.json();
     const d = json.data||json;
     localStorage.setItem('mnCache', JSON.stringify(d));
-    // Only re-apply if data meaningfully changed (likes always update)
     const prev = JSON.stringify({prods:S.prods.length, cats:S.cats.length});
     applyData(d);
     const curr = JSON.stringify({prods:S.prods.length, cats:S.cats.length});
     if (prev !== curr) {
       renderAll();
-      // If cat screen open, refresh products silently
       if ($('scr-cat').classList.contains('on')) renderProds();
     } else {
-      // Just update like counts without full re-render
       updateAllLikeCounts();
     }
-  } catch(e) { /* silent */ }
+  } catch(e) {}
 }
 
 function updateAllLikeCounts() {
-  // Update all visible like counts without re-rendering
   Object.entries(S.likes).forEach(([k, cnt]) => {
     const btn = $('lb-'+k);
     if (btn) btn.classList.toggle('on', cnt > 0);
@@ -812,7 +862,7 @@ function renderHero() {
   clearInterval(S.heroTimer);
   const wrap=$('home-hero');if(!wrap)return;
   if(!S.heroSlides.length){
-    wrap.innerHTML='<div style="aspect-ratio:16/9;background:linear-gradient(135deg,#1a1209,#2d1f0a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;"><div style="font-size:60px">🍽️</div></div>';
+    wrap.innerHTML='<div style="height:72vw;max-height:420px;min-height:320px;background:linear-gradient(135deg,#1a1209,#2d1f0a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;"><div style="font-size:60px">🍽️</div></div>';
     return;
   }
   S.heroIdx=0;
@@ -867,11 +917,11 @@ function renderHomeList() {
 }
 
 // ════════════════════════════════════════
-// LINKS SECTION (after Digital Menu)
+// LINKS SECTION
 // ════════════════════════════════════════
 function renderLinks() {
   const s=S.settings;
-  const revEnabled=s.reviewEnabled===true||s.reviewEnabled==='true'||s.reviewEnabled===undefined; // default true
+  const revEnabled=s.reviewEnabled===true||s.reviewEnabled==='true'||s.reviewEnabled===undefined;
   const wrap=$('links-section'), list=$('links-list');
   if(!wrap||!list) return;
   let links=[];
@@ -966,12 +1016,11 @@ function renderSubTabs(){
 }
 
 function switchMain(id){
-  if(String(S.activeCat)===String(id)) return; // already on this tab
+  if(String(S.activeCat)===String(id)) return;
   S.activeCat=id;S.activeSub=null;S.popOn=false;S.searchQ='';S.activeChips=new Set();
   if($('sinp'))$('sinp').value='';
   if($('ingred-chips')){$('ingred-chips').classList.add('hidden');$('ingred-chips').innerHTML='';}
   if($('qpop'))$('qpop').classList.remove('on');
-  // Smooth fade transition
   const pl=$('prod-list');
   if(pl){pl.style.opacity='0';pl.style.transition='opacity .18s';}
   renderMainTabs();renderSubTabs();renderProds();
@@ -993,7 +1042,6 @@ function switchSub(id){
   },80);
 }
 
-// BANNER
 function renderBanner(){
   clearInterval(S.bnrTimer);
   const area=$('bnr-area'),track=$('bnr-track'),dots=$('bnr-dots'),s=S.settings;
@@ -1072,7 +1120,6 @@ function renderProds(){
     html+=pool.map(p=>renderProd(p)).join('');
   }
   pl.innerHTML=html;
-  // Build sub-section offsets for scroll detection
   setTimeout(buildSectionOffsets,100);
 }
 
@@ -1081,11 +1128,11 @@ function renderProd(p){
   const desc=tl(p.descAz,p.descEn)||'';
   const imgUrl=p.images&&p.images.length?thumb(p.images[0]):'';
   const gifUrl=thumb(p.gifUrl||'');
-  const liked=S.myLikes.has(String(p.id)); // has THIS device liked it?
+  const liked=S.myLikes.has(String(p.id));
   const isFav=S.favs.has(String(p.id));
   const unavail=p.available===false;
   const badges=[p.popular?`<span class="bp">${tl('Populyar','Popular')}</span>`:'',p.isNew?`<span class="bn">${tl('Yeni','New')}</span>`:'',p.recommended?`<span class="br">${tl('Tövsiyə','Rec.')}</span>`:'',unavail?`<span class="bu">${tl('Bitib','Sold out')}</span>`:''].join('');
-  const likeCnt=S.likes[String(p.id)]||0; // global count from Sheets
+  const likeCnt=S.likes[String(p.id)]||0;
   return`<div class="pitem${unavail?' unavail':''}" id="pi-${p.id}" onclick="openDetail(${JSON.stringify(p.id)})">
     <div class="pitem-left">
       ${badges?`<div style="margin-bottom:3px;">${badges}</div>`:''}
@@ -1108,7 +1155,7 @@ function renderProd(p){
 }
 
 // ════════════════════════════════════════
-// AUTO-SCROLL BETWEEN CATEGORIES & SUBS
+// SCROLL TRACKING
 // ════════════════════════════════════════
 function buildSectionOffsets(){
   S.sectionOffsets=[];
@@ -1129,14 +1176,11 @@ $('prod-scroll').addEventListener('scroll',function(){
     const el=this;
     const scrollBottom=el.scrollTop+el.clientHeight;
     const scrollHeight=el.scrollHeight;
-
-    // Auto-advance to next MAIN category when near bottom
     if(!S.searchQ&&!S.popOn&&scrollHeight-scrollBottom<80){
       const parents=getParentCats();
       const idx=parents.findIndex(c=>String(c.id)===String(S.activeCat));
       if(idx<parents.length-1){
         const nextCat=parents[idx+1].id;
-        // Smooth fade transition
         const pl=$('prod-list');
         if(pl){pl.style.opacity='0';pl.style.transition='opacity .2s';}
         setTimeout(()=>{
@@ -1148,8 +1192,6 @@ $('prod-scroll').addEventListener('scroll',function(){
         return;
       }
     }
-
-    // Highlight current sub-tab based on scroll position
     if(!S.searchQ&&!S.popOn&&S.sectionOffsets.length){
       let currentSub=null;
       for(let i=0;i<S.sectionOffsets.length;i++){
@@ -1159,14 +1201,12 @@ $('prod-scroll').addEventListener('scroll',function(){
       }
       if(currentSub&&String(currentSub)!==String(S.activeSub)){
         S.activeSub=currentSub;
-        // Just update sub-tab visuals without re-rendering products
         document.querySelectorAll('.stab').forEach(t=>{
           const tid=t.getAttribute('onclick').match(/switchSub\(([^)]+)\)/)?.[1]?.replace(/['"]/g,'');
           t.classList.toggle('on',String(tid)===String(currentSub));
         });
         const active=document.querySelector('.stab.on');
         if(active)active.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
-        // Also update main tabs for sub-categories
         const subCat=S.cats.find(c=>String(c.id)===String(currentSub));
         if(subCat&&subCat.parentCategoryId&&String(subCat.parentCategoryId)!==String(S.activeCat)){
           S.activeCat=subCat.parentCategoryId;renderMainTabs();
@@ -1177,14 +1217,13 @@ $('prod-scroll').addEventListener('scroll',function(){
 },{passive:true});
 
 // ════════════════════════════════════════
-// PRODUCT DETAIL MODAL (GIF first)
+// PRODUCT DETAIL MODAL
 // ════════════════════════════════════════
 function openDetail(pid){
   const p=S.prods.find(pr=>String(pr.id)===String(pid));if(!p)return;
   S.dmProd=p;
   const gifUrl=thumb(p.gifUrl||'');
   const dmGif=$('dm-gif'),dmImg=$('dm-main-img');
-  // GIF first if available
   if(gifUrl){
     dmGif.src=gifUrl;dmGif.classList.remove('hidden');
     dmImg.classList.add('hidden');
@@ -1194,7 +1233,6 @@ function openDetail(pid){
   } else {
     dmGif.classList.add('hidden');dmImg.classList.add('hidden');
   }
-  // Thumbnails
   const row=$('dm-imgs-row');
   const allMedia=[];
   if(gifUrl)allMedia.push({url:gifUrl,isGif:true});
@@ -1203,7 +1241,6 @@ function openDetail(pid){
     row.innerHTML=allMedia.map((m,i)=>`<img class="dthumb${i===0?' on':''}" src="${esc(m.url)}" onclick="dmSetMedia(${i})" alt="${m.isGif?'GIF':''}">`).join('');
     row.dataset.media=JSON.stringify(allMedia);
   } else row.innerHTML='';
-  // Badges
   $('dm-badges').innerHTML=[p.popular?`<span class="bp">${tl('Populyar','Popular')}</span>`:'',p.isNew?`<span class="bn">${tl('Yeni','New')}</span>`:'',p.recommended?`<span class="br">${tl('Tövsiyə','Rec.')}</span>`:'',(p.available===false)?`<span class="bu">${tl('Bitib','Sold out')}</span>`:'' ].join('');
   $('dm-name').textContent=tl(p.nameAz,p.nameEn)||p.nameAz||'';
   $('dm-price').textContent=p.price?p.price+' ₼':'';
@@ -1235,7 +1272,7 @@ function closeDmodal(){$('dmodal').classList.remove('on');document.body.style.ov
 window.toggleLikeFromDm=function(){const p=S.dmProd;if(!p)return;toggleLike(p.id,$('dm-like-btn'));};
 window.toggleFavFromDm=function(){
   const p=S.dmProd;if(!p)return;const k=String(p.id);const btn=$('dm-fav-btn');
-  btn.style.background=''; // clear any legacy inline style
+  btn.style.background='';
   if(S.favs.has(k)){
     S.favs.delete(k);btn.classList.remove('on');
     toast(tl('Sevimlilər siyahısından çıxarıldı','Removed from favorites'));
@@ -1293,15 +1330,12 @@ async function submitReview(){
   const phone=S.revContactOn?$('rev-phone').value.trim():'';
   const email=S.revContactOn?$('rev-email').value.trim():'';
   const name=S.revContactOn?$('rev-name').value.trim():'';
-  // If external review link exists, open it
   const rl=S.settings.reviewLink||'';
   if(rl){window.open(rl,'_blank');}
-  // Save locally
   const lreviews=JSON.parse(localStorage.getItem('mnReviews')||'[]');
   const rev={id:Date.now(),itemsRating:S.revItems,serviceRating:S.revService,comment,phone,email,name,date:new Date().toISOString()};
   lreviews.push(rev);
   localStorage.setItem('mnReviews',JSON.stringify(lreviews));
-  // Send to Sheets
   try {
     fetch(GAS, {method:'POST',headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({action:'saveReview',review:rev})}).catch(()=>{});
@@ -1344,8 +1378,6 @@ function renderContact(){
   if(s.phone)html+=`<div class="c-item" onclick="window.open('tel:${esc(s.phone)}')"><div class="c-ico"><i class="fas fa-phone-alt" style="color:var(--gold)"></i></div><div class="c-body"><div class="c-lbl">${tl('Telefon','Phone')}</div><div class="c-val">${esc(s.phone)}</div></div><div class="ibi-copy" onclick="event.stopPropagation();copyTxt('${esc(s.phone)}')"><i class="fas fa-copy"></i></div></div>`;
   if(s.email)html+=`<div class="c-item" onclick="window.open('mailto:${esc(s.email)}')"><div class="c-ico"><i class="fas fa-envelope" style="color:var(--gold)"></i></div><div class="c-body"><div class="c-lbl">Email</div><div class="c-val">${esc(s.email)}</div></div><div class="ibi-copy" onclick="event.stopPropagation();copyTxt('${esc(s.email)}')"><i class="fas fa-copy"></i></div></div>`;
   if(s.website)html+=`<div class="c-item" onclick="window.open('${esc(s.website)}','_blank')"><div class="c-ico"><i class="fas fa-globe" style="color:var(--gold)"></i></div><div class="c-body"><div class="c-lbl">${tl('Veb sayt','Website')}</div><div class="c-val">${esc(s.website)}</div></div><i class="fas fa-external-link-alt c-arr"></i></div>`;
-  // Working hours with schedule toggle
-  // Per-day work hours (Mon-Sun keys: workMon, workTue, etc.)
   const wkKeys=['workMon','workTue','workWed','workThu','workFri','workSat','workSun'];
   const wkHours=wkKeys.map(k=>s[k]||wd);
   const todayHours=wkHours[todIdx]||wd;
@@ -1363,7 +1395,6 @@ function renderContact(){
     </div>
   </div>`;
   html+='</div>';
-  // Socials
   const hasSoc=s.facebook||s.instagram||s.tripadvisor||s.whatsapp;
   if(hasSoc){
     html+=`<div style="font-size:18px;font-weight:700;padding:16px 0 8px;">${tl('Biz sosial şəbəkələrdəyik','We are on social networks')}</div>`;
@@ -1374,12 +1405,10 @@ function renderContact(){
     if(s.whatsapp)html+=`<div class="soc-btn" onclick="window.open('https://wa.me/${(s.whatsapp||'').replace(/\D/g,'')}','_blank')"><i class="fab fa-whatsapp fa-lg" style="color:#25d366;"></i> WhatsApp</div>`;
     html+='</div></div>';
   }
-  // Map section
   html+=`<div style="font-size:18px;font-weight:700;padding:16px 0 8px;">${tl('Xəritədə','On the map')}</div>`;
   html+='<div class="c-block">';
   const mapAddr=tl(s.addressAz,s.addressEn)||s.addressAz||'';
   const mapUrl=ml||(mapAddr?'https://maps.google.com/?q='+encodeURIComponent(mapAddr):'');
-  // Always try embed via Google Maps embed API
   const embedSrc = ml && ml.includes('embed') ? ml : (mapAddr ? 'https://maps.google.com/maps?q='+encodeURIComponent(mapAddr)+'&output=embed&z=15' : '');
   if(embedSrc){
     html+=`<iframe class="map-iframe" src="${esc(embedSrc)}" allowfullscreen loading="lazy" style="border:0;"></iframe>`;
@@ -1399,7 +1428,6 @@ function renderContact(){
 async function toggleLike(id, btn) {
   const k = String(id);
   if (S.myLikes.has(k)) {
-    // Unlike: remove from myLikes, decrement count
     S.myLikes.delete(k);
     localStorage.setItem('mnMyLikes', JSON.stringify([...S.myLikes]));
     S.likes[k] = Math.max(0, (S.likes[k] || 0) - 1);
@@ -1408,20 +1436,12 @@ async function toggleLike(id, btn) {
     const dm = $('dm-like-btn');
     if (dm && S.dmProd && String(S.dmProd.id) === k) dm.classList.remove('on');
     try {
-      const res = await fetch(GAS, {
-        method: 'POST',
-        headers: {'Content-Type':'text/plain'},
-        body: JSON.stringify({action:'toggleLike', productId:k, likeAction:'remove'})
-      });
+      const res = await fetch(GAS, {method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'toggleLike',productId:k,likeAction:'remove'})});
       const data = await res.json();
-      if (data.success && data.count !== undefined) {
-        S.likes[k] = data.count;
-        updateLikeCount(k);
-      }
+      if (data.success && data.count !== undefined) { S.likes[k] = data.count; updateLikeCount(k); }
     } catch(e) {}
     return;
   }
-  // Mark as liked immediately (optimistic)
   S.myLikes.add(k);
   localStorage.setItem('mnMyLikes', JSON.stringify([...S.myLikes]));
   S.likes[k] = (S.likes[k] || 0) + 1;
@@ -1430,22 +1450,14 @@ async function toggleLike(id, btn) {
   const dm = $('dm-like-btn');
   if (dm && S.dmProd && String(S.dmProd.id) === k) dm.classList.add('on');
   try {
-    const res = await fetch(GAS, {
-      method: 'POST',
-      headers: {'Content-Type':'text/plain'},
-      body: JSON.stringify({action:'toggleLike', productId:k, likeAction:'add'})
-    });
+    const res = await fetch(GAS, {method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'toggleLike',productId:k,likeAction:'add'})});
     const data = await res.json();
-    if (data.success && data.count !== undefined) {
-      S.likes[k] = data.count;
-      updateLikeCount(k);
-    }
+    if (data.success && data.count !== undefined) { S.likes[k] = data.count; updateLikeCount(k); }
   } catch(e) {}
 }
 
 function updateLikeCount(k) {
   const cnt = S.likes[k] || 0;
-  // Update in product list
   const btn = $('lb-' + k);
   const existing = $('lc-' + k);
   if (cnt > 0) {
@@ -1454,10 +1466,10 @@ function updateLikeCount(k) {
   } else {
     if (existing) existing.remove();
   }
-  // Update in detail modal
   const dmCnt = $('dm-like-cnt');
   if (dmCnt && S.dmProd && String(S.dmProd.id) === k) dmCnt.textContent = cnt > 0 ? cnt : '';
 }
+
 function toggleFav(id,btn){
   const k=String(id);
   if(S.favs.has(k)){
@@ -1497,7 +1509,6 @@ function onSearch(q){
 function buildIngredChips() {
   const q=S.searchQ.toLowerCase();
   const chips=$('ingred-chips');if(!chips)return;
-  // Collect all ingredients from current cat pool
   const subs=getSubCats(S.activeCat);
   let pool=S.prods.filter(p=>{
     const inP=String(p.categoryId)===String(S.activeCat);
@@ -1506,18 +1517,15 @@ function buildIngredChips() {
   });
   if(!q){chips.classList.add('hidden');chips.innerHTML='';return;}
   const nq=normalizeAz(q);
-  // Product name suggestions
   const nameMatches=pool.filter(p=>{
     const nm=normalizeAz(tl(p.nameAz,p.nameEn)||p.nameAz||'');
     return nm.includes(nq)&&nm!==nq;
   }).slice(0,5);
-  // Extract unique ingredient tokens from matching products
   const allIngreds=new Set();
   pool.forEach(p=>{
     const ingText=(tl(p.ingredientsAz,p.ingredientsEn)||tl(p.descAz,p.descEn)||'').toLowerCase();
     ingText.split(/[,;،\s]+/).forEach(w=>{const t=w.trim();if(t.length>2)allIngreds.add(t);});
   });
-  // Filter to tokens that contain or match q (normalized)
   const relevant=[...allIngreds].filter(w=>normalizeAz(w).includes(nq)||nq.includes(normalizeAz(w))||
     pool.some(p=>((tl(p.ingredientsAz,p.ingredientsEn)||tl(p.descAz,p.descEn)||'').toLowerCase().includes(q)&&
       (tl(p.ingredientsAz,p.ingredientsEn)||'').toLowerCase().split(/[,;،\s]+/).map(x=>x.trim()).includes(w)))
@@ -1535,7 +1543,6 @@ function buildIngredChips() {
 function toggleChip(w) {
   if(!S.activeChips)S.activeChips=new Set();
   if(S.activeChips.has(w))S.activeChips.delete(w);else S.activeChips.add(w);
-  // Update chip visuals
   document.querySelectorAll('.ichip').forEach(el=>{
     const cw=el.textContent.trim();
     el.classList.toggle('on',S.activeChips.has(cw));
@@ -1560,7 +1567,6 @@ window.iboxGo=i=>{S.iboxIdx=i;updateIbox();};
 function closeIbox(){$('ibox').classList.remove('on');}
 $('ibox').addEventListener('click',e=>{if(e.target===$('ibox'))closeIbox();});
 
-// Video placeholder (kept for backward compat)
 function openGifBox(url){$('gifbox-img').src=url;$('gifbox').classList.add('on');document.body.style.overflow='hidden';}
 function closeGifBox(){$('gifbox').classList.remove('on');document.body.style.overflow='';}
 function openVid(url){const v=$('vplayer');v.src=url;v.load();$('vmodal').classList.add('on');v.play().catch(()=>{});}
@@ -1573,10 +1579,8 @@ $('vmodal').addEventListener('click',e=>{if(e.target===$('vmodal'))closeVid();})
 function goHome(){clearInterval(S.bnrTimer);closeDmodal();showScr('scr-home');}
 
 function openDetailById(pid){
-  // Open product detail from banner
   const p = S.prods.find(pr=>String(pr.id)===String(pid));
   if(!p)return;
-  // Find and open the right category first if not on cat screen
   if(!$('scr-cat').classList.contains('on')){
     openCat(p.categoryId);
     setTimeout(()=>openDetail(pid),300);
