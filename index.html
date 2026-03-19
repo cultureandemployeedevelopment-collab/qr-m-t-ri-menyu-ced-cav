@@ -28,10 +28,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .scr{display:none;min-height:100vh;flex-direction:column;}
 .scr.on{display:flex;}
 
-/* ═══════════════════════════════════════════
-   ── HEADER — OVERLAY ON HERO (home screen) ──
-   ═══════════════════════════════════════════ */
-/* Default header style (used on cat/contact screens) */
+/* ── HEADER ── */
 .hdr{
   background:#fff;
   padding:10px 14px;
@@ -41,12 +38,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   box-shadow:0 1px 4px rgba(0,0,0,.05);
 }
 
-/* Home screen hero wrapper — relative so overlay header can sit on top */
-#home-hero-wrap{
-  position:relative;
-}
+#home-hero-wrap{position:relative;}
 
-/* Home header becomes absolute overlay on hero */
 #home-hdr{
   position:absolute;
   top:0;left:0;right:0;
@@ -57,17 +50,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   padding:14px 14px 10px;
 }
 
-/* Logo on overlay — bigger, white border for visibility */
+/* FIX 4: Logo şəkildəki kimi — kiçik, düzgün ölçü */
 #home-hdr .hdr-logo{
-  width: 90px;
-  height: 90px;
-  border-radius: 14px;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
   background: rgba(255,255,255,0.95);
   border: none;
-  box-shadow: 0 3px 12px rgba(0,0,0,.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,.20);
 }
 
-/* Buttons on overlay — white bg for visibility */
 #home-hdr .hbtn{
   background:rgba(255,255,255,0.92);
   border-color:rgba(255,255,255,0.5);
@@ -78,12 +70,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   border-color:rgba(255,255,255,0.5);
   box-shadow:0 2px 6px rgba(0,0,0,.15);
 }
-#home-hdr #hdr-rname{
-  display:none;
-}
+#home-hdr #hdr-rname{display:none;}
 
 /* ── HEADER (cat/contact) ── */
-.hdr-logo{width:46px;height:46px;border-radius:9px;border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.hdr-logo{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;font-size:18px;}
 .hdr-logo img{width:100%;height:100%;object-fit:cover;}
 .hdr-btns{display:flex;align-items:center;gap:5px;margin-left:auto;}
 .hbtn{width:36px;height:36px;background:#fff;border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:#444;flex-shrink:0;}
@@ -95,26 +85,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .lopt:hover{background:#f3f4f6;}
 .lopt.on{color:var(--gold);}
 
-/* ═══════════════════════════════════════════
-   ── HERO — BIGGER, birinci şəkil ölçüsü ──
-   ═══════════════════════════════════════════ */
+/* ── HERO ── */
 .hero-wrap{position:relative;background:#111;overflow:hidden;}
 .hero-track{display:flex;transition:transform .45s ease;will-change:transform;}
 .hero-slide{min-width:100%;position:relative;background:#111;min-height:320px;}
-
-/* ★ Əsas dəyişiklik: hündürlük birinci şəkil kimi ~400px */
 .hero-slide img{
   width:100%;
-  height:72vw;        /* telefonda ~400px */
+  height:72vw;
   max-height:420px;
   min-height:320px;
   object-fit:cover;
   display:block;
   background:#222;
 }
-
 #home-hero{background:#111;min-height:320px;}
-
 .hero-overlay{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;padding:8px 10px;}
 .hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:8px;padding:5px 10px;max-width:calc(100% - 70px);flex-wrap:wrap;}
 .hero-name{color:#fff;font-size:13px;font-weight:700;white-space:normal;word-break:break-word;max-width:100%;line-height:1.35;}
@@ -134,11 +118,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .home-info p{font-size:13px;color:var(--gray);}
 .divider{display:flex;align-items:center;gap:8px;margin:10px 14px 8px;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gray);text-transform:uppercase;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* FIX 1: İkon olmayan kateqoriya siyahısı */
 .cat-list{padding:0 14px;display:flex;flex-direction:column;gap:7px;}
 .cli{background:#fff;border-radius:var(--r);padding:18px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid var(--border);transition:background .15s;}
 .cli:active{background:#f9f9f9;}
 .cli-left{display:flex;align-items:center;gap:12px;}
-.cli-icon{font-size:26px;}
+/* İkonları gizlə */
+.cli-icon{display:none;}
 .cli-name{font-size:18px;font-weight:700;letter-spacing:-.2px;}
 .cli-sub{font-size:13px;color:var(--gray);margin-top:3px;}
 .cli-arr{color:var(--gray);font-size:14px;}
@@ -300,16 +287,30 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .map-iframe{width:100%;height:220px;border:none;display:block;}
 .dir-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;font-size:15px;font-weight:700;border-top:1px solid var(--border);cursor:pointer;color:var(--text);}
 
-/* ── REVIEW MODAL ── */
+/* ════════════════════════════════════════
+   FIX 2: REVIEW MODAL — Ulduzlar düzəldildi
+   ════════════════════════════════════════ */
 .rev-modal{position:fixed;inset:0;z-index:300;display:none;align-items:flex-end;}
 .rev-modal.on{display:flex;}
 .rev-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);}
 .rev-sheet{position:relative;width:100%;background:#fff;border-radius:22px 22px 0 0;max-height:92vh;overflow-y:auto;padding:24px 16px 36px;z-index:1;}
-.rev-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:20px;line-height:1.3;}
-.stars-row{display:flex;gap:12px;justify-content:center;margin-bottom:4px;}
-.star-ico{font-size:32px;cursor:pointer;color:#d1d5db;transition:.15s;}
+.rev-title{font-size:18px;font-weight:800;text-align:center;margin-bottom:18px;line-height:1.3;}
+/* Stars grid — 2 sütun, overflow yoxdur */
+.rev-stars-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.rev-stars-col{background:#f9fafb;border-radius:12px;padding:12px 10px;text-align:center;}
+.rev-stars-col-title{font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text);}
+.stars-row{display:flex;gap:6px;justify-content:center;flex-wrap:nowrap;}
+/* Ulduzlar ekrana sığsın — responsive ölçü */
+.star-ico{
+  font-size:clamp(20px, 7vw, 28px);
+  cursor:pointer;
+  color:#d1d5db;
+  transition:.15s;
+  line-height:1;
+  user-select:none;
+  -webkit-user-select:none;
+}
 .star-ico.on{color:var(--gold);}
-.stars-lbl{text-align:center;font-size:13px;font-weight:600;color:var(--gray);margin-bottom:16px;}
 .rev-section{background:#f9fafb;border-radius:12px;padding:14px;margin-bottom:10px;}
 .rev-section-title{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text);}
 .rev-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none;resize:none;}
@@ -325,6 +326,62 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .rev-submit{width:100%;padding:14px;background:var(--gold);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
 .rev-submit:disabled{background:#d1d5db;cursor:not-allowed;}
 .rev-close{position:absolute;top:14px;right:14px;width:32px;height:32px;background:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--gray);}
+
+/* ════════════════════════════════════════
+   FIX 3: TELEFON ÖLKƏ KODU DROPDOWN
+   ════════════════════════════════════════ */
+.phone-input-wrap{display:flex;gap:0;border:1.5px solid var(--border);border-radius:9px;overflow:hidden;}
+.phone-input-wrap:focus-within{border-color:var(--gold);}
+.country-code-btn{
+  display:flex;align-items:center;gap:4px;
+  padding:10px 10px;
+  background:#f9fafb;
+  border-right:1px solid var(--border);
+  cursor:pointer;
+  font-size:13px;font-weight:600;
+  white-space:nowrap;
+  flex-shrink:0;
+  position:relative;
+  user-select:none;
+  min-width:80px;
+}
+.country-code-btn .flag{font-size:16px;line-height:1;}
+.country-code-btn .code{font-size:13px;font-weight:700;color:var(--text);}
+.country-code-btn .chevron{font-size:9px;color:var(--gray);margin-left:2px;}
+.country-dd{
+  position:absolute;
+  top:calc(100% + 2px);
+  left:-2px;
+  width:240px;
+  max-height:220px;
+  overflow-y:auto;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  z-index:500;
+  display:none;
+}
+.country-dd.open{display:block;}
+.country-dd-search{padding:8px 10px;border-bottom:1px solid var(--border);}
+.country-dd-search input{width:100%;border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;outline:none;font-family:'Inter',sans-serif;}
+.country-dd-search input:focus{border-color:var(--gold);}
+.country-opt{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #f3f4f6;}
+.country-opt:last-child{border-bottom:none;}
+.country-opt:hover{background:#f9fafb;}
+.country-opt.selected{background:var(--goldbg);color:var(--gold);}
+.country-opt .opt-flag{font-size:18px;flex-shrink:0;}
+.country-opt .opt-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--gray);}
+.country-opt .opt-code{font-size:13px;font-weight:700;color:var(--text);flex-shrink:0;}
+.phone-number-inp{
+  flex:1;min-width:0;
+  border:none;
+  outline:none;
+  padding:10px 12px;
+  font-size:14px;
+  font-family:'Inter',sans-serif;
+  background:transparent;
+}
 
 /* ── VIDEO MODAL ── */
 .vmodal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:350;display:none;align-items:center;justify-content:center;padding:12px;}
@@ -426,46 +483,68 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 </div>
 
-<!-- REVIEW MODAL -->
+<!-- ════════════════════════════════════════
+     FIX 2 + 3: REVIEW MODAL — Düzəldilmiş
+     ════════════════════════════════════════ -->
 <div id="rev-modal" class="rev-modal">
   <div class="rev-bg" onclick="closeReview()"></div>
   <div class="rev-sheet">
     <div class="rev-close" onclick="closeReview()"><i class="fas fa-times"></i></div>
     <div class="rev-title" id="rev-title">Bizə daha yaxşı olmağa kömək et!</div>
-    <div class="rev-section">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div>
-          <div class="rev-section-title" id="lbl-items">Maddələr</div>
-          <div class="stars-row" id="stars-items">
-            <span class="star-ico" data-val="1" data-group="items" onclick="setStars('items',1)">★</span>
-            <span class="star-ico" data-val="2" data-group="items" onclick="setStars('items',2)">★</span>
-            <span class="star-ico" data-val="3" data-group="items" onclick="setStars('items',3)">★</span>
-            <span class="star-ico" data-val="4" data-group="items" onclick="setStars('items',4)">★</span>
-            <span class="star-ico" data-val="5" data-group="items" onclick="setStars('items',5)">★</span>
-          </div>
+
+    <!-- FIX 2: Ulduzlar 2 sütunda, kənara çıxmır -->
+    <div class="rev-stars-grid">
+      <div class="rev-stars-col">
+        <div class="rev-stars-col-title" id="lbl-items">Maddələr</div>
+        <div class="stars-row" id="stars-items">
+          <span class="star-ico" onclick="setStars('items',1)">★</span>
+          <span class="star-ico" onclick="setStars('items',2)">★</span>
+          <span class="star-ico" onclick="setStars('items',3)">★</span>
+          <span class="star-ico" onclick="setStars('items',4)">★</span>
+          <span class="star-ico" onclick="setStars('items',5)">★</span>
         </div>
-        <div>
-          <div class="rev-section-title" id="lbl-service">Xidmət</div>
-          <div class="stars-row" id="stars-service">
-            <span class="star-ico" data-val="1" data-group="service" onclick="setStars('service',1)">★</span>
-            <span class="star-ico" data-val="2" data-group="service" onclick="setStars('service',2)">★</span>
-            <span class="star-ico" data-val="3" data-group="service" onclick="setStars('service',3)">★</span>
-            <span class="star-ico" data-val="4" data-group="service" onclick="setStars('service',4)">★</span>
-            <span class="star-ico" data-val="5" data-group="service" onclick="setStars('service',5)">★</span>
-          </div>
+      </div>
+      <div class="rev-stars-col">
+        <div class="rev-stars-col-title" id="lbl-service">Xidmət</div>
+        <div class="stars-row" id="stars-service">
+          <span class="star-ico" onclick="setStars('service',1)">★</span>
+          <span class="star-ico" onclick="setStars('service',2)">★</span>
+          <span class="star-ico" onclick="setStars('service',3)">★</span>
+          <span class="star-ico" onclick="setStars('service',4)">★</span>
+          <span class="star-ico" onclick="setStars('service',5)">★</span>
         </div>
       </div>
     </div>
+
     <textarea class="rev-input" id="rev-comment" rows="3" placeholder="Şərh (istəyə bağlı)..."></textarea>
+
     <div class="rev-toggle" onclick="toggleContactFields()">
       <div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-arrow-right" style="color:var(--gold);font-size:13px;"></i><p id="lbl-contact-toggle">Zəhmət olmasa əlaqə məlumatlarınızı qeyd edin</p></div>
       <div class="toggle-sw" id="contact-toggle-sw"></div>
     </div>
+
     <div class="contact-fields" id="contact-fields">
-      <input class="rev-input" id="rev-phone" type="tel" placeholder="📞 Telefon nömrəsi">
+      <!-- FIX 3: Telefon ölkə kodu dropdown -->
+      <div style="position:relative;" id="phone-wrap">
+        <div class="phone-input-wrap">
+          <div class="country-code-btn" id="country-btn" onclick="toggleCountryDd(event)">
+            <span class="flag" id="sel-flag">🇦🇿</span>
+            <span class="code" id="sel-code">+994</span>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+          <input class="phone-number-inp" id="rev-phone-num" type="tel" placeholder="__ ___ __ __">
+        </div>
+        <div class="country-dd" id="country-dd">
+          <div class="country-dd-search">
+            <input type="text" placeholder="Ölkəni axtar..." id="country-search" oninput="filterCountries(this.value)">
+          </div>
+          <div id="country-list"></div>
+        </div>
+      </div>
       <input class="rev-input" id="rev-email" type="email" placeholder="✉️ E-poçt">
       <input class="rev-input" id="rev-name" type="text" placeholder="👤 Ad">
     </div>
+
     <button class="rev-submit" id="rev-submit" onclick="submitReview()">
       <span id="lbl-submit">Qiymətləndirmək üçün ulduzlara toxunun</span>
     </button>
@@ -540,11 +619,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <!-- ════════════════════════ HOME SCREEN ════════════════════════ -->
 <div id="scr-home" class="scr">
-
-  <!-- ★ Hero wrapper: relative, header is absolute overlay inside -->
   <div id="home-hero-wrap">
-
-    <!-- ★ Home header — overlay on hero, no white background -->
     <div class="hdr" id="home-hdr">
       <div class="hdr-logo" id="hdr-logo">🍽️</div>
       <div style="flex:1;min-width:0;padding:0 7px;">
@@ -562,11 +637,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class="hbtn" onclick="openSide()"><i class="fas fa-bars"></i></div>
       </div>
     </div>
-
-    <!-- HERO SLIDER -->
     <div id="home-hero"></div>
-
-  </div><!-- /#home-hero-wrap -->
+  </div>
 
   <div class="home-info">
     <h1 id="h-name">Restoran</h1>
@@ -649,6 +721,119 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <div class="toast" id="toast"></div>
 
 <script>
+// ════════════════════════════════════════
+// COUNTRY CODES DATA (FIX 3)
+// ════════════════════════════════════════
+const COUNTRIES = [
+  {flag:'🇦🇿',name:'Azərbaycan',code:'+994'},
+  {flag:'🇷🇺',name:'Rusiya',code:'+7'},
+  {flag:'🇹🇷',name:'Türkiyə',code:'+90'},
+  {flag:'🇬🇧',name:'Böyük Britaniya',code:'+44'},
+  {flag:'🇺🇸',name:'ABŞ',code:'+1'},
+  {flag:'🇩🇪',name:'Almaniya',code:'+49'},
+  {flag:'🇫🇷',name:'Fransa',code:'+33'},
+  {flag:'🇮🇹',name:'İtaliya',code:'+39'},
+  {flag:'🇪🇸',name:'İspaniya',code:'+34'},
+  {flag:'🇵🇱',name:'Polşa',code:'+48'},
+  {flag:'🇺🇦',name:'Ukrayna',code:'+380'},
+  {flag:'🇬🇪',name:'Gürcüstan',code:'+995'},
+  {flag:'🇦🇲',name:'Ermənistan',code:'+374'},
+  {flag:'🇰🇿',name:'Qazaxıstan',code:'+7'},
+  {flag:'🇺🇿',name:'Özbəkistan',code:'+998'},
+  {flag:'🇹🇲',name:'Türkmənistan',code:'+993'},
+  {flag:'🇰🇬',name:'Qırğızıstan',code:'+996'},
+  {flag:'🇹🇯',name:'Tacikistan',code:'+992'},
+  {flag:'🇮🇷',name:'İran',code:'+98'},
+  {flag:'🇸🇦',name:'Səudiyyə Ərəbistanı',code:'+966'},
+  {flag:'🇦🇪',name:'BƏƏ',code:'+971'},
+  {flag:'🇮🇱',name:'İsrail',code:'+972'},
+  {flag:'🇨🇳',name:'Çin',code:'+86'},
+  {flag:'🇯🇵',name:'Yaponiya',code:'+81'},
+  {flag:'🇰🇷',name:'Cənubi Koreya',code:'+82'},
+  {flag:'🇮🇳',name:'Hindistan',code:'+91'},
+  {flag:'🇧🇷',name:'Braziliya',code:'+55'},
+  {flag:'🇦🇺',name:'Avstraliya',code:'+61'},
+  {flag:'🇨🇦',name:'Kanada',code:'+1'},
+  {flag:'🇳🇱',name:'Niderland',code:'+31'},
+  {flag:'🇧🇪',name:'Belçika',code:'+32'},
+  {flag:'🇨🇭',name:'İsveçrə',code:'+41'},
+  {flag:'🇦🇹',name:'Avstriya',code:'+43'},
+  {flag:'🇸🇪',name:'İsveç',code:'+46'},
+  {flag:'🇳🇴',name:'Norveç',code:'+47'},
+  {flag:'🇩🇰',name:'Danimarka',code:'+45'},
+  {flag:'🇫🇮',name:'Finlandiya',code:'+358'},
+  {flag:'🇵🇹',name:'Portuqaliya',code:'+351'},
+  {flag:'🇬🇷',name:'Yunanıstan',code:'+30'},
+  {flag:'🇷🇴',name:'Rumıniya',code:'+40'},
+  {flag:'🇧🇬',name:'Bolqarıstan',code:'+359'},
+  {flag:'🇭🇺',name:'Macarıstan',code:'+36'},
+  {flag:'🇨🇿',name:'Çexiya',code:'+420'},
+  {flag:'🇸🇰',name:'Slovakiya',code:'+421'},
+  {flag:'🇭🇷',name:'Xorvatiya',code:'+385'},
+  {flag:'🇷🇸',name:'Serbiya',code:'+381'},
+  {flag:'🇧🇾',name:'Belarus',code:'+375'},
+  {flag:'🇱🇹',name:'Litva',code:'+370'},
+  {flag:'🇱🇻',name:'Latviya',code:'+371'},
+  {flag:'🇪🇪',name:'Estoniya',code:'+372'},
+  {flag:'🇲🇩',name:'Moldova',code:'+373'},
+];
+
+let selectedCountry = COUNTRIES[0];
+let filteredCountries = [...COUNTRIES];
+
+function initCountryDd(){
+  renderCountryList(COUNTRIES);
+}
+
+function renderCountryList(list){
+  const el = document.getElementById('country-list');
+  if(!el) return;
+  el.innerHTML = list.map((c,i)=>`
+    <div class="country-opt${c===selectedCountry?' selected':''}" onclick="selectCountry(${COUNTRIES.indexOf(c)})">
+      <span class="opt-flag">${c.flag}</span>
+      <span class="opt-name">${c.name}</span>
+      <span class="opt-code">${c.code}</span>
+    </div>`).join('');
+}
+
+function filterCountries(q){
+  const lq = q.toLowerCase();
+  filteredCountries = COUNTRIES.filter(c =>
+    c.name.toLowerCase().includes(lq) || c.code.includes(lq)
+  );
+  renderCountryList(filteredCountries);
+}
+
+function selectCountry(idx){
+  selectedCountry = COUNTRIES[idx];
+  document.getElementById('sel-flag').textContent = selectedCountry.flag;
+  document.getElementById('sel-code').textContent = selectedCountry.code;
+  document.getElementById('country-dd').classList.remove('open');
+  document.getElementById('country-search').value = '';
+  renderCountryList(COUNTRIES);
+}
+
+function toggleCountryDd(e){
+  e.stopPropagation();
+  const dd = document.getElementById('country-dd');
+  dd.classList.toggle('open');
+  if(dd.classList.contains('open')){
+    setTimeout(()=>document.getElementById('country-search').focus(), 80);
+  }
+}
+
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#phone-wrap')){
+    const dd = document.getElementById('country-dd');
+    if(dd) dd.classList.remove('open');
+  }
+});
+
+function getFullPhone(){
+  const num = (document.getElementById('rev-phone-num')||{}).value||'';
+  return num ? selectedCountry.code + num.replace(/\D/g,'') : '';
+}
+
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
@@ -903,7 +1088,7 @@ function heroNav(d){const n=S.heroSlides.length;if(n<2)return;S.heroIdx=(S.heroI
 window.heroGo=i=>{S.heroIdx=i-1;heroNav(1);};
 
 // ════════════════════════════════════════
-// HOME LIST
+// HOME LIST — FIX 1: İkon yoxdur
 // ════════════════════════════════════════
 function renderHomeList() {
   const list=$('home-cat-list');if(!list)return;
@@ -913,7 +1098,11 @@ function renderHomeList() {
     const subs=S.cats.filter(c=>String(c.parentCategoryId)===String(cat.id)&&c.active!==false);
     const subLbl=subs.length?`<div class="cli-sub">${subs.map(s=>tl(s.nameAz,s.nameEn)||s.nameAz).slice(0,4).join(' · ')}${subs.length>4?'…':''}</div>`:'';
     return`<div class="cli" onclick="openCat(${JSON.stringify(cat.id)})">
-      <div class="cli-left"><div class="cli-icon">${esc(cat.icon||'🍽️')}</div><div><div class="cli-name">${esc(tl(cat.nameAz,cat.nameEn)||cat.nameAz)}</div>${subLbl}</div></div>
+      <div class="cli-left">
+        <!-- İkon gizli (display:none via CSS) -->
+        <div class="cli-icon">${esc(cat.icon||'🍽️')}</div>
+        <div><div class="cli-name">${esc(tl(cat.nameAz,cat.nameEn)||cat.nameAz)}</div>${subLbl}</div>
+      </div>
       <i class="fas fa-chevron-right cli-arr"></i></div>`;
   }).join('');
 }
@@ -1287,7 +1476,7 @@ window.toggleFavFromDm=function(){
 };
 
 // ════════════════════════════════════════
-// REVIEW MODAL
+// REVIEW MODAL (FIX 2 + 3)
 // ════════════════════════════════════════
 window.openReview=function(){
   const s=S.settings;
@@ -1295,10 +1484,12 @@ window.openReview=function(){
   S.revItems=0;S.revService=0;S.revContactOn=false;
   ['items','service'].forEach(g=>setStars(g,0));
   $('rev-comment').value='';
-  $('rev-phone').value='';$('rev-email').value='';$('rev-name').value='';
+  if($('rev-phone-num'))$('rev-phone-num').value='';
+  $('rev-email').value='';$('rev-name').value='';
   $('contact-toggle-sw').classList.remove('on');
   $('contact-fields').classList.remove('on');
   updateSubmitBtn();
+  initCountryDd();
   $('rev-modal').classList.add('on');
   document.body.style.overflow='hidden';
 };
@@ -1329,7 +1520,7 @@ async function submitReview(){
   if(!S.revItems||!S.revService)return;
   const btn=$('rev-submit');btn.disabled=true;btn.textContent=tl('Göndərilir...','Sending...');
   const comment=$('rev-comment').value.trim();
-  const phone=S.revContactOn?$('rev-phone').value.trim():'';
+  const phone=S.revContactOn?getFullPhone():'';
   const email=S.revContactOn?$('rev-email').value.trim():'';
   const name=S.revContactOn?$('rev-name').value.trim():'';
   const rl=S.settings.reviewLink||'';
